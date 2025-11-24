@@ -9,12 +9,22 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.LimelightHelpers;
 
 public class Vision extends SubsystemBase {
   public boolean isVisible;
   public double yaw;
   public double range;
+  public double area;
+  public double fiducialID;
+    
+  private final String limelightName = "limelight";
+  
 
   public final PhotonCamera camera = new PhotonCamera("placeholder");
  
@@ -27,9 +37,22 @@ public class Vision extends SubsystemBase {
 
   /** Creates a new Vision. */
   public Vision() {
+    LimelightHelpers.setLEDMode_PipelineControl(limelightName);
   }
 
 
+  
+  public void updateData() {
+    isVisible = LimelightHelpers.getTV(limelightName);
+    yaw = LimelightHelpers.getTX(limelightName);
+    area = LimelightHelpers.getTA(limelightName);
+    fiducialID = LimelightHelpers.getFiducialID(limelightName);
+        
+    SmartDashboard.putBoolean("Has Target", isVisible);
+    SmartDashboard.putNumber("Target Yaw", yaw);
+    SmartDashboard.putNumber("Target Area", area);
+    SmartDashboard.putNumber("Fiducial ID", fiducialID);
+  }
   public void autoAlign() {
       boolean targetVisible = false;
       double targetYaw = 0.0;
@@ -75,6 +98,10 @@ public class Vision extends SubsystemBase {
 
   @Override
   public void periodic() {
+    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    NetworkTableEntry targetpose_cameraspace = table.getEntry("targetpose_cameraspace");
+
+    updateData();
     // This method will be called once per scheduler run
   }
 }
