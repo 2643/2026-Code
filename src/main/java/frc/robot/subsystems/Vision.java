@@ -53,7 +53,8 @@ public class Vision extends SubsystemBase {
     SmartDashboard.putNumber("Target Area", area);
     SmartDashboard.putNumber("Fiducial ID", fiducialID);
   }
-  public void autoAlign() {
+
+  public void autoAlign() { //test auto align (doesn't work)
       boolean targetVisible = false;
       double targetYaw = 0.0;
       double targetRange = 0.0;
