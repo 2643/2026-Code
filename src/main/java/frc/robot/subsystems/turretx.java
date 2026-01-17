@@ -31,22 +31,18 @@ public class turretx extends SubsystemBase {
       motorX.getConfigurator().apply(configs);
       motorX.setPosition(0);
   }
-  public void moveMotorPos(double pos) {
-    target = pos;
-    motorX.setControl(new MotionMagicVoltage(pos));
-  }
-  public void upMotorPos(){
-    moveMotorPos(currentPos() + 5);
-  }
-  public void downMotorPos(){
-    moveMotorPos(currentPos() - 5);
-  }
-  double currentPos(){
-    return motorX.getPosition().getValueAsDouble();
-  }
   public void moveToPos(double target){
     target = pos;
     motorX.setControl(motion.withPosition(target));
+  }
+  public void upMotorPos(){
+    moveToPos(currentPos() + 5);
+  }
+  public void downMotorPos(){
+    moveToPos(currentPos() - 5);
+  }
+  double currentPos(){
+    return motorX.getPosition().getValueAsDouble();
   }
   @Override
   public void periodic() {

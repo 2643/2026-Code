@@ -5,8 +5,9 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class turrety extends SubsystemBase {
@@ -16,7 +17,6 @@ public class turrety extends SubsystemBase {
   public double target = 0;
   public double pos;
   MotionMagicVoltage motion = new MotionMagicVoltage(0);
-  
   public void position() {
       var motionmagicconfigs = configs.MotionMagic;
       var slot0configs = configs.Slot0;
@@ -31,22 +31,18 @@ public class turrety extends SubsystemBase {
       motorY.getConfigurator().apply(configs);
       motorY.setPosition(0);
   }
-  public void moveMotorPos(double pos) {
+    public void moveToPos(double target){
     target = pos;
-    motorY.setControl(new MotionMagicVoltage(pos));
+    motorY.setControl(motion.withPosition(target));
   }
   public void upMotorPos(){
-    moveMotorPos(currentPos() + 5);
+    moveToPos(currentPos() + 5);
   }
   public void downMotorPos(){
-    moveMotorPos(currentPos() - 5);
+    moveToPos(currentPos() - 5);
   }
   double currentPos(){
     return motorY.getPosition().getValueAsDouble();
-  }
-  public void moveToPos(double target){
-    target = pos;
-    motorY.setControl(motion.withPosition(target));
   }
   @Override
   public void periodic() {
