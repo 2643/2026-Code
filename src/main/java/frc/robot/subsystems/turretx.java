@@ -13,8 +13,8 @@ public class turretx extends SubsystemBase {
   /** Creates a new turrentx. */
   TalonFX motorX = new TalonFX(0);
   TalonFXConfiguration configs = new TalonFXConfiguration();
-  double target = 0;
-  double pos;
+  public double target = 0;
+  public double pos;
   MotionMagicVoltage motion = new MotionMagicVoltage(0);
 
   public void position() {
@@ -29,7 +29,6 @@ public class turretx extends SubsystemBase {
       motionmagicconfigs.MotionMagicCruiseVelocity = 20;
   
       motorX.getConfigurator().apply(configs);
-      moveMotorPos(-10);
       motorX.setPosition(0);
   }
   public void moveMotorPos(double pos) {
@@ -37,10 +36,10 @@ public class turretx extends SubsystemBase {
     motorX.setControl(new MotionMagicVoltage(pos));
   }
   public void upMotorPos(){
-    moveMotorPos(currentPos() + 0.5);
+    moveMotorPos(currentPos() + 5);
   }
   public void downMotorPos(){
-    moveMotorPos(currentPos() - 0.5);
+    moveMotorPos(currentPos() - 5);
   }
   double currentPos(){
     return motorX.getPosition().getValueAsDouble();

@@ -13,8 +13,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class gate extends SubsystemBase {
   /** Creates a new gate. */
   TalonFX gate = new TalonFX(3);
-  double speed;
-  double pos;
+  public double speed;
+  public double pos;
   MotionMagicVoltage motion = new MotionMagicVoltage(0);
   public void cycleGate(double speed) {
     gate.setControl(new DutyCycleOut(speed));
