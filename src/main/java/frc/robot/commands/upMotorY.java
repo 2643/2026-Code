@@ -13,13 +13,13 @@ public class upMotorY extends Command {
   boolean finish = true;
   public upMotorY() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(RobotContainer.m_turrenty);
+    addRequirements(RobotContainer.m_turret);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    RobotContainer.m_turrenty.upMotorPos();
+    
   }
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -27,7 +27,9 @@ public class upMotorY extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    RobotContainer.m_turret.upMotorPosY();
+  }
 
   // Returns true when the command should end.
   @Override

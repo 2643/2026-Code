@@ -10,9 +10,10 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class turrety extends SubsystemBase {
-  /** Creates a new turrentx. */
+public class turret extends SubsystemBase {
+  /** Creates a new turretx. */
   TalonFX motorY = new TalonFX(1);
+  TalonFX motorX = new TalonFX(0);
   TalonFXConfiguration configs = new TalonFXConfiguration();
   public double target = 0;
   public double pos;
@@ -31,18 +32,31 @@ public class turrety extends SubsystemBase {
       motorY.getConfigurator().apply(configs);
       motorY.setPosition(0);
   }
-    public void moveToPos(double target){
+  public void moveToPosY(double target){
     target = pos;
     motorY.setControl(motion.withPosition(target));
   }
-  public void upMotorPos(){
-    moveToPos(currentPos() + 5);
+  public void moveToPosX(double target){
+    target = pos;
+    motorX.setControl(motion.withPosition(target));
   }
-  public void downMotorPos(){
-    moveToPos(currentPos() - 5);
+  public void upMotorPosX(){
+    moveToPosX(currentPosX() + 5);
   }
-  double currentPos(){
+  public void downMotorPosX(){
+    moveToPosX(currentPosX() - 5);
+  }
+  public void upMotorPosY(){
+    moveToPosY(currentPosY() + 5);
+  }
+  public void downMotorPosY(){
+    moveToPosY(currentPosY() - 5);
+  }
+  double currentPosY(){
     return motorY.getPosition().getValueAsDouble();
+  }
+  double currentPosX(){
+    return motorX.getPosition().getValueAsDouble();
   }
   @Override
   public void periodic() {

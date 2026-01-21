@@ -12,9 +12,7 @@ import frc.robot.commands.leftMotorX;
 import frc.robot.commands.rightMotorX;
 import frc.robot.commands.upMotorY;
 import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.gate;
-import frc.robot.subsystems.turretx;
-import frc.robot.subsystems.turrety;
+import frc.robot.subsystems.turret;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -33,13 +31,9 @@ public class RobotContainer {
   public final static JoystickButton right = new JoystickButton(controller, 2);
   public final static JoystickButton up = new JoystickButton(controller, 3);
   public final static JoystickButton down = new JoystickButton(controller, 4);
-  public final static JoystickButton cycleGate = new JoystickButton(controller, 5);
-  public final static JoystickButton stopGate = new JoystickButton(controller, 6);
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  public static final gate m_gate = new gate();
-  public static final turretx m_turretx = new turretx();
-  public static final turrety m_turrenty = new turrety();
+  public static final turret m_turret = new turret();
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
