@@ -8,10 +8,10 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.start_intake;
-import frc.robot.commands.downIntake;
+//import frc.robot.commands.downIntake;
 import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.Motor;
-import frc.robot.subsystems.Position;
+import frc.robot.subsystems.Intake;
+//import frc.robot.subsystems.Position;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -30,8 +30,8 @@ public class RobotContainer {
   public static final Joystick controller = new Joystick(0);
   public static final JoystickButton start = new JoystickButton(controller, 1);
   //public static final JoystickButton raise = new JoystickButton(controller, 2);
-  public final static Motor m_intake = new Motor();
-  public final static Position m_lower = new Position();
+  public final static Intake m_intake = new Intake();
+  //public final static Position m_lower = new Position();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =

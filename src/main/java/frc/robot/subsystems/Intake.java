@@ -7,11 +7,11 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Motor extends SubsystemBase {
+public class Intake extends SubsystemBase {
   public double speed = 0;
   TalonFX motor = new TalonFX(0);
   /** Creates a new Motor. */
-  public Motor() {
+  public Intake() {
     
   }
 
@@ -19,8 +19,8 @@ public void moveMotor() {
   System.out.println(speed);
   if (speed == 0)
   { 
-    motor.setControl(new DutyCycleOut(1));
-    speed = 1;
+    motor.setControl(new DutyCycleOut(0.6));
+    speed = 0.6;
   }
   else
   {
