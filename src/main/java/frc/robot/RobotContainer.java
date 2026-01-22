@@ -7,7 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.start_intake;
+import frc.robot.commands.StartIntake;
 //import frc.robot.commands.downIntake;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Intake;
@@ -54,7 +54,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    start.onTrue(new start_intake());
+    start.onTrue(new StartIntake());
     //raise.onTrue(new downIntake());
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
