@@ -8,10 +8,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class rightMotorX extends Command {
+public class RightMotorX extends Command {
   /** Creates a new upMotorX. */
   boolean finish = true;
-  public rightMotorX() {
+  public RightMotorX() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.m_turret);
   }

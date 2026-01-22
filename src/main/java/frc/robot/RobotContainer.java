@@ -7,12 +7,12 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.downMotorY;
-import frc.robot.commands.leftMotorX;
-import frc.robot.commands.rightMotorX;
-import frc.robot.commands.upMotorY;
+import frc.robot.commands.DownMotorY;
+import frc.robot.commands.LeftMotorX;
+import frc.robot.commands.RightMotorX;
+import frc.robot.commands.UpMotorY;
 import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.turret;
+import frc.robot.subsystems.Turret;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -33,7 +33,7 @@ public class RobotContainer {
   public final static JoystickButton down = new JoystickButton(controller, 4);
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  public static final turret m_turret = new turret();
+  public static final Turret m_turret = new Turret();
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -54,10 +54,10 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    left.onTrue(new leftMotorX());
-    right.onTrue(new rightMotorX());
-    up.onTrue(new upMotorY());
-    down.onTrue(new downMotorY());
+    left.onTrue(new LeftMotorX());
+    right.onTrue(new RightMotorX());
+    up.onTrue(new UpMotorY());
+    down.onTrue(new DownMotorY());
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));

@@ -11,13 +11,13 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class turret extends SubsystemBase {
+public class Turret extends SubsystemBase {
   /** Creates a new turretx. */
   TalonFX motorY = new TalonFX(1);
   TalonFX motorX = new TalonFX(0);
   TalonFXConfiguration configs = new TalonFXConfiguration();
-  DigitalInput limit1 = new DigitalInput(0);
-  DigitalInput limit2 = new DigitalInput(1);
+  DigitalInput limitX = new DigitalInput(0);
+  DigitalInput limitY = new DigitalInput(1);
   public double target = 0;
   public double pos;
   MotionMagicVoltage motion = new MotionMagicVoltage(0);
@@ -55,17 +55,17 @@ public class turret extends SubsystemBase {
   public void downMotorPosY(){
     moveToPosY(currentPosY() - 5);
   }
-  double currentPosY(){
+  public double currentPosY(){
     return motorY.getPosition().getValueAsDouble();
   }
-  double currentPosX(){
+  public double currentPosX(){
     return motorX.getPosition().getValueAsDouble();
   }
-  boolean limitOneValue(){
-    return limit1.get();
+  public boolean getLimitX(){
+    return limitX.get();
   }
-  boolean limitTwoValue(){
-    return limit2.get();
+  public boolean getLimitY(){
+    return limitY.get();
   }
   @Override
   public void periodic() {
