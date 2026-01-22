@@ -32,7 +32,9 @@ public class Turret extends SubsystemBase {
       motionmagicconfigs.MotionMagicAcceleration = 20;
       motionmagicconfigs.MotionMagicCruiseVelocity = 20;
   
+      motorX.getConfigurator().apply(configs);
       motorY.getConfigurator().apply(configs);
+      motorX.setPosition(0);
       motorY.setPosition(0);
   }
   public void moveToPosY(double target){
