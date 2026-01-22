@@ -35,7 +35,7 @@ public class Constants {
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
     private static final Slot0Configs driveGains = new Slot0Configs()
             .withKP(0.46).withKI(0).withKD(0)
-            .withKS(1.5).withKV(1.51).withKA(0.21);
+            .withKS(1.5).withKV(1.51).withKA(0.21); // Let Phoenix auto-calculate FF from kSpeedAt12Volts
 
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors
@@ -68,7 +68,7 @@ public class Constants {
                             // Swerve azimuth does not require much torque output, so we can set a
                             // relatively low
                             // stator current limit to help avoid brownouts without impacting performance.
-                            .withStatorCurrentLimit(Amps.of(60))
+                            .withStatorCurrentLimit(Amps.of(20))
                             .withStatorCurrentLimitEnable(true));
     private static final CANcoderConfiguration encoderInitialConfigs = new CANcoderConfiguration();
     // Configs for the Pigeon 2; leave this null to skip applying Pigeon 2 configs
@@ -80,7 +80,10 @@ public class Constants {
 
     // Theoretical free speed (m/s) at 12 V applied output;
     // This needs to be tuned to your individual robot
-    public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(3.14 / 2 / 8);
+    // MK4i L2 with Falcon500 theoretical max: ~4.42 m/s
+    public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(1); // Old: 3.14/2/8 = 0.196 m/s
+    public static final double kSpeedAt12VoltsMps = 1; // Old: 3.14/2/8 = 0.196 m/s
+
 
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
     // This may need to be tuned to your individual robot
@@ -88,7 +91,7 @@ public class Constants {
 
     private static final double kDriveGearRatio = 6.746031746031747;
     private static final double kSteerGearRatio = 21.428571428571427;
-    private static final Distance kWheelRadius = Inches.of(CHOSEN_MODULE.wheelCircumference / 2);
+    private static final Distance kWheelRadius = Inches.of(CHOSEN_MODULE.wheelDiameter / 2.0); // Old: wheelCircumference / 2
 
     private static final boolean kInvertLeftSide = false;
     private static final boolean kInvertRightSide = true;
@@ -128,49 +131,54 @@ public class Constants {
             .withDriveInertia(kDriveInertia)
             .withSteerFrictionVoltage(kSteerFrictionVoltage)
             .withDriveFrictionVoltage(kDriveFrictionVoltage);
-
+//- = CCW
+// + = CW
     // Front Left
-    private static final int kFrontLeftDriveMotorId = 8;
-    private static final int kFrontLeftSteerMotorId = 10;
-    private static final int kFrontLeftEncoderId = 9;
-    private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.312744140625 + 6.28 + 3.14 + 0.0374);
+    private static final int kFrontLeftDriveMotorId = 11;
+    private static final int kFrontLeftSteerMotorId = 13;
+    private static final int kFrontLeftEncoderId = 12;  
+    private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.312744140625 + 6.28 + 3.14 + 0.0374 +0.01-0.008-0.03);
     private static final boolean kFrontLeftSteerMotorInverted = true;
     private static final boolean kFrontLeftEncoderInverted = false;
 
     private static final Distance kFrontLeftXPos = Inches.of(12.5);
     private static final Distance kFrontLeftYPos = Inches.of(12.5);
-
+//- = CCW
+// + = CW
     // Front Right
-    private static final int kFrontRightDriveMotorId = 11;
-    private static final int kFrontRightSteerMotorId = 13;
-    private static final int kFrontRightEncoderId = 12;
+    private static final int kFrontRightDriveMotorId = 4;
+    private static final int kFrontRightSteerMotorId = 6;
+    private static final int kFrontRightEncoderId = 5;
     private static final Angle kFrontRightEncoderOffset = Rotations
-            .of(-0.02685546875 + (3.14 / 2) + (3.14 / 4) - 6.28 - 3.14 + 0.0276);
+            .of(-0.02685546875 + (3.14 / 4)+ (3.14/2)+(3.14/4)+0.065);
     private static final boolean kFrontRightSteerMotorInverted = true;
     private static final boolean kFrontRightEncoderInverted = false;
 
     private static final Distance kFrontRightXPos = Inches.of(12.5);
     private static final Distance kFrontRightYPos = Inches.of(-12.5);
-
+//- = CCW
+// + = CW
     // Back Left
-    private static final int kBackLeftDriveMotorId = 4;
-    private static final int kBackLeftSteerMotorId = 6;
-    private static final int kBackLeftEncoderId = 5;
-    private static final Angle kBackLeftEncoderOffset = Rotations.of(0.18310546875);
+    private static final int kBackLeftDriveMotorId = 1;
+    private static final int kBackLeftSteerMotorId = 3;
+    private static final int kBackLeftEncoderId = 2;
+    private static final Angle kBackLeftEncoderOffset = Rotations.of(0.18310546875+(3.14/4)+0.07-0.01-0.006);
     private static final boolean kBackLeftSteerMotorInverted = true;
     private static final boolean kBackLeftEncoderInverted = false;
 
     private static final Distance kBackLeftXPos = Inches.of(-12.5);
     private static final Distance kBackLeftYPos = Inches.of(12.5);
-
+//- = CCW
+// + = CW
     // Back Right
-    private static final int kBackRightDriveMotorId = 1;
-    private static final int kBackRightSteerMotorId = 3;
-    private static final int kBackRightEncoderId = 2;
-    private static final Angle kBackRightEncoderOffset = Rotations.of(0.228759765625 + 0.5);
+    private static final int kBackRightDriveMotorId = 8;
+    private static final int kBackRightSteerMotorId = 10;
+    private static final int kBackRightEncoderId = 9;
+    private static final Angle kBackRightEncoderOffset = Rotations.of(0.228759765625 + 0.4945-0.03);
     private static final boolean kBackRightSteerMotorInverted = true;
     private static final boolean kBackRightEncoderInverted = false;
 
+    
     private static final Distance kBackRightXPos = Inches.of(-12.5);
     private static final Distance kBackRightYPos = Inches.of(-12.5);
 

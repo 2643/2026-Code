@@ -8,11 +8,15 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -24,8 +28,9 @@ import frc.robot.commands.AutoAim;
 
 public class RobotContainer {
     private double MaxSpeed = Constants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-    private double MaxAngularRate = RotationsPerSecond.of(0.05).in(RadiansPerSecond); // 3/4 of a rotation per second
-                                                                                      // max angular velocity
+    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // Old: 0.05 rps (was extremely slow)
+    private double AngularRate = MaxAngularRate;       
+    private double TurtleAngularRate = RotationsPerSecond.of(0.25).in(RadiansPerSecond); // Turtle mode angular rate
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -37,11 +42,12 @@ public class RobotContainer {
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final Joystick joystick = new Joystick(0);
+
     private final JoystickButton buttonA = new JoystickButton(joystick, 1); // Button 1 for "A"
     private final JoystickButton buttonB = new JoystickButton(joystick, 2); // Button 2 for "B"
     private final JoystickButton buttonBack = new JoystickButton(joystick, 7); // Button 7 for "Back"
     private final JoystickButton buttonStart = new JoystickButton(joystick, 8); // Button 8 for "Start"
-    private final JoystickButton buttonLeftBumper = new JoystickButton(joystick, 5); // Button 5 for "Left Bumper"
+    private final JoystickButton zeroGyroJoystickButton = new JoystickButton(joystick, 10); // Button 5 for "Left Bumper"
     private final JoystickButton autoAim = new JoystickButton(joystick, 6);
 
     private static final int AXIS_X = 0; // X-axis (left/right)
@@ -51,16 +57,31 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = Constants.createDrivetrain();
     public final Vision m_vision = new Vision();
 
+     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+        ComplexWidget ShuffleBoardAutonomousRoutines = Shuffleboard.getTab("Driver")
+      .add("Autonomous Routines Selector", autoChooser).withWidget(BuiltInWidgets.kComboBoxChooser).withSize(2, 2)
+      .withPosition(0, 2);
+
     public RobotContainer() {
+        // Configure the auto chooser AFTER drivetrain is initialized
+        autoChooser.addOption("Straight Line", new PathPlannerAuto("Straight Line"));
+        
+
+        // Add to Shuffleboard
+        
+        
         configureBindings();
     }
-
     private double applyDeadzone(double value, double deadzone) {
         return Math.abs(value) > deadzone ? value : 0.0;
     }
 
     private void configureBindings() {
         autoAim.whileTrue(new AutoAim(drivetrain, m_vision));
+        // buttonA.onTrue(drivetrain.runOnce(() -> MaxSpeed = Constants.kSpeedAt12VoltsMps * 0.01)
+        // .andThen(() -> AngularRate = TurtleAngularRate));
+        // buttonA.onFalse(drivetrain.runOnce(() -> MaxSpeed = Constants.kSpeedAt12VoltsMps)
+        // .andThen(() -> AngularRate = MaxAngularRate));
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
@@ -74,7 +95,10 @@ public class RobotContainer {
                                                                                                                    // with
                                                                                                                    // deadzone
                 ));
+        
+    
 
+        
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
         final var idle = new SwerveRequest.Idle();
@@ -98,12 +122,12 @@ public class RobotContainer {
                 .whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         // reset the field-centric heading on left bumper press
-        buttonLeftBumper.onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        zeroGyroJoystickButton.onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 
     public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
+        return autoChooser.getSelected();
     }
 }
