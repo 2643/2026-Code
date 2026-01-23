@@ -28,10 +28,23 @@ public class Storage extends SubsystemBase {
     return motor1.getPosition().getValueAsDouble();
   }
 
+  States state = States.ATTACK;
+  public enum States {
+    ATTACK,
+    DEFENSE,
+  }
+
   @Override
   public void periodic() {
     if (limitSwitch.get()) {
       SetMotorPosition(getPosition()+0.1);
+    }
+    
+  switch (state) {
+      case ATTACK:
+        break;
+      case DEFENSE:
+        break;
     }
     // This method will be called once per scheduler run
   }
