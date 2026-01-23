@@ -48,6 +48,8 @@ public class Telemetry {
     private final StructPublisher<Pose2d> drivePose = driveStateTable.getStructTopic("Pose", Pose2d.struct).publish();
     private final StructPublisher<ChassisSpeeds> driveSpeeds = driveStateTable
             .getStructTopic("Speeds", ChassisSpeeds.struct).publish();
+    private final DoubleArrayPublisher driveSpeedsArray = driveStateTable
+            .getDoubleArrayTopic("SpeedsArray").publish(); // [vx, vy, omega]
     private final StructArrayPublisher<SwerveModuleState> driveModuleStates = driveStateTable
             .getStructArrayTopic("ModuleStates", SwerveModuleState.struct).publish();
     private final StructArrayPublisher<SwerveModuleState> driveModuleTargets = driveStateTable
@@ -71,6 +73,7 @@ public class Telemetry {
             new Mechanism2d(1, 1),
     };
     /* A direction and length changing ligament for speed representation */
+    //0.5
     private final MechanismLigament2d[] m_moduleSpeeds = new MechanismLigament2d[] {
             m_moduleMechanisms[0].getRoot("RootSpeed", 0.5, 0.5).append(new MechanismLigament2d("Speed", 0.5, 0)),
             m_moduleMechanisms[1].getRoot("RootSpeed", 0.5, 0.5).append(new MechanismLigament2d("Speed", 0.5, 0)),
@@ -90,6 +93,7 @@ public class Telemetry {
     };
 
     private final double[] m_poseArray = new double[3];
+    private final double[] m_chassisSpeedsArray = new double[3]; // [vx, vy, omega]
     private final double[] m_moduleStatesArray = new double[8];
     private final double[] m_moduleTargetsArray = new double[8];
 
@@ -104,6 +108,13 @@ public class Telemetry {
         /* Telemeterize the swerve drive state */
         drivePose.set(state.Pose);
         driveSpeeds.set(state.Speeds);
+        
+        /* Publish chassis speeds as double array [vx, vy, omega] */
+        m_chassisSpeedsArray[0] = state.Speeds.vxMetersPerSecond;
+        m_chassisSpeedsArray[1] = state.Speeds.vyMetersPerSecond;
+        m_chassisSpeedsArray[2] = state.Speeds.omegaRadiansPerSecond;
+        driveSpeedsArray.set(m_chassisSpeedsArray);
+        
         driveModuleStates.set(state.ModuleStates);
         driveModuleTargets.set(state.ModuleTargets);
         driveModulePositions.set(state.ModulePositions);
@@ -122,9 +133,23 @@ public class Telemetry {
         }
 
         SignalLogger.writeDoubleArray("DriveState/Pose", m_poseArray);
+        SignalLogger.writeDoubleArray("DriveState/ChassisSpeeds", m_chassisSpeedsArray);
         SignalLogger.writeDoubleArray("DriveState/ModuleStates", m_moduleStatesArray);
         SignalLogger.writeDoubleArray("DriveState/ModuleTargets", m_moduleTargetsArray);
         SignalLogger.writeDouble("DriveState/OdometryPeriod", state.OdometryPeriod, "seconds");
+
+        /* Also publish to SmartDashboard for easy viewing */
+        SmartDashboard.putNumber("Chassis vX (m/s)", state.Speeds.vxMetersPerSecond);
+        SmartDashboard.putNumber("Chassis vY (m/s)", state.Speeds.vyMetersPerSecond);
+        SmartDashboard.putNumber("Chassis Omega (rad/s)", state.Speeds.omegaRadiansPerSecond);
+        
+        /* Publish module speeds for debugging */
+        for (int i = 0; i < 4; ++i) {
+            SmartDashboard.putNumber("Module " + i + " Target Speed", state.ModuleTargets[i].speedMetersPerSecond);
+            SmartDashboard.putNumber("Module " + i + " Actual Speed", state.ModuleStates[i].speedMetersPerSecond);
+            SmartDashboard.putNumber("Module " + i + " Error", 
+                state.ModuleTargets[i].speedMetersPerSecond - state.ModuleStates[i].speedMetersPerSecond);
+        }
 
         /* Telemeterize the pose to a Field2d */
         fieldTypePub.set("Field2d");

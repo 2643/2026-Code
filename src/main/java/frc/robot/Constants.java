@@ -35,7 +35,7 @@ public class Constants {
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
     private static final Slot0Configs driveGains = new Slot0Configs()
             .withKP(0.46).withKI(0).withKD(0)
-            .withKS(1.5).withKV(1.51).withKA(0.21); // Let Phoenix auto-calculate FF from kSpeedAt12Volts
+            .withKS(0.48).withKV(4.74).withKA(0.66); // Old: kS=1.5, kV=1.51, kA=0.21 (scaled by 3.14 for correct wheel radius)
 
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors
@@ -83,6 +83,7 @@ public class Constants {
     // MK4i L2 with Falcon500 theoretical max: ~4.42 m/s
     public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(1); // Old: 3.14/2/8 = 0.196 m/s
     public static final double kSpeedAt12VoltsMps = 1; // Old: 3.14/2/8 = 0.196 m/s
+    public static final double MaxAngularRate = 1;
 
 
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;

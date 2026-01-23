@@ -27,10 +27,11 @@ import frc.robot.subsystems.Vision;
 import frc.robot.commands.AutoAim;
 
 public class RobotContainer {
-    private double MaxSpeed = Constants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // Old: 0.05 rps (was extremely slow)
-    private double AngularRate = MaxAngularRate;       
-    private double TurtleAngularRate = RotationsPerSecond.of(0.25).in(RadiansPerSecond); // Turtle mode angular rate
+    private double MaxSpeed = Constants.kSpeedAt12VoltsMps; // kSpeedAt12Volts desired top speed
+    private double MaxAngularRate = Constants.MaxAngularRate; // Old: 0.05 rps (was extremely slow)
+    private double AngularRate = MaxAngularRate;
+    private double TurtleAngularRate = MaxAngularRate/3;       
+    private double TurtleSpeed = MaxSpeed/3;
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -78,10 +79,10 @@ public class RobotContainer {
 
     private void configureBindings() {
         autoAim.whileTrue(new AutoAim(drivetrain, m_vision));
-        // buttonA.onTrue(drivetrain.runOnce(() -> MaxSpeed = Constants.kSpeedAt12VoltsMps * 0.01)
-        // .andThen(() -> AngularRate = TurtleAngularRate));
-        // buttonA.onFalse(drivetrain.runOnce(() -> MaxSpeed = Constants.kSpeedAt12VoltsMps)
-        // .andThen(() -> AngularRate = MaxAngularRate));
+        buttonA.onTrue(drivetrain.runOnce(() -> MaxSpeed = TurtleSpeed)
+        .andThen(() -> AngularRate = TurtleAngularRate));
+        buttonA.onFalse(drivetrain.runOnce(() -> MaxSpeed = Constants.kSpeedAt12VoltsMps)
+        .andThen(() -> AngularRate = MaxAngularRate));
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
@@ -91,7 +92,8 @@ public class RobotContainer {
                                                                                                     // with deadzone
                         .withVelocityY(-applyDeadzone(joystick.getRawAxis(AXIS_X), 0.2) * MaxSpeed) // Drive left with
                                                                                                     // deadzone
-                        .withRotationalRate(-applyDeadzone(joystick.getRawAxis(AXIS_TWIST), 0.2) * MaxAngularRate) // Rotate
+                                //max speed is wrong cuz dividing actually makes it slower
+                        .withRotationalRate(-applyDeadzone(joystick.getRawAxis(AXIS_TWIST), 0.2) * AngularRate) // Rotate
                                                                                                                    // with
                                                                                                                    // deadzone
                 ));
@@ -105,10 +107,10 @@ public class RobotContainer {
         RobotModeTriggers.disabled().whileTrue(
                 drivetrain.applyRequest(() -> idle).ignoringDisable(true));
 
-        buttonA.whileTrue(drivetrain.applyRequest(() -> brake));
-        buttonB.whileTrue(drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(
-                -applyDeadzone(joystick.getRawAxis(AXIS_Y), 0.2),
-                -applyDeadzone(joystick.getRawAxis(AXIS_X), 0.2)))));
+        // buttonA.whileTrue(drivetrain.applyRequest(() -> brake));
+        // buttonB.whileTrue(drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(
+        //         -applyDeadzone(joystick.getRawAxis(AXIS_Y), 0.2),
+        //         -applyDeadzone(joystick.getRawAxis(AXIS_X), 0.2)))));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.

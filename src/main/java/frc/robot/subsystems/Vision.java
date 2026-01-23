@@ -19,11 +19,14 @@ import frc.robot.LimelightHelpers;
 public class Vision extends SubsystemBase {
   public boolean isVisible;
   public double yaw;
+  public double tx;  // Horizontal offset
+  public double ty;  // Vertical offset
   public double range;
   public double area;
   public double fiducialID;
     
   private final String limelightName = "limelight";
+  private final String limelightURL = "http://10.26.43.200:5801/"; // Limelight camera stream
   
 
   public final PhotonCamera camera = new PhotonCamera("placeholder");
@@ -40,18 +43,35 @@ public class Vision extends SubsystemBase {
     LimelightHelpers.setLEDMode_PipelineControl(limelightName);
   }
 
+  public String getLimelightURL() {
+    return limelightURL;
+  }
+
+  public double getTX() {
+    return tx;
+  }
+
+  public double getTY() {
+    return ty;
+  }
+
 
   
   public void updateData() {
     isVisible = LimelightHelpers.getTV(limelightName);
     yaw = LimelightHelpers.getTX(limelightName);
+    tx = LimelightHelpers.getTX(limelightName);  // Horizontal offset (same as yaw)
+    ty = LimelightHelpers.getTY(limelightName);  // Vertical offset
     area = LimelightHelpers.getTA(limelightName);
     fiducialID = LimelightHelpers.getFiducialID(limelightName);
         
     SmartDashboard.putBoolean("Has Target", isVisible);
     SmartDashboard.putNumber("Target Yaw", yaw);
+    SmartDashboard.putNumber("Limelight TX", tx);
+    SmartDashboard.putNumber("Limelight TY", ty);
     SmartDashboard.putNumber("Target Area", area);
     SmartDashboard.putNumber("Fiducial ID", fiducialID);
+    SmartDashboard.putString("Limelight Stream", limelightURL);
   }
 
   public void autoAlign() { //test auto align (doesn't work)
