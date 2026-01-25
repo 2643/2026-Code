@@ -10,6 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -68,6 +69,12 @@ public class RobotContainer {
     // Auto-aim toggle state
     private boolean autoAimEnabled = false;
 
+    // Slew rate limiters to prevent wheel slip and brownouts
+    // Very high limits - only catches extreme changes to prevent slip on bad surfaces
+    private final SlewRateLimiter xLimiter = new SlewRateLimiter(15.0); // 15 m/s² - very fast
+    private final SlewRateLimiter yLimiter = new SlewRateLimiter(15.0); // 15 m/s² - very fast
+    private final SlewRateLimiter rotLimiter = new SlewRateLimiter(20.0); // 20 rad/s² - very fast
+
      private final SendableChooser<Command> autoChooser = new SendableChooser<>();
         ComplexWidget ShuffleBoardAutonomousRoutines = Shuffleboard.getTab("Driver")
       .add("Autonomous Routines Selector", autoChooser).withWidget(BuiltInWidgets.kComboBoxChooser).withSize(2, 2)
@@ -96,10 +103,22 @@ public class RobotContainer {
             SmartDashboard.putBoolean("Auto-Aim Enabled", autoAimEnabled);
         }));
         
-        buttonA.onTrue(drivetrain.runOnce(() -> MaxSpeed = TurtleSpeed)
-        .andThen(() -> AngularRate = TurtleAngularRate));
-        buttonA.onFalse(drivetrain.runOnce(() -> MaxSpeed = Constants.kSpeedAt12VoltsMps)
-        .andThen(() -> AngularRate = MaxAngularRate));
+        buttonA.onTrue(drivetrain.runOnce(() -> {
+            MaxSpeed = TurtleSpeed;
+            AngularRate = TurtleAngularRate;
+            // Reset limiters to current value to prevent delay
+            xLimiter.reset(0);
+            yLimiter.reset(0);
+            rotLimiter.reset(0);
+        }));
+        buttonA.onFalse(drivetrain.runOnce(() -> {
+            MaxSpeed = Constants.kSpeedAt12VoltsMps;
+            AngularRate = MaxAngularRate;
+            // Reset limiters to current value to prevent delay
+            xLimiter.reset(0);
+            yLimiter.reset(0);
+            rotLimiter.reset(0);
+        }));
         
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
@@ -133,10 +152,15 @@ public class RobotContainer {
                         rotationSpeed = -applyDeadzone(joystick.getRawAxis(AXIS_TWIST), 0.2) * AngularRate;
                     }
                     
+                    // Apply slew rate limiting to smooth acceleration and prevent wheel slip
+                    double xVelocity = xLimiter.calculate(-applyDeadzone(joystick.getRawAxis(AXIS_Y), 0.2) * MaxSpeed);
+                    double yVelocity = yLimiter.calculate(-applyDeadzone(joystick.getRawAxis(AXIS_X), 0.2) * MaxSpeed);
+                    double rotVelocity = rotLimiter.calculate(rotationSpeed);
+                    
                     return drive
-                        .withVelocityX(-applyDeadzone(joystick.getRawAxis(AXIS_Y), 0.2) * MaxSpeed) // Drive forward with deadzone
-                        .withVelocityY(-applyDeadzone(joystick.getRawAxis(AXIS_X), 0.2) * MaxSpeed) // Drive left with deadzone
-                        .withRotationalRate(rotationSpeed); // Auto-aim or manual rotation
+                        .withVelocityX(xVelocity) // Drive forward with slew rate limiting
+                        .withVelocityY(yVelocity) // Drive left with slew rate limiting
+                        .withRotationalRate(rotVelocity); // Rotation with slew rate limiting
                 }));
         
     
