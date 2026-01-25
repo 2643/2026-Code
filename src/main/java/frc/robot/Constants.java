@@ -34,8 +34,8 @@ public class Constants {
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
     private static final Slot0Configs driveGains = new Slot0Configs()
-            .withKP(0.46).withKI(0).withKD(0)
-            .withKS(0.48).withKV(4.74).withKA(0.66); // Old: kS=1.5, kV=1.51, kA=0.21 (scaled by 3.14 for correct wheel radius)
+            .withKP(3.0).withKI(0).withKD(0)  // Increased kP for better tracking
+            .withKS(0.1).withKV(2.7).withKA(0.3); // Corrected feedforward: kV=12V/4.42m/s, lower kS and kA
 
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors
@@ -81,9 +81,9 @@ public class Constants {
     // Theoretical free speed (m/s) at 12 V applied output;
     // This needs to be tuned to your individual robot
     // MK4i L2 with Falcon500 theoretical max: ~4.42 m/s
-    public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(1); // Old: 3.14/2/8 = 0.196 m/s
-    public static final double kSpeedAt12VoltsMps = 1; // Old: 3.14/2/8 = 0.196 m/s
-    public static final double MaxAngularRate = 1;
+    public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.42); // MK4i L2 theoretical max
+    public static final double kSpeedAt12VoltsMps = 4.42; // MK4i L2 theoretical max
+    public static final double MaxAngularRate = 3.0; // Increased from 1 for better responsiveness
 
 
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
@@ -92,7 +92,7 @@ public class Constants {
 
     private static final double kDriveGearRatio = 6.746031746031747;
     private static final double kSteerGearRatio = 21.428571428571427;
-    private static final Distance kWheelRadius = Inches.of(CHOSEN_MODULE.wheelDiameter / 2.0); // Old: wheelCircumference / 2
+    private static final Distance kWheelRadius = Meters.of(CHOSEN_MODULE.wheelDiameter / 2.0); // wheelDiameter is already in meters!
 
     private static final boolean kInvertLeftSide = false;
     private static final boolean kInvertRightSide = true;

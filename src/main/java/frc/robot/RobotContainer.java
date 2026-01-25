@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
@@ -57,6 +58,15 @@ public class RobotContainer {
 
     public final CommandSwerveDrivetrain drivetrain = Constants.createDrivetrain();
     public final Vision m_vision = new Vision();
+    
+    // Auto-aim PID constants
+    private final double kP = 0.03; // Proportional gain for rotation
+    private final double txDeadband = 0; // Deadband in degrees (±0.75 degree)
+    private final double minRotSpeed = 0.05; // Minimum rotation speed
+    private final double maxRotSpeed = 1.5; // Maximum rotation speed
+    
+    // Auto-aim toggle state
+    private boolean autoAimEnabled = false;
 
      private final SendableChooser<Command> autoChooser = new SendableChooser<>();
         ComplexWidget ShuffleBoardAutonomousRoutines = Shuffleboard.getTab("Driver")
@@ -66,7 +76,8 @@ public class RobotContainer {
     public RobotContainer() {
         // Configure the auto chooser AFTER drivetrain is initialized
         autoChooser.addOption("Straight Line", new PathPlannerAuto("Straight Line"));
-        
+        autoChooser.addOption("figure8", new PathPlannerAuto("figure 8"));
+
 
         // Add to Shuffleboard
         
@@ -78,25 +89,55 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        autoAim.whileTrue(new AutoAim(drivetrain, m_vision));
+        // Button B toggles auto-aim on/off
+        buttonB.onTrue(drivetrain.runOnce(() -> {
+            autoAimEnabled = !autoAimEnabled;
+            System.out.println("Auto-aim " + (autoAimEnabled ? "ENABLED" : "DISABLED"));
+            SmartDashboard.putBoolean("Auto-Aim Enabled", autoAimEnabled);
+        }));
+        
         buttonA.onTrue(drivetrain.runOnce(() -> MaxSpeed = TurtleSpeed)
         .andThen(() -> AngularRate = TurtleAngularRate));
         buttonA.onFalse(drivetrain.runOnce(() -> MaxSpeed = Constants.kSpeedAt12VoltsMps)
         .andThen(() -> AngularRate = MaxAngularRate));
+        
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
                 // Drivetrain will execute this command periodically
-                drivetrain.applyRequest(() -> drive
-                        .withVelocityX(-applyDeadzone(joystick.getRawAxis(AXIS_Y), 0.2) * MaxSpeed) // Drive forward
-                                                                                                    // with deadzone
-                        .withVelocityY(-applyDeadzone(joystick.getRawAxis(AXIS_X), 0.2) * MaxSpeed) // Drive left with
-                                                                                                    // deadzone
-                                //max speed is wrong cuz dividing actually makes it slower
-                        .withRotationalRate(-applyDeadzone(joystick.getRawAxis(AXIS_TWIST), 0.2) * AngularRate) // Rotate
-                                                                                                                   // with
-                                                                                                                   // deadzone
-                ));
+                drivetrain.applyRequest(() -> {
+                    double rotationSpeed;
+                    
+                    // Only use auto-aim if enabled AND we see an AprilTag
+                    if (autoAimEnabled && m_vision.isVisible) {
+                        double tx = m_vision.getTX();
+                        
+                        // Apply deadband - don't rotate if within ±1 degree
+                        if (Math.abs(tx) > txDeadband) {
+                            // Positive tx = target is to the right, rotate RIGHT (negative rotation)
+                            // Negative tx = target is to the left, rotate LEFT (positive rotation)
+                            rotationSpeed = -tx * kP;
+
+                            // Apply minimum speed to overcome friction
+                            if (Math.abs(rotationSpeed) > 0.01 && Math.abs(rotationSpeed) < minRotSpeed) {
+                                rotationSpeed = Math.signum(rotationSpeed) * minRotSpeed;
+                            }
+
+                            // Limit maximum speed
+                            rotationSpeed = Math.max(-maxRotSpeed, Math.min(maxRotSpeed, rotationSpeed));
+                        } else {
+                            rotationSpeed = 0; // Target centered, no rotation needed
+                        }
+                    } else {
+                        // Auto-aim disabled or no target visible, use manual rotation from joystick
+                        rotationSpeed = -applyDeadzone(joystick.getRawAxis(AXIS_TWIST), 0.2) * AngularRate;
+                    }
+                    
+                    return drive
+                        .withVelocityX(-applyDeadzone(joystick.getRawAxis(AXIS_Y), 0.2) * MaxSpeed) // Drive forward with deadzone
+                        .withVelocityY(-applyDeadzone(joystick.getRawAxis(AXIS_X), 0.2) * MaxSpeed) // Drive left with deadzone
+                        .withRotationalRate(rotationSpeed); // Auto-aim or manual rotation
+                }));
         
     
 

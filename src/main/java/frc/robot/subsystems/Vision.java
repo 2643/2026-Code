@@ -24,6 +24,11 @@ public class Vision extends SubsystemBase {
   public double range;
   public double area;
   public double fiducialID;
+  
+  // AutoAim state tracking
+  private boolean autoAimActive = false;
+  private boolean isTryingToTurn = false;
+  private final double txDeadband = 1.0; // ±1 degree deadband
     
   private final String limelightName = "limelight";
   private final String limelightURL = "http://10.26.43.200:5801/"; // Limelight camera stream
@@ -55,6 +60,23 @@ public class Vision extends SubsystemBase {
     return ty;
   }
 
+  public void setAutoAimActive(boolean active) {
+    autoAimActive = active;
+  }
+
+  public boolean isAutoAimActive() {
+    return autoAimActive;
+  }
+
+  public boolean isTryingToTurn() {
+    return isTryingToTurn;
+  }
+
+  public void updateAutoAimStatus() {
+    // Determine if we should be trying to turn based on TX error
+    isTryingToTurn = isVisible && (Math.abs(tx) > txDeadband);
+  }
+
 
   
   public void updateData() {
@@ -73,7 +95,7 @@ public class Vision extends SubsystemBase {
     SmartDashboard.putNumber("Fiducial ID", fiducialID);
     SmartDashboard.putString("Limelight Stream", limelightURL);
   }
-
+//- is left of the camera
   public void autoAlign() { //test auto align (doesn't work)
       boolean targetVisible = false;
       double targetYaw = 0.0;
@@ -123,6 +145,13 @@ public class Vision extends SubsystemBase {
     NetworkTableEntry targetpose_cameraspace = table.getEntry("targetpose_cameraspace");
 
     updateData();
+    updateAutoAimStatus();
+    
+    // Publish AutoAim telemetry to SmartDashboard/Elastic
+    SmartDashboard.putBoolean("AutoAim Active", autoAimActive);
+    SmartDashboard.putBoolean("AutoAim Trying to Turn", isTryingToTurn);
+    SmartDashboard.putNumber("AutoAim TX Error", tx);
+    
     // This method will be called once per scheduler run
   }
 }
