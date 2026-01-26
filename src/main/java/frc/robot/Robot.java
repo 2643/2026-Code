@@ -7,6 +7,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.util.ShooterAngleTester;
+import frc.robot.util.FormulaVerifier;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -85,6 +87,14 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+    
+    // Run formula verification first
+    System.out.println("\n\n");
+    FormulaVerifier.runVerification();
+    System.out.println("\n\n");
+    
+    // Run shooter angle test suite
+    ShooterAngleTester.runTestSuite();
   }
 
   /** This function is called periodically during test mode. */
@@ -93,7 +103,10 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when the robot is first started up. */
   @Override
-  public void simulationInit() {}
+  public void simulationInit() {
+    // Run test suite when simulation starts
+    ShooterAngleTester.runTestSuite();
+  }
 
   /** This function is called periodically whilst in simulation. */
   @Override
