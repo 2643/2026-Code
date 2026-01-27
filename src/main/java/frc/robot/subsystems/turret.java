@@ -82,7 +82,7 @@ public class Turret extends SubsystemBase {
     if (isVisible == true && tx>0) {
       motorX.setControl(new DutyCycleOut((Math.log(tx)/600*5)));
     } else if (isVisible == true && tx<0) {
-      motorX.setControl(new DutyCycleOut(-(Math.log(-tx)/600*5it )));
+      motorX.setControl(new DutyCycleOut(-(Math.log(-tx)/600*5)));
     } 
     else {
       motorX.setControl(new DutyCycleOut(0));
