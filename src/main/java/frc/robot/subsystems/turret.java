@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -13,9 +14,12 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.util.ShooterAngleSolver;
+import frc.robot.LimelightHelpers;
+
 
 public class Turret extends SubsystemBase {
   /** Creates a new turretx. */
@@ -26,6 +30,16 @@ public class Turret extends SubsystemBase {
   DigitalInput limitY = new DigitalInput(1);
   public double target = 0;
   public double pos;
+
+  public boolean isVisible;
+  public double yaw;
+  public double area;
+  public double tx;
+  public double ty;
+  public double fiducialID;
+  public double range;
+  private final String limelightName = "limelight";
+  private final String limelightURL = "http://10.26.43.200:5801/";
   MotionMagicVoltage motion = new MotionMagicVoltage(0);
   
   // Limelight NetworkTable
@@ -56,6 +70,38 @@ public class Turret extends SubsystemBase {
       motorY.getConfigurator().apply(configs);
       motorX.setPosition(0);
       motorY.setPosition(0);
+  }
+  public String getLimelightURL() {
+    return limelightURL;
+  }
+
+  public double getTX() {
+    return tx;
+  }
+
+  public double getTY() {
+    return ty;
+  }
+  public void updateData() {
+    isVisible = LimelightHelpers.getTV(limelightName);
+    yaw = LimelightHelpers.getTX(limelightName);
+    tx = LimelightHelpers.getTX(limelightName);  // Horizontal offset (same as yaw)
+    ty = LimelightHelpers.getTY(limelightName);  // Vertical offset
+    area = LimelightHelpers.getTA(limelightName);
+    fiducialID = LimelightHelpers.getFiducialID(limelightName);
+        
+    SmartDashboard.putBoolean("Has Target", isVisible);
+    SmartDashboard.putNumber("Target Yaw", yaw);
+    SmartDashboard.putNumber("Limelight TX", tx);
+    SmartDashboard.putNumber("Limelight TY", ty);
+    SmartDashboard.putNumber("Target Area", area);
+    SmartDashboard.putNumber("Fiducial ID", fiducialID);
+    SmartDashboard.putString("Limelight Stream", limelightURL);
+  }
+  public void autoAlign(){
+    if (isVisible == true) {
+      motorX.setControl(new DutyCycleOut(-tx/30));
+    }
   }
   public void moveToPosY(double target){
     target = pos;
@@ -310,63 +356,5 @@ public class Turret extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    
-    // Publish telemetry for testing/debugging
-    publishTelemetry();
-  }
-
-  /**
-   * Publishes telemetry data to SmartDashboard for testing and debugging.
-   * View this in Shuffleboard, Elastic, or Glass.
-   */
-  private void publishTelemetry() {
-    // Limelight data
-    SmartDashboard.putBoolean("Turret/HasTarget", hasTarget());
-    SmartDashboard.putNumber("Turret/Limelight_TA", getLimelightTa()); // Changed from TX
-    SmartDashboard.putNumber("Turret/Limelight_TY", getLimelightTy());
-    
-    // Calculated values
-    double calculatedAngle = calculateShooterAngle();
-    SmartDashboard.putNumber("Turret/Calculated_Angle_Deg", calculatedAngle);
-    
-    // Current positions (raw motor)
-    SmartDashboard.putNumber("Turret/Current_Pos_X", currentPosX());
-    SmartDashboard.putNumber("Turret/Current_Pos_Y_Rotations", currentPosY());
-    
-    // Current hood angle (converted from motor position)
-    SmartDashboard.putNumber("Turret/Current_Hood_Angle_Deg", getCurrentHoodAngle());
-    
-    // For simulation testing - you can manually input these
-    SmartDashboard.putNumber("Turret/Test_TA_Input", SmartDashboard.getNumber("Turret/Test_TA_Input", 0.0));
-    SmartDashboard.putNumber("Turret/Test_Distance_M", SmartDashboard.getNumber("Turret/Test_Distance_M", 1.5));
-    SmartDashboard.putNumber("Turret/Test_Set_Angle_Deg", SmartDashboard.getNumber("Turret/Test_Set_Angle_Deg", 60.0));
-  }
-
-  /**
-   * FOR TESTING ONLY: Calculates shooter angle using a manual distance input from SmartDashboard.
-   * Use this to test the math without needing a real Limelight.
-   * 
-   * @param distanceMeters The horizontal distance to target in meters
-   * @return Shooter angle in degrees
-   */
-  public double calculateShooterAngleFromDistance(double distanceMeters) {
-    double thetaRadians = ShooterAngleSolver.solveTheta(
-        ShooterConstants.BALL_VELOCITY_MPS,
-        distanceMeters,
-        ShooterConstants.TARGET_HEIGHT_DELTA_M,
-        ShooterConstants.IMPACT_ANGLE_RAD
-    );
-    
-    double degrees = ShooterAngleSolver.toDegrees(thetaRadians);
-    SmartDashboard.putNumber("Turret/Test_Angle_Result", degrees);
-    return degrees;
-  }
-
-  /**
-   * FOR TESTING: Test the angle calculation with the value from SmartDashboard
-   */
-  public void testAngleCalculation() {
-    double testDistance = SmartDashboard.getNumber("Turret/Test_Distance_M", 5.0);
-    calculateShooterAngleFromDistance(testDistance);
   }
 }
