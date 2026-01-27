@@ -18,7 +18,7 @@ import frc.robot.LimelightHelpers;
 public class Turret extends SubsystemBase {
   /** Creates a new turretx. */
   TalonFX motorY = new TalonFX(1);
-  TalonFX motorX = new TalonFX(0);
+  TalonFX motorX = new TalonFX(4);
   TalonFXConfiguration configs = new TalonFXConfiguration();
   DigitalInput limitX = new DigitalInput(0);
   DigitalInput limitY = new DigitalInput(1);
@@ -79,8 +79,13 @@ public class Turret extends SubsystemBase {
     SmartDashboard.putString("Limelight Stream", limelightURL);
   }
   public void autoAlign(){
-    if (isVisible == true) {
-      motorX.setControl(new DutyCycleOut(-tx/30));
+    if (isVisible == true && tx>0) {
+      motorX.setControl(new DutyCycleOut((Math.log(tx)/600*5)));
+    } else if (isVisible == true && tx<0) {
+      motorX.setControl(new DutyCycleOut(-(Math.log(-tx)/600*5it )));
+    } 
+    else {
+      motorX.setControl(new DutyCycleOut(0));
     }
   }
   public void moveToPosY(double target){
