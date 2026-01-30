@@ -7,10 +7,10 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.DownMotorY;
-import frc.robot.commands.LeftMotorX;
-import frc.robot.commands.RightMotorX;
-import frc.robot.commands.UpMotorY;
+import frc.robot.commands.downMotorY;
+import frc.robot.commands.leftMotorX;
+import frc.robot.commands.rightMotorX;
+import frc.robot.commands.upMotorY;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Turret;
 import edu.wpi.first.wpilibj.Joystick;
@@ -54,10 +54,10 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    left.onTrue(new LeftMotorX());
-    right.onTrue(new RightMotorX());
-    up.onTrue(new UpMotorY());
-    down.onTrue(new DownMotorY());
+    left.onTrue(new leftMotorX());
+    right.onTrue(new rightMotorX());
+    up.onTrue(new upMotorY());
+    down.onTrue(new downMotorY());
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));

@@ -24,7 +24,8 @@ public class Turret extends SubsystemBase {
   DigitalInput limitY = new DigitalInput(1);
   public double target = 0;
   public double pos;
-
+  public boolean isLimitedX;
+  public boolean isLimitedY;
   public boolean isVisible;
   public double yaw;
   public double area;
@@ -79,9 +80,9 @@ public class Turret extends SubsystemBase {
     SmartDashboard.putString("Limelight Stream", limelightURL);
   }
   public void autoAlign(){
-    if (isVisible == true && tx>0) {
+    if (isVisible == true && tx>0 && isLimitedX == false) {
       motorX.setControl(new DutyCycleOut((Math.log(tx)/600*5)));
-    } else if (isVisible == true && tx<0) {
+    } else if (isVisible == true && tx<0 && isLimitedY == false) {
       motorX.setControl(new DutyCycleOut(-(Math.log(-tx)/600*5)));
     } 
     else {
@@ -120,10 +121,23 @@ public class Turret extends SubsystemBase {
   public boolean getLimitY(){
     return limitY.get();
   }
+  public void limit() {
+    if (currentPosX() >= 175 && currentPosX() < 180) {
+      isLimitedX = true;
+    }
+    else if (currentPosY() > 180 && currentPosY() <= 185) {
+      isLimitedY = true;
+    }
+    else {
+      isLimitedX = false;
+      isLimitedY = false;
+    }
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     updateData();
     autoAlign();
+    limit();
   }
 }
