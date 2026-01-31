@@ -24,8 +24,8 @@ public class Turret extends SubsystemBase {
   DigitalInput limitY = new DigitalInput(1);
   public double target = 0;
   public double pos;
-  public boolean isLimitedX;
-  public boolean isLimitedY;
+  public boolean isLimitedX1;
+  public boolean isLimitedX2;
   public boolean isVisible;
   public double yaw;
   public double area;
@@ -78,11 +78,12 @@ public class Turret extends SubsystemBase {
     SmartDashboard.putNumber("Target Area", area);
     SmartDashboard.putNumber("Fiducial ID", fiducialID);
     SmartDashboard.putString("Limelight Stream", limelightURL);
+    SmartDashboard.putNumber("Position", currentPosX());
   }
   public void autoAlign(){
-    if (isVisible == true && tx>0 && isLimitedX == false) {
+    if (isVisible == true && tx>0 && isLimitedX1 == false) {
       motorX.setControl(new DutyCycleOut((Math.log(tx)/600*5)));
-    } else if (isVisible == true && tx<0 && isLimitedY == false) {
+    } else if (isVisible == true && tx<0 && isLimitedX2 == false) {
       motorX.setControl(new DutyCycleOut(-(Math.log(-tx)/600*5)));
     } 
     else {
@@ -122,15 +123,15 @@ public class Turret extends SubsystemBase {
     return limitY.get();
   }
   public void limit() {
-    if (currentPosX() >= 175 && currentPosX() < 180) {
-      isLimitedX = true;
+    if (currentPosX() >= 3) {
+      isLimitedX1 = true;
     }
-    else if (currentPosY() > 180 && currentPosY() <= 185) {
-      isLimitedY = true;
+    else if (currentPosX() <= -3) {
+      isLimitedX2 = true;
     }
     else {
-      isLimitedX = false;
-      isLimitedY = false;
+      isLimitedX1 = false;
+      isLimitedX2 = false;
     }
   }
   @Override
