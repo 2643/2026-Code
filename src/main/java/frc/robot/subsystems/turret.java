@@ -33,6 +33,7 @@ public class Turret extends SubsystemBase {
   public double ty;
   public double fiducialID;
   public double range;
+  public double percentOutputValue;
   private final String limelightName = "limelight";
   private final String limelightURL = "http://10.26.43.200:5801/";
   MotionMagicVoltage motion = new MotionMagicVoltage(0);
@@ -59,6 +60,21 @@ public class Turret extends SubsystemBase {
   public double getTX() {
     return tx;
   }
+  public double getPercentOutput() {
+    if (tx > 0) {
+      percentOutputValue = Math.log(tx)/600*5;
+      if (percentOutputValue >= 0.2) {
+        percentOutputValue = 0.2;
+      }
+    }
+    else if (tx < 0) {
+      percentOutputValue = -(Math.log(-tx)/600*5);
+      if (percentOutputValue <= -0.2) {
+        percentOutputValue = -0.2;
+      }
+    }
+    return percentOutputValue;
+  }
 
   public double getTY() {
     return ty;
@@ -70,7 +86,7 @@ public class Turret extends SubsystemBase {
     ty = LimelightHelpers.getTY(limelightName);  // Vertical offset
     area = LimelightHelpers.getTA(limelightName);
     fiducialID = LimelightHelpers.getFiducialID(limelightName);
-        
+    
     SmartDashboard.putBoolean("Has Target", isVisible);
     SmartDashboard.putNumber("Target Yaw", yaw);
     SmartDashboard.putNumber("Limelight TX", tx);
@@ -82,9 +98,9 @@ public class Turret extends SubsystemBase {
   }
   public void autoAlign(){
     if (isVisible == true && tx>0 && isLimitedX1 == false) {
-      motorX.setControl(new DutyCycleOut((Math.log(tx)/600*5)));
+      motorX.setControl(new DutyCycleOut(getPercentOutput()));
     } else if (isVisible == true && tx<0 && isLimitedX2 == false) {
-      motorX.setControl(new DutyCycleOut(-(Math.log(-tx)/600*5)));
+      motorX.setControl(new DutyCycleOut(getPercentOutput()));
     } 
     else {
       motorX.setControl(new DutyCycleOut(0));
