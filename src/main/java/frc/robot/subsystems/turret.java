@@ -75,6 +75,15 @@ public class Turret extends SubsystemBase {
     }
     return percentOutputValue;
   }
+  public double fullReverseRotation() {
+    if (tx > 0) {
+      percentOutputValue = -(Math.log(tx)/600*5);
+    }
+    else if (tx < 0) {
+      percentOutputValue = Math.log(-tx)/600*5;
+    }
+    return percentOutputValue;
+  }
 
   public double getTY() {
     return ty;
@@ -97,11 +106,12 @@ public class Turret extends SubsystemBase {
     SmartDashboard.putNumber("Position", currentPosX());
   }
   public void autoAlign(){
-    if (isVisible == true && tx>0 && isLimitedX1 == false) {
-      motorX.setControl(new DutyCycleOut(getPercentOutput()));
-    } else if (isVisible == true && tx<0 && isLimitedX2 == false) {
+    if (isVisible == true && tx>0 && isLimitedX1 == false && isLimitedX2 == false) {
       motorX.setControl(new DutyCycleOut(getPercentOutput()));
     } 
+    else if (isVisible == true && tx>0 && isLimitedX1 == true && isLimitedX2 == true) {
+      motorX.setControl(new DutyCycleOut(fullReverseRotation()));
+    }
     else {
       motorX.setControl(new DutyCycleOut(0));
     }
