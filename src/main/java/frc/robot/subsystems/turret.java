@@ -8,6 +8,9 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -37,6 +40,7 @@ public class Turret extends SubsystemBase {
   private final String limelightName = "limelight";
   private final String limelightURL = "http://10.26.43.200:5801/";
   MotionMagicVoltage motion = new MotionMagicVoltage(0);
+  public CANSparkMax hoodMotor = new CANSparkMax(9, MotorType.kBrushless);
   public void position() {
       var motionmagicconfigs = configs.MotionMagic;
       var slot0configs = configs.Slot0;
@@ -88,7 +92,7 @@ public class Turret extends SubsystemBase {
   public double getTY() {
     return ty;
   }
-  
+
   public void updateData() {
     isVisible = LimelightHelpers.getTV(limelightName);
     yaw = LimelightHelpers.getTX(limelightName);
@@ -161,6 +165,7 @@ public class Turret extends SubsystemBase {
       isLimitedX2 = false;
     }
   }
+  
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
