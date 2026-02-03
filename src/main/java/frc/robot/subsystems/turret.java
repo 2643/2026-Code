@@ -88,6 +88,7 @@ public class Turret extends SubsystemBase {
   public double getTY() {
     return ty;
   }
+  
   public void updateData() {
     isVisible = LimelightHelpers.getTV(limelightName);
     yaw = LimelightHelpers.getTX(limelightName);
