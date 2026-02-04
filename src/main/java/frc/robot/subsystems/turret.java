@@ -8,8 +8,8 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -40,7 +40,7 @@ public class Turret extends SubsystemBase {
   private final String limelightName = "limelight";
   private final String limelightURL = "http://10.26.43.200:5801/";
   MotionMagicVoltage motion = new MotionMagicVoltage(0);
-  public CANSparkMax hoodMotor = new CANSparkMax(9, MotorType.kBrushless);
+  public SparkMax hoodMotor = new SparkMax(9, MotorType.kBrushless);
   public void position() {
       var motionmagicconfigs = configs.MotionMagic;
       var slot0configs = configs.Slot0;
