@@ -9,8 +9,10 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.ClosedLoopConfig;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,7 +22,6 @@ import frc.robot.LimelightHelpers;
 
 public class Turret extends SubsystemBase {
   /** Creates a new turretx. */
-  TalonFX motorY = new TalonFX(1);
   TalonFX motorX = new TalonFX(4);
   TalonFXConfiguration configs = new TalonFXConfiguration();
   DigitalInput limitX = new DigitalInput(0);
@@ -41,6 +42,15 @@ public class Turret extends SubsystemBase {
   private final String limelightURL = "http://10.26.43.200:5801/";
   MotionMagicVoltage motion = new MotionMagicVoltage(0);
   public SparkMax hoodMotor = new SparkMax(9, MotorType.kBrushless);
+  RelativeEncoder encoder = hoodMotor.getEncoder();
+  public ClosedLoopConfig pid (double p, double i, double d)  {
+    SparkClosedLoopController pid = hoodMotor.getClosedLoopController();
+  
+
+  }
+ 
+
+
   public void position() {
       var motionmagicconfigs = configs.MotionMagic;
       var slot0configs = configs.Slot0;
@@ -53,13 +63,16 @@ public class Turret extends SubsystemBase {
       motionmagicconfigs.MotionMagicCruiseVelocity = 20;
   
       motorX.getConfigurator().apply(configs);
-      motorY.getConfigurator().apply(configs);
       motorX.setPosition(0);
-      motorY.setPosition(0);
   }
+
+ 
+  public void hoodMotorConfigs()
   public String getLimelightURL() {
     return limelightURL;
   }
+
+
 
   public double getTX() {
     return tx;
@@ -121,10 +134,6 @@ public class Turret extends SubsystemBase {
       motorX.setControl(new DutyCycleOut(0));
     }
   }
-  public void moveToPosY(double target){
-    target = pos;
-    motorY.setControl(motion.withPosition(target));
-  }
   public void moveToPosX(double target){
     target = pos;
     motorX.setControl(motion.withPosition(target));
@@ -134,15 +143,6 @@ public class Turret extends SubsystemBase {
   }
   public void downMotorPosX(){
     moveToPosX(currentPosX() - 5);
-  }
-  public void upMotorPosY(){
-    moveToPosY(currentPosY() + 5);
-  }
-  public void downMotorPosY(){
-    moveToPosY(currentPosY() - 5);
-  }
-  public double currentPosY(){
-    return motorY.getPosition().getValueAsDouble();
   }
   public double currentPosX(){
     return motorX.getPosition().getValueAsDouble();
@@ -165,7 +165,11 @@ public class Turret extends SubsystemBase {
       isLimitedX2 = false;
     }
   }
+  public void setHoodMotor(double position) {
+    hoodMotor.set(position);
+  }
   
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
