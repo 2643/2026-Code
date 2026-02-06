@@ -9,6 +9,9 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.ClosedLoopConfig;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -44,6 +47,15 @@ public class Turret extends SubsystemBase {
   private final String limelightURL = "http://10.26.43.200:5801/";
   MotionMagicVoltage motion = new MotionMagicVoltage(0);
   public SparkMax hoodMotor = new SparkMax(9, MotorType.kBrushless);
+  RelativeEncoder encoder = hoodMotor.getEncoder();
+  public ClosedLoopConfig pid (double p, double i, double d)  {
+    SparkClosedLoopController pid = hoodMotor.getClosedLoopController();
+  
+
+  }
+ 
+
+
   SparkClosedLoopController m_controller = hoodMotor.getClosedLoopController();
 
   public ClosedLoopConfig pid(double setP,double setI, double setD, double setFF) {}
@@ -79,6 +91,8 @@ public class Turret extends SubsystemBase {
   public String getLimelightURL() {
     return limelightURL;
   }
+
+
 
   public double getTX() {
     return tx;
@@ -174,7 +188,11 @@ public class Turret extends SubsystemBase {
       isLimitedX2 = false;
     }
   }
+  public void setHoodMotor(double position) {
+    hoodMotor.set(position);
+  }
   
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
