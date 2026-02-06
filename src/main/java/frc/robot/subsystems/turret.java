@@ -10,6 +10,10 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.ClosedLoopConfig;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -20,7 +24,6 @@ import frc.robot.LimelightHelpers;
 
 public class Turret extends SubsystemBase {
   /** Creates a new turretx. */
-  TalonFX motorY = new TalonFX(1);
   TalonFX motorX = new TalonFX(4);
   TalonFXConfiguration configs = new TalonFXConfiguration();
   DigitalInput limitX = new DigitalInput(0);
@@ -41,6 +44,11 @@ public class Turret extends SubsystemBase {
   private final String limelightURL = "http://10.26.43.200:5801/";
   MotionMagicVoltage motion = new MotionMagicVoltage(0);
   public SparkMax hoodMotor = new SparkMax(9, MotorType.kBrushless);
+  SparkClosedLoopController m_controller = hoodMotor.getClosedLoopController();
+
+  public ClosedLoopConfig pid(double setP,double setI, double setD, double setFF) {}
+
+
   public void position() {
       var motionmagicconfigs = configs.MotionMagic;
       var slot0configs = configs.Slot0;
@@ -53,10 +61,21 @@ public class Turret extends SubsystemBase {
       motionmagicconfigs.MotionMagicCruiseVelocity = 20;
   
       motorX.getConfigurator().apply(configs);
-      motorY.getConfigurator().apply(configs);
       motorX.setPosition(0);
-      motorY.setPosition(0);
   }
+    public void NeoMotorPosition(double pid) {
+      SparkMaxConfig = config = new SparkMaxConfig;
+      pid.setP(0.1);
+      pid.setI(0.001);
+      pid.setD(1.0);
+      pid.setFF(0.0);
+      pid.setOutputRange(-1.0, 1.0);
+
+        double targetRPM = 3000;
+    }
+    
+
+
   public String getLimelightURL() {
     return limelightURL;
   }
@@ -121,10 +140,8 @@ public class Turret extends SubsystemBase {
       motorX.setControl(new DutyCycleOut(0));
     }
   }
-  public void moveToPosY(double target){
-    target = pos;
-    motorY.setControl(motion.withPosition(target));
-  }
+ 
+  
   public void moveToPosX(double target){
     target = pos;
     motorX.setControl(motion.withPosition(target));
@@ -135,15 +152,7 @@ public class Turret extends SubsystemBase {
   public void downMotorPosX(){
     moveToPosX(currentPosX() - 5);
   }
-  public void upMotorPosY(){
-    moveToPosY(currentPosY() + 5);
-  }
-  public void downMotorPosY(){
-    moveToPosY(currentPosY() - 5);
-  }
-  public double currentPosY(){
-    return motorY.getPosition().getValueAsDouble();
-  }
+  
   public double currentPosX(){
     return motorX.getPosition().getValueAsDouble();
   }
