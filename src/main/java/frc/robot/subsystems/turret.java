@@ -15,6 +15,7 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -45,20 +46,19 @@ public class Turret extends SubsystemBase {
   public double percentOutputValue;
   private final String limelightName = "limelight";
   private final String limelightURL = "http://10.26.43.200:5801/";
-  MotionMagicVoltage motion = new MotionMagicVoltage(0);
+  public MotionMagicVoltage motion = new MotionMagicVoltage(0);
   public SparkMax hoodMotor = new SparkMax(9, MotorType.kBrushless);
-  RelativeEncoder encoder = hoodMotor.getEncoder();
-  public ClosedLoopConfig pid (double p, double i, double d)  {
-    SparkClosedLoopController pid = hoodMotor.getClosedLoopController();
-  
+  public RelativeEncoder encoder = hoodMotor.getEncoder();
+  public ClosedLoopConfig pidDeclerator =  new ClosedLoopConfig ();  
+  public SparkClosedLoopController pid = hoodMotor.getClosedLoopController();
+  public SparkClosedLoopController m_controller = hoodMotor.getClosedLoopController();
+   private SparkMaxConfig motorConfig;
 
-  }
- 
+  private double p = 0.4;
+  private double i = 0;
+  private double d = 0;
 
 
-  SparkClosedLoopController m_controller = hoodMotor.getClosedLoopController();
-
-  public ClosedLoopConfig pid(double setP,double setI, double setD, double setFF) {}
 
 
   
@@ -75,21 +75,17 @@ public class Turret extends SubsystemBase {
   
       motorX.getConfigurator().apply(configs);
       motorX.setPosition(0);
-  }
-    public void NeoMotorPosition(double pid) {
-      SparkMaxConfig = config = new SparkMaxConfig;
-      pid.setP(0.1);
-      pid.setI(0.001);
-      pid.setD(1.0);
-      pid.setFF(0.0);
-      pid.setOutputRange(-1.0, 1.0);
 
-        double targetRPM = 3000;
-    }
-    
-
-
-  public String getLimelightURL() {
+            motorConfig.closedLoop
+        .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                .p(p)
+                .i(i)
+                .d(d)
+                .outputRange(-1, 1);
+        
+          }
+        
+    public String getLimelightURL() {
     return limelightURL;
   }
 
