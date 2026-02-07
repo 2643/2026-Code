@@ -61,6 +61,7 @@ public class Turret extends SubsystemBase {
   public ClosedLoopConfig pid(double setP,double setI, double setD, double setFF) {}
 
 
+  
   public void position() {
       var motionmagicconfigs = configs.MotionMagic;
       var slot0configs = configs.Slot0;
