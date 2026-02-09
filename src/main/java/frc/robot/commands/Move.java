@@ -25,11 +25,7 @@ public class Move extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (RobotContainer.m_Storage.getLimitValue()) {
-      RobotContainer.m_Storage.SetMotorSpeed(0.2);
-    } else {
-      RobotContainer.m_Storage.SetMotorSpeed(0);
-    }
+    
   }
 
   // Called once the command ends or is interrupted.

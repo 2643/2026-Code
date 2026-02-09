@@ -8,6 +8,7 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.Timer;
 
 public class Storage extends SubsystemBase {
   /** Creates a new Storage. */
@@ -35,20 +36,35 @@ public class Storage extends SubsystemBase {
 
   }
 
+  private final Timer timer = new Timer();
+  private boolean isTimerRunning = false;
+
   @Override
   public void periodic() {
-    if(limitSwitch.get()) {
-      SetMotorSpeed(getPosition()+0.1);
+    if (getLimitValue()) {
+      if (!isTimerRunning) {
+        timer.reset();
+        timer.start();
+        isTimerRunning = true;
+      }
+      SetMotorSpeed(0.75);
+    } else if (isTimerRunning && timer.get() < 2.0) {
+      SetMotorSpeed(0.75);
+    } else {
+      SetMotorSpeed(0);
+      timer.stop();
+      isTimerRunning = false;
     }
-    
 
-  switch (state) {
-    case ATTACK:
-    break;
-    case DEFENSE:
-    break;
+    switch (state) {
+      case ATTACK:
+        break;
+      case DEFENSE:
+        break;
+    }
   }
-  }
+
+  
   
   public boolean getLimitValue(){
     return limitSwitch.get();
