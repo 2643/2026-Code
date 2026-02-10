@@ -40,31 +40,23 @@ public class Turret extends SubsystemBase {
   public double range;
   public double percentOutputValue;
   public double targetPosition;
+  double manualPosition = 0;
   public double p = 2.0;
   public double i = 1.0;
   public double d = 0.0;
   private final String limelightName = "limelight";
   private final String limelightURL = "http://10.26.43.200:5801/";
-  public MotionMagicVoltage motion = new MotionMagicVoltage(0);
+  MotionMagicVoltage motion = new MotionMagicVoltage(0);
   public SparkMax hoodMotor = new SparkMax(9, MotorType.kBrushless);
-  RelativeEncoder encoder = hoodMotor.getEncoder();
-  public ClosedLoopConfig pid (double p, double i, double d)  {
-    SparkClosedLoopController pid = hoodMotor.getClosedLoopController();
-  
-
-  }
- 
+  public RelativeEncoder encoder = hoodMotor.getEncoder();
+  public SparkMaxConfig motorConfig;
 
 
+  ClosedLoopConfig revConfig = new ClosedLoopConfig();
   SparkClosedLoopController m_controller = hoodMotor.getClosedLoopController();
-
-  public ClosedLoopConfig pid(double setP,double setI, double setD, double setFF) {}
-
-
-  
-  public void position() {
-      var motionmagicconfigs = configs.MotionMagic;
-      var slot0configs = configs.Slot0;
+  public Turret() {
+    var motionmagicconfigs = configs.MotionMagic;
+    var slot0configs = configs.Slot0;
   
     slot0configs.kP = 13;
     slot0configs.kI = 0;
@@ -74,6 +66,7 @@ public class Turret extends SubsystemBase {
     motionmagicconfigs.MotionMagicCruiseVelocity = 20;
   
     motorX.getConfigurator().apply(configs);
+    motorConfig = new SparkMaxConfig();
 
     motorConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
@@ -99,14 +92,7 @@ public class Turret extends SubsystemBase {
       
       motorX.setPosition(0);
   }
-    public void NeoMotorPosition(double pid) {
-      SparkMaxConfig = config = new SparkMaxConfig;
-      pid.setP(0.1);
-      pid.setI(0.001);
-      pid.setD(1.0);
-      pid.setFF(0.0);
-      pid.setOutputRange(-1.0, 1.0);
-
+    public void NeoMotorPosition(double p, double i, double d, double ff) {
         double targetRPM = 3000;
     }
     
@@ -167,7 +153,7 @@ public class Turret extends SubsystemBase {
     area = LimelightHelpers.getTA(limelightName);
     fiducialID = LimelightHelpers.getFiducialID(limelightName);
     
-    SmartDashboard.putNumber("TurretManualPosition", 90);
+    SmartDashboard.putNumber("TurretManualPosition", manualPosition);
     SmartDashboard.putBoolean("Has Target", isVisible);
     SmartDashboard.putNumber("Target Yaw", yaw);
     SmartDashboard.putNumber("Limelight TX", tx);
@@ -176,6 +162,7 @@ public class Turret extends SubsystemBase {
     SmartDashboard.putNumber("Fiducial ID", fiducialID);
     SmartDashboard.putString("Limelight Stream", limelightURL);
     SmartDashboard.putNumber("Position", currentPosX());
+     SmartDashboard.putNumber("TurretTargetPosition", targetPosition);
   }
   public void autoAlign(){
     if (isVisible == true && tx>0 && isLimitedX1 == false && isLimitedX2 == false) {
@@ -230,12 +217,13 @@ public class Turret extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    
+    manualPosition = SmartDashboard.getNumber("TurretManualPosition", manualPosition);
+    goToPosition(manualPosition);
     updateData();
     autoAlign();
     limit();
     SmartDashboard.putNumber("TurretPosition", encoder.getPosition());
 
-    double manualPosition = SmartDashboard.getNumber("TurretManualPosition", 90);
-    goToPosition(manualPosition);
   }
 }
