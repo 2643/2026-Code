@@ -38,6 +38,16 @@ public class Storage extends SubsystemBase {
 
   private final Timer timer = new Timer();
   private boolean isTimerRunning = false;
+  private boolean isMotorRunning = false;
+
+  public void toggleMotor() {
+    if (isMotorRunning) {
+      SetMotorSpeed(0);
+    } else {
+      SetMotorSpeed(0.75);
+    }
+    isMotorRunning = !isMotorRunning;
+  }
 
   @Override
   public void periodic() {

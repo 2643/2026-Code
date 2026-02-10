@@ -32,7 +32,7 @@ public class RobotContainer {
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   private final Joystick driverController = new Joystick(OperatorConstants.kDriverControllerPort);
-  private final JoystickButton toggleMotorButton = new JoystickButton(driverController, 1); // Replace with your button ID
+  private final JoystickButton toggleMotorButton = new JoystickButton(driverController, 1); // Ensure button ID matches your setup
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -58,11 +58,7 @@ public class RobotContainer {
     // cancelling on release.
     m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
-    configureButtonBindings();
-  }
-
-  private void configureButtonBindings() {
-    toggleMotorButton.onTrue(new ToggleMotorCommand(m_Storage));
+    toggleMotorButton.onTrue(new ToggleMotorCommand(m_Storage)); // Ensure this connects the command to the subsystem
   }
 
   /**
