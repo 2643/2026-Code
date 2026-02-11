@@ -129,7 +129,8 @@ public class Turret extends SubsystemBase {
   }
 
   public boolean isAtPosition() {
-    double encoderPosition = encoder.getPosition();
+    double
+    encoderPosition = encoder.getPosition();
     return Math.abs(encoderPosition - targetPosition) <= 1; // MARGIN OF ERROR
   }
 
