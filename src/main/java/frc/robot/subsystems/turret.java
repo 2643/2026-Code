@@ -16,10 +16,6 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
-
-
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -50,9 +46,10 @@ public class Turret extends SubsystemBase {
   public SparkMax hoodMotor = new SparkMax(9, MotorType.kBrushless);
   public RelativeEncoder encoder = hoodMotor.getEncoder();
   public SparkMaxConfig motorConfig;
+  boolean attempted = false;
 
 
-  ClosedLoopConfig revConfig = new ClosedLoopConfig();
+  // ClosedLoopConfig revConfig = new ClosedLoopConfig();
   SparkClosedLoopController m_controller = hoodMotor.getClosedLoopController();
   public Turret() {
     var motionmagicconfigs = configs.MotionMagic;
@@ -75,18 +72,16 @@ public class Turret extends SubsystemBase {
       .d(d)
       .outputRange(-1, 1);
 
-      
-
+    motorConfig.closedLoop.maxMotion
+        .cruiseVelocity(1)
+        .maxAcceleration(1)
+        .allowedProfileError(1);
   }
   /** Creates a new turretx. */
   TalonFX motorX = new TalonFX(4);
   TalonFXConfiguration configs = new TalonFXConfiguration();
   DigitalInput limitX = new DigitalInput(0);
   DigitalInput limitY = new DigitalInput(1);
-  
-
-
-
 
   public void position() {
       
@@ -95,14 +90,11 @@ public class Turret extends SubsystemBase {
     public void NeoMotorPosition(double p, double i, double d, double ff) {
         double targetRPM = 3000;
     }
-    
 
 
   public String getLimelightURL() {
     return limelightURL;
   }
-
-
 
   public double getTX() {
     return tx;
@@ -133,7 +125,7 @@ public class Turret extends SubsystemBase {
   }
   public void goToPosition(double position) {
     targetPosition = position;
-    m_controller.setReference(targetPosition, ControlType.kMAXMotionPositionControl);
+    m_controller.setSetpoint(targetPosition, ControlType.kMAXMotionPositionControl);
   }
 
   public boolean isAtPosition() {
@@ -162,7 +154,8 @@ public class Turret extends SubsystemBase {
     SmartDashboard.putNumber("Fiducial ID", fiducialID);
     SmartDashboard.putString("Limelight Stream", limelightURL);
     SmartDashboard.putNumber("Position", currentPosX());
-     SmartDashboard.putNumber("TurretTargetPosition", targetPosition);
+    SmartDashboard.putNumber("TurretTargetPosition", targetPosition);
+    SmartDashboard.putBoolean("TEST", attempted);
   }
   public void autoAlign(){
     if (isVisible == true && tx>0 && isLimitedX1 == false && isLimitedX2 == false) {
@@ -175,8 +168,6 @@ public class Turret extends SubsystemBase {
       motorX.setControl(new DutyCycleOut(0));
     }
   }
- 
-  
   public void moveToPosX(double target){
     target = pos;
     motorX.setControl(motion.withPosition(target));
@@ -224,6 +215,5 @@ public class Turret extends SubsystemBase {
     autoAlign();
     limit();
     SmartDashboard.putNumber("TurretPosition", encoder.getPosition());
-
   }
 }
