@@ -29,7 +29,7 @@ public class Turret extends SubsystemBase {
   public boolean isLimitedX2;
   public boolean isVisible;
   public double yaw;
-  public double area;
+  public double ta;
   public double tx;
   public double ty;
   public double fiducialID;
@@ -47,6 +47,7 @@ public class Turret extends SubsystemBase {
   public RelativeEncoder encoder = hoodMotor.getEncoder();
   public SparkMaxConfig motorConfig;
   boolean attempted = false;
+  public double TAConversion;
 
 
   // ClosedLoopConfig revConfig = new ClosedLoopConfig();
@@ -87,15 +88,12 @@ public class Turret extends SubsystemBase {
       
       motorX.setPosition(0);
   }
-    public void NeoMotorPosition(double p, double i, double d, double ff) {
-        double targetRPM = 3000;
-    }
-
-
+  // public void NeoMotorPosition(double p, double i, double d, double ff) {
+  //   double targetRPM = 3000;
+  // }
   public String getLimelightURL() {
     return limelightURL;
   }
-
   public double getTX() {
     return tx;
   }
@@ -143,15 +141,16 @@ public class Turret extends SubsystemBase {
     yaw = LimelightHelpers.getTX(limelightName);
     tx = LimelightHelpers.getTX(limelightName);  // Horizontal offset (same as yaw)
     ty = LimelightHelpers.getTY(limelightName);  // Vertical offset
-    area = LimelightHelpers.getTA(limelightName);
+    ta = LimelightHelpers.getTA(limelightName);
     fiducialID = LimelightHelpers.getFiducialID(limelightName);
+    TAConversion = calculateDistance(ta);
     
     SmartDashboard.putNumber("TurretManualPosition", manualPosition);
     SmartDashboard.putBoolean("Has Target", isVisible);
     SmartDashboard.putNumber("Target Yaw", yaw);
     SmartDashboard.putNumber("Limelight TX", tx);
     SmartDashboard.putNumber("Limelight TY", ty);
-    SmartDashboard.putNumber("Target Area", area);
+    SmartDashboard.putNumber("Target Area", ta);
     SmartDashboard.putNumber("Fiducial ID", fiducialID);
     SmartDashboard.putString("Limelight Stream", limelightURL);
     SmartDashboard.putNumber("Position", currentPosX());
@@ -205,7 +204,9 @@ public class Turret extends SubsystemBase {
     hoodMotor.set(position);
   }
   
-
+  public double calculateDistance(double ta){
+    return 1/Math.log(ta);
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -216,5 +217,6 @@ public class Turret extends SubsystemBase {
     autoAlign();
     limit();
     SmartDashboard.putNumber("TurretPosition", encoder.getPosition());
+    
   }
 }
