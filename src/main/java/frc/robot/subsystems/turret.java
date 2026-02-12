@@ -10,7 +10,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.ClosedLoopConfig;
+// import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
-
 
 public class Turret extends SubsystemBase {
   public double target = 0;
@@ -36,20 +35,20 @@ public class Turret extends SubsystemBase {
   public double range;
   public double percentOutputValue;
   public double targetPosition;
-  double manualPosition = 0;
+  public double manualPosition = 0;
   public double p = 2.0;
   public double i = 1.0;
   public double d = 0.0;
   private final String limelightName = "limelight";
   private final String limelightURL = "http://10.26.43.200:5801/";
   MotionMagicVoltage motion = new MotionMagicVoltage(0);
+
+  // Creating a Neo Motor and its configs
   public SparkMax hoodMotor = new SparkMax(9, MotorType.kBrushless);
   public RelativeEncoder encoder = hoodMotor.getEncoder();
   public SparkMaxConfig motorConfig;
   boolean attempted = false;
   public double TAConversion;
-
-
   // ClosedLoopConfig revConfig = new ClosedLoopConfig();
   SparkClosedLoopController m_controller = hoodMotor.getClosedLoopController();
   public Turret() {
@@ -85,8 +84,7 @@ public class Turret extends SubsystemBase {
   DigitalInput limitY = new DigitalInput(1);
 
   public void position() {
-      
-      motorX.setPosition(0);
+    motorX.setPosition(0);
   }
   // public void NeoMotorPosition(double p, double i, double d, double ff) {
   //   double targetRPM = 3000;
@@ -155,6 +153,7 @@ public class Turret extends SubsystemBase {
     SmartDashboard.putString("Limelight Stream", limelightURL);
     SmartDashboard.putNumber("Position", currentPosX());
     SmartDashboard.putNumber("TurretTargetPosition", targetPosition);
+    SmartDashboard.putNumber("TurretPosition", encoder.getPosition());
     SmartDashboard.putBoolean("TEST", attempted);
   }
   public void autoAlign(){
@@ -178,7 +177,6 @@ public class Turret extends SubsystemBase {
   public void downMotorPosX(){
     moveToPosX(currentPosX() - 5);
   }
-  
   public double currentPosX(){
     return motorX.getPosition().getValueAsDouble();
   }
@@ -203,20 +201,16 @@ public class Turret extends SubsystemBase {
   public void setHoodMotor(double position) {
     hoodMotor.set(position);
   }
-  
   public double calculateDistance(double ta){
     return 1/Math.log(ta);
   }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    
     manualPosition = SmartDashboard.getNumber("TurretManualPosition", manualPosition);
     goToPosition(manualPosition);
     updateData();
     autoAlign();
     limit();
-    SmartDashboard.putNumber("TurretPosition", encoder.getPosition());
-    
   }
 }
