@@ -2,6 +2,7 @@ package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
+import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -33,6 +34,10 @@ public class Telemetry {
     public Telemetry(double maxSpeed) {
         MaxSpeed = maxSpeed;
         SignalLogger.start();
+
+                        // AdvantageKit outputs will be written each time telemeterize(...) runs
+                        // by calling Logger.recordOutput(...) in that method. We avoid registering
+                        // suppliers here because the project's Logger API expects concrete values.
 
         /* Set up the module state Mechanism2d telemetry */
         for (int i = 0; i < 4; ++i) {
@@ -136,6 +141,25 @@ public class Telemetry {
         SignalLogger.writeDoubleArray("DriveState/ChassisSpeeds", m_chassisSpeedsArray);
         SignalLogger.writeDoubleArray("DriveState/ModuleStates", m_moduleStatesArray);
         SignalLogger.writeDoubleArray("DriveState/ModuleTargets", m_moduleTargetsArray);
+                // Also write these to AdvantageKit via Junction Logger so they appear in
+                // WPILOG logs and NT4Publisher streams.
+                try {
+                        Logger.recordOutput("DriveState/Pose", m_poseArray);
+                        Logger.recordOutput("DriveState/ChassisSpeeds", m_chassisSpeedsArray);
+                        Logger.recordOutput("DriveState/ModuleStates", m_moduleStatesArray);
+                        Logger.recordOutput("DriveState/ModuleTargets", m_moduleTargetsArray);
+                        Logger.recordOutput("DriveState/OdometryPeriod", state.OdometryPeriod);
+
+                        // Per-module scalar outputs for easier plotting
+                        for (int i = 0; i < 4; ++i) {
+                                Logger.recordOutput("Drive/Module" + i + "/Angle", m_moduleStatesArray[i * 2 + 0]);
+                                Logger.recordOutput("Drive/Module" + i + "/Speed", m_moduleStatesArray[i * 2 + 1]);
+                                Logger.recordOutput("Drive/Module" + i + "/TargetAngle", m_moduleTargetsArray[i * 2 + 0]);
+                                Logger.recordOutput("Drive/Module" + i + "/TargetSpeed", m_moduleTargetsArray[i * 2 + 1]);
+                        }
+                } catch (Throwable t) {
+                        System.err.println("AdvantageKit recordOutput failed: " + t.getMessage());
+                }
         SignalLogger.writeDouble("DriveState/OdometryPeriod", state.OdometryPeriod, "seconds");
 
         /* Also publish to SmartDashboard for easy viewing */
