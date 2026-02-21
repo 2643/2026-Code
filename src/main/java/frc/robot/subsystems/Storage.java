@@ -3,50 +3,50 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
-
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.networktables.GenericEntry;
+
 
 public class Storage extends SubsystemBase {
-  /** Creates a new Storage. */
-
-  
-  TalonFX motor1 = new TalonFX(Constants.StorageConstants.motorid);
-  DigitalInput limitSwitch = new DigitalInput(Constants.StorageConstants.limitid);
-  // public boolean getLimitSwitch(){
-  //   return limitSwitch.get();
-  // }
-
-  public void SetMotorPosition(double Position) {
-    motor1.setControl(new MotionMagicVoltage(Position));
-  }
-  public Storage() {}
-
-  public double getPosition() {
-    return motor1.getPosition().getValueAsDouble();
+  public double speed = 0;
+  TalonFX motor = new TalonFX(Constants.StorageConstants.motorid);
+  /** Creates a new Motor. */
+  public Storage() {
+    
   }
 
-  States state = States.ATTACK;
-  public enum States {
-    ATTACK,
-    DEFENSE,
+  GenericEntry StorageEntry = Shuffleboard.getTab("storage").add("Storage Motor", speed).getEntry();
+
+public void moveMotor() {
+   if (speed == 0)
+  { 
+    motor.setControl(new DutyCycleOut(Constants.StorageConstants.speed));
+    speed = Constants.StorageConstants.speed;
   }
+  else
+  {
+    motor.setControl(new DutyCycleOut(0));
+    speed = 0;
+  }
+}
+public boolean getSpeed() {
+  if (speed == 0)
+  { 
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
 
   @Override
   public void periodic() {
-    if (limitSwitch.get()) {
-      SetMotorPosition(getPosition()+0.1);
-    }
-    
-  switch (state) {
-      case ATTACK:
-        break;
-      case DEFENSE:
-        break;
-    }
     // This method will be called once per scheduler run
   }
 }
+
