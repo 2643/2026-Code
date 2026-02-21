@@ -293,8 +293,8 @@ public class Constants {
                     odometryStandardDeviation, visionStandardDeviation, modules);
         }
         }
+        }
         public final class IntakeConstants {}
         public final class TurretConstants {}
         public final class StorageConstants{}
     }
-}
