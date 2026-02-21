@@ -295,6 +295,8 @@ public class Constants {
         }
         }
         public final class IntakeConstants {}
-        public final class TurretConstants {}
+        public final class TurretConstants {    
+                public final static double hoodGearRatio = 72 / 289;
+}
         public final class StorageConstants{}
     }

@@ -36,6 +36,20 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 // import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
+
+
+
+// import frc.robot.Constants.OperatorConstants;
+// import frc.robot.commands.Autos;
+// import frc.robot.commands.ExampleCommand;
+// import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Turret;
+// import edu.wpi.first.wpilibj.Joystick;
+// import edu.wpi.first.wpilibj2.command.Command;
+// import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+// import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+// import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 public class RobotContainer {
     private double MaxSpeed = Constants.OperatorConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.05).in(RadiansPerSecond); // 3/4 of a rotation per second
@@ -117,9 +131,7 @@ public class RobotContainer {
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 
-    public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
-    }
+
 
 
 
@@ -130,12 +142,23 @@ public class RobotContainer {
  * subsystems, commands, and trigger mappings) should be declared here.
  */
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  public static final Joystick controller = new Joystick(0);
-  public static final JoystickButton start = new JoystickButton(controller, 1);
   //public static final JoystickButton raise = new JoystickButton(controller, 2);
   public final static Intake m_intake = new Intake();
   //public final static Position m_lower = new Position();
+
+  public final static Joystick controller = new Joystick(0);
+  public final static JoystickButton left = new JoystickButton(controller, 1);
+  public final static JoystickButton right = new JoystickButton(controller, 2);
+  public final static JoystickButton up = new JoystickButton(controller, 3);
+  public final static JoystickButton down = new JoystickButton(controller, 4);
+  public static final JoystickButton start = new JoystickButton(controller, 5);
+
+  // The robot's subsystems and commands are defined here...
+  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  public static final Turret m_turret = new Turret();
+  // Replace with CommandPS4Controller or CommandJoystick if needed
+
+  /** The container for the robot. Contains subsystems, OI devices, and commands. */
 
 
   /**
@@ -152,4 +175,8 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
+  public Command getAutonomousCommand() {
+    // An example command will be run in autonomous
+    return Autos.exampleAuto(m_exampleSubsystem);
+  }
 }

@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/TurretTest
 # This gitignore has been specially created by the WPILib team.
 # If you remove items from this file, intellisense might break.
 
@@ -186,6 +189,7 @@ compile_commands.json
 
 # Eclipse generated file for annotation processors
 .factorypath
+<<<<<<< HEAD
 =======
 # This gitignore has been specially created by the WPILib team.
 # If you remove items from this file, intellisense might break.
@@ -375,3 +379,5 @@ compile_commands.json
 # Eclipse generated file for annotation processors
 .factorypath
 >>>>>>> origin/Storage
+=======
+>>>>>>> origin/TurretTest

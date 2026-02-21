@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/TurretTest
 {
   "java.configuration.updateBuildConfiguration": "automatic",
   "java.server.launchMode": "Standard",
@@ -60,6 +63,7 @@
   ],
   "java.dependency.enableDependencyCheckup": false
 }
+<<<<<<< HEAD
 =======
 {
   "java.configuration.updateBuildConfiguration": "automatic",
@@ -122,3 +126,5 @@
   ]
 }
 >>>>>>> origin/Storage
+=======
+>>>>>>> origin/TurretTest
