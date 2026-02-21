@@ -294,9 +294,18 @@ public class Constants {
         }
         }
         }
-        public final class IntakeConstants {}
+        public final class IntakeConstants {
+                public final static int motorid = 18;
+                public final static double speed = 0.6;
+        }
         public final class TurretConstants {    
                 public final static double hoodGearRatio = 72 / 289;
+                public final static int hoodid = 0;
+                public final static int swivelid = 0;
+                
 }
-        public final class StorageConstants{}
+        public final class StorageConstants{
+                public final static int limitid = 1;
+                public final static int motorid = 19;
+        }
     }

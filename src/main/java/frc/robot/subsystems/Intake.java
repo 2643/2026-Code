@@ -6,13 +6,14 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.networktables.GenericEntry;
 
 
 public class Intake extends SubsystemBase {
   public double speed = 0;
-  TalonFX motor = new TalonFX(0);
+  TalonFX motor = new TalonFX(Constants.IntakeConstants.motorid);
   /** Creates a new Motor. */
   public Intake() {
     
@@ -23,8 +24,8 @@ public class Intake extends SubsystemBase {
 public void moveMotor() {
    if (speed == 0)
   { 
-    motor.setControl(new DutyCycleOut(0.6));
-    speed = 0.6;
+    motor.setControl(new DutyCycleOut(Constants.IntakeConstants.speed));
+    speed = Constants.IntakeConstants.speed;
   }
   else
   {

@@ -8,13 +8,14 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Storage extends SubsystemBase {
   /** Creates a new Storage. */
 
   
-  TalonFX motor1 = new TalonFX(0);
-  DigitalInput limitSwitch = new DigitalInput(1);
+  TalonFX motor1 = new TalonFX(Constants.StorageConstants.motorid);
+  DigitalInput limitSwitch = new DigitalInput(Constants.StorageConstants.limitid);
   // public boolean getLimitSwitch(){
   //   return limitSwitch.get();
   // }

@@ -23,6 +23,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 
 
@@ -46,7 +47,7 @@ public class Turret extends SubsystemBase {
   private final String limelightName = "limelight";
   private final String limelightURL = "http://10.26.43.200:5801/";
   MotionMagicVoltage motion = new MotionMagicVoltage(0);
-  public SparkMax hoodMotor = new SparkMax(9, MotorType.kBrushless);
+  public SparkMax hoodMotor = new SparkMax(Constants.TurretConstants.hoodid, MotorType.kBrushless);
   public RelativeEncoder encoder = hoodMotor.getEncoder();
   public SparkMaxConfig motorConfig;
 
@@ -77,10 +78,9 @@ public class Turret extends SubsystemBase {
 
   }
   /** Creates a new turretx. */
-  TalonFX motorX = new TalonFX(4);
+  TalonFX motorX = new TalonFX(Constants.TurretConstants.swivelid);
   TalonFXConfiguration configs = new TalonFXConfiguration();
-  DigitalInput limitX = new DigitalInput(0);
-  DigitalInput limitY = new DigitalInput(1);
+  // DigitalInput limitX = new DigitalInput(Constants.TurretConstants.limitXid);
   
 
 
@@ -90,9 +90,9 @@ public class Turret extends SubsystemBase {
       
       motorX.setPosition(0);
   }
-    public void NeoMotorPosition(double p, double i, double d, double ff) {
-        double targetRPM = 3000;
-    }
+    // public void NeoMotorPosition(double p, double i, double d, double ff) {
+    //     double targetRPM = 3000;
+    // }
     
 
 
@@ -131,7 +131,7 @@ public class Turret extends SubsystemBase {
   }
   public void goToPosition(double position) {
     targetPosition = position;
-    m_controller.setReference(targetPosition, ControlType.kMAXMotionPositionControl);
+    m_controller.setSetpoint(targetPosition, ControlType.kMAXMotionPositionControl);
   }
 
   public boolean isAtPosition() {
@@ -188,12 +188,9 @@ public class Turret extends SubsystemBase {
   public double currentPosX(){
     return motorX.getPosition().getValueAsDouble();
   }
-  public boolean getLimitX(){
-    return limitX.get();
-  }
-  public boolean getLimitY(){
-    return limitY.get();
-  }
+  // public boolean getLimitX(){
+  //   return limitX.get();
+  // }
   public void limit() {
     if (currentPosX() >= 3) {
       isLimitedX1 = true;
