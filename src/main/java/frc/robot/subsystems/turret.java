@@ -32,6 +32,7 @@ public class Turret extends SubsystemBase {
   public double pos;
   public boolean isLimitedX1;
   public boolean isLimitedX2;
+  public boolean isLocked = false;
   public boolean isVisible;
   public double yaw;
   public double area;
@@ -162,10 +163,10 @@ public class Turret extends SubsystemBase {
     SmartDashboard.putNumber("Position", currentPosX());
   }
   public void autoAlign(){
-    if (isVisible == true && tx>0 && isLimitedX1 == false && isLimitedX2 == false) {
+    if (isVisible == true && tx>0 && isLimitedX1 == false && isLimitedX2 == false && isLocked == false) {
       motorX.setControl(new DutyCycleOut(getPercentOutput()));
     } 
-    else if (isVisible == true && tx>0 && isLimitedX1 == true && isLimitedX2 == true) {
+    else if (isVisible == true && tx>0 && isLimitedX1 == true && isLimitedX2 == true && isLocked == false) {
       motorX.setControl(new DutyCycleOut(fullReverseRotation()));
     }
     else {
@@ -177,6 +178,7 @@ public class Turret extends SubsystemBase {
   public void moveToPosX(double target){
     target = pos;
     motorX.setControl(motion.withPosition(target));
+    isLocked = true;
   }
   public void upMotorPosX(){
     moveToPosX(currentPosX() + 5);

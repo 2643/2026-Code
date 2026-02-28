@@ -297,17 +297,16 @@ public class Constants {
         public final class IntakeConstants {
                 public final static int motorid = 18;
                 public final static double speed = 0.6;
-                //add real buttons
-                public final static int intake = 0;
+                public final static int intake = 2;
         }
         public final class TurretConstants {    
                 public final static double hoodGearRatio = 72 / 289;
                 // add real
                 public final static int limitid = 1;
-                public final static int hoodid = 0;
-                public final static int swivelid = 0;
+                public final static int hoodid = 99;
+                public final static int swivelid = 99;
                 public final static int shoot = 1;
-
+                public final static int turret = 4;
 }
         public final class StorageConstants{
                 public final static int motorid = 19;

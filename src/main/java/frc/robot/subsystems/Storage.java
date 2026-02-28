@@ -18,6 +18,12 @@ public class Storage extends SubsystemBase {
   public Storage() {
     
   }
+  States state = States.ATTACK;
+  public enum States {
+    ATTACK,
+    DEFENSE,
+
+  }
 
   GenericEntry StorageEntry = Shuffleboard.getTab("storage").add("Storage Motor", speed).getEntry();
 

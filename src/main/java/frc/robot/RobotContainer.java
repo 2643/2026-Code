@@ -26,6 +26,7 @@ import frc.robot.commands.AutoAim;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.ManualTurret;
 import frc.robot.commands.StartIntake;
 import frc.robot.commands.Shoot;
 //import frc.robot.commands.downIntake;
@@ -93,6 +94,8 @@ public class RobotContainer {
         private void configureBindings() {
             start.onTrue(new StartIntake());
             shoot.onTrue(new Shoot());
+            manual_turret.onTrue(new ManualTurret());
+
 
             // autoAim.whileTrue(new AutoAim(drivetrain, m_vision));
             // Note that X is defined as forward according to WPILib convention,
@@ -161,6 +164,7 @@ public class RobotContainer {
 //   public final static JoystickButton up = new JoystickButton(controller, 3);
 //   public final static JoystickButton down = new JoystickButton(controller, 4);
   public static final JoystickButton start = new JoystickButton(joystick, Constants.IntakeConstants.intake);
+  public static final JoystickButton manual_turret = new JoystickButton(joystick, Constants.TurretConstants.turret);
 
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
