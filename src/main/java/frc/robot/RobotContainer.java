@@ -21,15 +21,14 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Vision;
-import frc.robot.commands.AutoAim;
-
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ManualTurret;
-import frc.robot.commands.StartIntake;
-import frc.robot.commands.Shoot;
-//import frc.robot.commands.downIntake;
+import frc.robot.commands.Intake.StartIntake;
+import frc.robot.commands.Storage.Shoot;
+import frc.robot.commands.Storage.Toggle;
+import frc.robot.commands.Swerve.AutoAim;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Storage;
@@ -61,7 +60,7 @@ public class RobotContainer {
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.3).withRotationalDeadband(MaxAngularRate * 0.3) // Add a 10% deadband
+            .withDeadband(MaxSpeed * 0.3).withRotationalDeadband(MaxAngularRate * 0.3)
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
 //     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
 //     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
@@ -69,19 +68,20 @@ public class RobotContainer {
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final static Joystick joystick = new Joystick(0);
-    //     private final JoystickButton buttonA = new JoystickButton(joystick, 1); // Button 1 for "A"
-    //     private final JoystickButton buttonB = new JoystickButton(joystick, 2); // Button 2 for "B"
-    //     private final JoystickButton buttonBack = new JoystickButton(joystick, 7); // Button 7 for "Back"
-    //     private final JoystickButton buttonStart = new JoystickButton(joystick, 8); // Button 8 for "Start"
-    //     private final JoystickButton buttonLeftBumper = new JoystickButton(joystick, 5); // Button 5 for "Left Bumper"
-    //     private final JoystickButton autoAim = new JoystickButton(joystick, 6);
+    public static final JoystickButton start = new JoystickButton(joystick, Constants.IntakeConstants.intakePort);
+    public static final JoystickButton manual_turret = new JoystickButton(joystick, Constants.TurretConstants.turretPort);
+    public final static JoystickButton shoot = new JoystickButton(joystick, Constants.TurretConstants.shootPort);
+    public final static JoystickButton toggle = new JoystickButton(joystick, Constants.StorageConstants.togglePort);
     
-        private static final int AXIS_X = 0; // X-axis (left/right)
-        private static final int AXIS_Y = 1; // Y-axis (forward/backward)
-        private static final int AXIS_TWIST = 2; // Twist (rotation)
+        private static final int AXIS_X = 0; // X-axis 
+        private static final int AXIS_Y = 1; // Y-axis 
+        private static final int AXIS_TWIST = 2; // rotation
     
         public final CommandSwerveDrivetrain drivetrain = Constants.OperatorConstants.createDrivetrain();
         public final Vision m_vision = new Vision();
+        public final static Intake m_intake = new Intake();
+        public static final Turret m_turret = new Turret();
+        public static final Storage m_Storage = new Storage();
     
         public RobotContainer() {
             configureBindings();
@@ -92,8 +92,9 @@ public class RobotContainer {
         }
     
         private void configureBindings() {
+            toggle.onTrue(new Toggle());
             start.onTrue(new StartIntake());
-            shoot.onTrue(new Shoot());
+            shoot.onTrue(new Shoot(m_Storage.getPhase()));
             manual_turret.onTrue(new ManualTurret());
 
 
@@ -117,7 +118,9 @@ public class RobotContainer {
             final var idle = new SwerveRequest.Idle();
             RobotModeTriggers.disabled().whileTrue(
                     drivetrain.applyRequest(() -> idle).ignoringDisable(true));
-    
+          
+
+            //swerve code that came with the template
             // buttonA.whileTrue(drivetrain.applyRequest(() -> brake));
             // buttonB.whileTrue(drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(
                     // -applyDeadzone(joystick.getRawAxis(AXIS_Y), 0.2),
@@ -152,25 +155,7 @@ public class RobotContainer {
      */
       // The robot's subsystems and commands are defined here...
       //public static final JoystickButton raise = new JoystickButton(controller, 2);
-      public final static Intake m_intake = new Intake();
-      public final static JoystickButton shoot = new JoystickButton(joystick, Constants.TurretConstants.shoot);
-      //public final static Position m_lower = new Position();
-
-
-
-//   public final static Joystick controller = new Joystick(0);
-//   public final static JoystickButton left = new JoystickButton(controller, 1);
-//   public final static JoystickButton right = new JoystickButton(controller, 2);
-//   public final static JoystickButton up = new JoystickButton(controller, 3);
-//   public final static JoystickButton down = new JoystickButton(controller, 4);
-  public static final JoystickButton start = new JoystickButton(joystick, Constants.IntakeConstants.intake);
-  public static final JoystickButton manual_turret = new JoystickButton(joystick, Constants.TurretConstants.turret);
-
-  // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  public static final Turret m_turret = new Turret();
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-public static final Storage m_Storage = new Storage();
+     
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
 
@@ -191,6 +176,6 @@ public static final Storage m_Storage = new Storage();
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+   return null;
   }
 }

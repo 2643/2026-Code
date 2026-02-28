@@ -297,7 +297,7 @@ public class Constants {
         public final class IntakeConstants {
                 public final static int motorid = 18;
                 public final static double speed = 0.6;
-                public final static int intake = 2;
+                public final static int intakePort = 2;
         }
         public final class TurretConstants {    
                 public final static double hoodGearRatio = 72 / 289;
@@ -305,12 +305,15 @@ public class Constants {
                 public final static int limitid = 1;
                 public final static int hoodid = 99;
                 public final static int swivelid = 99;
-                public final static int shoot = 1;
-                public final static int turret = 4;
+                public final static int shootPort = 1;
+                public final static int turretPort = 4;
 }
         public final class StorageConstants{
+                public final static int togglePort = 3;
                 public final static int motorid = 19;
-                public final static double speed = 0.6;
+                public final static double attackSpeed = 0.6;
+                public final static double defenseSpeed = 1.0;
+                public final static int limitid = 0;
 
         }
     }
