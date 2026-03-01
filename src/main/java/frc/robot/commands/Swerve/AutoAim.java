@@ -1,12 +1,12 @@
 package frc.robot.commands.Swerve;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 public class AutoAim extends Command {
-  private final CommandSwerveDrivetrain drivetrain;
+  private final Swerve drivetrain;
   private final Vision vision;
   private final SwerveRequest.FieldCentric autoAimRequest;
 
@@ -14,7 +14,7 @@ public class AutoAim extends Command {
   private final double minSpeed = 0.05; // Minimum rotation speed
   private final double maxSpeed = 1.5; // Maximum rotation speed
 
-  public AutoAim(CommandSwerveDrivetrain drivetrain, Vision vision) {
+  public AutoAim(Swerve drivetrain, Vision vision) {
     this.drivetrain = drivetrain;
     this.vision = vision;
 

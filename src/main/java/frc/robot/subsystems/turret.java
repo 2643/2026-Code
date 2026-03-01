@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import java.util.Enumeration;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -16,6 +19,7 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
 
 
 
@@ -171,6 +175,25 @@ public class Turret extends SubsystemBase {
     }
     else {
       motorX.setControl(new DutyCycleOut(0));
+    }
+  }
+
+  public void autoPitch() {
+    // old
+    // Enumeration<Integer> keys = Constants.TurretConstants.areaToAngle.keys();
+    // double ta = 1/Math.log(area);
+    //   while (keys.hasMoreElements()) {
+    //     int key = keys.nextElement(); 
+    //     Double angle = Constants.TurretConstants.areaToAngle.get(key);
+    //     if (angle == Math.round(ta)) {
+    //       m_controller.setSetpoint(angle, ControlType.kMAXMotionPositionControl);
+    //     }
+    //   }
+    
+    int roundedArea = (int) Math.round(Math.log(1/area));
+    Double angle = Constants.TurretConstants.areaToAngle.get(roundedArea);
+    if (angle != null) {
+      m_controller.setSetpoint(angle, ControlType.kMAXMotionPositionControl);
     }
   }
  
