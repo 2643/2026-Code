@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.MoveDown;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Turret;
 import edu.wpi.first.wpilibj.Joystick;
@@ -14,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.MoveUp;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -27,6 +29,7 @@ public class RobotContainer {
   public final static JoystickButton right = new JoystickButton(controller, 2);
   public final static JoystickButton up = new JoystickButton(controller, 3);
   public final static JoystickButton down = new JoystickButton(controller, 4);
+  public final static JoystickButton x = new JoystickButton(controller, 5); 
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   public static final Turret m_turret = new Turret();
@@ -56,7 +59,8 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    left.onTrue(new MoveUp());
+    right.onTrue(new MoveDown()); 
   }
 
   /**

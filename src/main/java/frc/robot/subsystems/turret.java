@@ -22,8 +22,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 
 public class Turret extends SubsystemBase {
-  public double target = 0;
-  public double pos;
+  public double currentPos = 0;
   public boolean isLimitedX1;
   public boolean isLimitedX2;
   public boolean isVisible;
@@ -51,16 +50,16 @@ public class Turret extends SubsystemBase {
   public double TAConversion;
   // ClosedLoopConfig revConfig = new ClosedLoopConfig();
   SparkClosedLoopController m_controller = hoodMotor.getClosedLoopController();
+  TalonFX motorX = new TalonFX(0);
+  TalonFXConfiguration configs = new TalonFXConfiguration();
   public Turret() {
-    var motionmagicconfigs = configs.MotionMagic;
-    var slot0configs = configs.Slot0;
   
-    slot0configs.kP = 13;
-    slot0configs.kI = 0;
-    slot0configs.kD = 0;
+    configs.Slot0.kP = 2.14;
+    configs.Slot0.kI = 0;
+    configs.Slot0.kD = 0;
   
-    motionmagicconfigs.MotionMagicAcceleration = 20;
-    motionmagicconfigs.MotionMagicCruiseVelocity = 20;
+    configs.MotionMagic.MotionMagicAcceleration = 20;
+    configs.MotionMagic.MotionMagicCruiseVelocity = 20;
   
     motorX.getConfigurator().apply(configs);
     motorConfig = new SparkMaxConfig();
@@ -78,12 +77,11 @@ public class Turret extends SubsystemBase {
         .allowedProfileError(1);
   }
   /** Creates a new turretx. */
-  TalonFX motorX = new TalonFX(4);
-  TalonFXConfiguration configs = new TalonFXConfiguration();
+
   DigitalInput limitX = new DigitalInput(0);
   DigitalInput limitY = new DigitalInput(1);
 
-  public void position() {
+  public void setPos() {
     motorX.setPosition(0);
   }
   // public void NeoMotorPosition(double p, double i, double d, double ff) {
@@ -167,12 +165,13 @@ public class Turret extends SubsystemBase {
       motorX.setControl(new DutyCycleOut(0));
     }
   }
-  public void moveToPosX(double target){
-    target = pos;
-    motorX.setControl(motion.withPosition(target));
+  public void moveToPosX(double pos){
+    currentPos = pos;
+    motorX.setControl(new MotionMagicVoltage(currentPos));
   }
   public void upMotorPosX(){
-    moveToPosX(currentPosX() + 5);
+    System.out.println("upMotorPosX");
+    moveToPosX(currentPosX() + 0.1);
   }
   public void downMotorPosX(){
     moveToPosX(currentPosX() - 5);
@@ -212,5 +211,7 @@ public class Turret extends SubsystemBase {
     updateData();
     autoAlign();
     limit();
+    SmartDashboard.putNumber("Position", currentPosX());
+    SmartDashboard.putNumber("Target Position", currentPos);
   }
 }
