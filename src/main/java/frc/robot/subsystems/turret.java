@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import java.util.Enumeration;
 import java.util.concurrent.atomic.AtomicBoolean;
-
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -46,15 +45,15 @@ public class Turret extends SubsystemBase {
   public double range;
   public double percentOutputValue;
   public double targetPosition;
-  public double p = 2.0;
-  public double i = 1.0;
-  public double d = 0.0;
+  public double p = 1.5;
+  public double i = 0.02;
+  public double d = 0.02;
   private final String limelightName = "limelight";
   private final String limelightURL = "http://10.26.43.200:5801/";
   MotionMagicVoltage motion = new MotionMagicVoltage(0);
   public SparkMax hoodMotor = new SparkMax(Constants.TurretConstants.hoodid, MotorType.kBrushless);
   public RelativeEncoder encoder = hoodMotor.getEncoder();
-  public SparkMaxConfig motorConfig;
+  public SparkMaxConfig motorConfig = new SparkMaxConfig();
 
 
   ClosedLoopConfig revConfig = new ClosedLoopConfig();
@@ -63,7 +62,7 @@ public class Turret extends SubsystemBase {
     var motionmagicconfigs = configs.MotionMagic;
     var slot0configs = configs.Slot0;
   
-    slot0configs.kP = 13;
+    slot0configs.kP = 4.1;
     slot0configs.kI = 0;
     slot0configs.kD = 0;
   
@@ -77,9 +76,9 @@ public class Turret extends SubsystemBase {
       .p(p)
       .i(i)
       .d(d)
-      .outputRange(-1, 1);
+      .outputRange(-5, 5);
 
-      
+      // accel 100 vel 100
 
   }
   /** Creates a new turretx. */
