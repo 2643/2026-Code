@@ -13,11 +13,16 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig;
+import com.revrobotics.spark.config.MAXMotionConfig;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.FeedbackSensor;
-import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.MAXMotionConfig;
 
 
 
@@ -35,6 +40,8 @@ public class Turret extends SubsystemBase {
   public double pos;
   public boolean isLimitedX1;
   public boolean isLimitedX2;
+  public boolean isLimitedY1;
+  public boolean isLimitedY2;
   public boolean isLocked = false;
   public boolean isVisible;
   public double yaw;
@@ -53,7 +60,9 @@ public class Turret extends SubsystemBase {
   MotionMagicVoltage motion = new MotionMagicVoltage(0);
   public SparkMax hoodMotor = new SparkMax(Constants.TurretConstants.hoodid, MotorType.kBrushless);
   public RelativeEncoder encoder = hoodMotor.getEncoder();
-  public SparkMaxConfig motorConfig = new SparkMaxConfig();
+  public MAXMotionConfig motorConfig = new MAXMotionConfig();
+  public ClosedLoopConfig motorConfigClosed = new ClosedLoopConfig();
+  public SparkMaxConfig motorConfigBase = new SparkMaxConfig();
 
 
   ClosedLoopConfig revConfig = new ClosedLoopConfig();
@@ -71,15 +80,26 @@ public class Turret extends SubsystemBase {
   
     motorX.getConfigurator().apply(configs);
 
-    motorConfig.closedLoop
+    // motorConfig.closedLoop
+    //   .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+    //   .p(p)
+    //   .i(i)
+    //   .d(d)
+    //   .outputRange(-5, 5);
+
+    //   // accel 100 vel 100
+    //   .cruiseVelocity(100);
+    motorConfig.cruiseVelocity(100).maxAcceleration(100);
+
+    motorConfigClosed
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
       .p(p)
       .i(i)
       .d(d)
-      .outputRange(-5, 5);
+      .outputRange(-5, 5)
+      .apply(motorConfig);
 
-      // accel 100 vel 100
-
+    hoodMotor.configure(motorConfigBase, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
   /** Creates a new turretx. */
   TalonFX motorX = new TalonFX(Constants.TurretConstants.swivelid);
@@ -124,18 +144,21 @@ public class Turret extends SubsystemBase {
     }
     return percentOutputValue;
   }
-  public double fullReverseRotation() {
-    if (tx > 0) {
-      percentOutputValue = -(Math.log(tx)/600*5);
-    }
-    else if (tx < 0) {
-      percentOutputValue = Math.log(-tx)/600*5;
-    }
-    return percentOutputValue;
-  }
+  // public double fullReverseRotation() {
+  //   if (tx > 0) {
+  //     percentOutputValue = -(Math.log(tx)/600*5);
+  //   }
+  //   else if (tx < 0) {
+  //     percentOutputValue = Math.log(-tx)/600*5;
+  //   }
+  //   return percentOutputValue;
+  // }
   public void goToPosition(double position) {
     targetPosition = position;
     m_controller.setSetpoint(targetPosition, ControlType.kMAXMotionPositionControl);
+  }
+  public double currentPosY() {
+    return encoder.getPosition();
   }
 
   public boolean isAtPosition() {
@@ -163,15 +186,16 @@ public class Turret extends SubsystemBase {
     SmartDashboard.putNumber("Target Area", area);
     SmartDashboard.putNumber("Fiducial ID", fiducialID);
     SmartDashboard.putString("Limelight Stream", limelightURL);
-    SmartDashboard.putNumber("Position", currentPosX());
+    SmartDashboard.putNumber("PositionX", currentPosX());
+    SmartDashboard.putNumber("PositionY", currentPosY());
   }
   public void autoAlign(){
     if (isVisible == true && tx>0 && isLimitedX1 == false && isLimitedX2 == false && isLocked == false) {
       motorX.setControl(new DutyCycleOut(getPercentOutput()));
     } 
-    else if (isVisible == true && tx>0 && isLimitedX1 == true && isLimitedX2 == true && isLocked == false) {
-      motorX.setControl(new DutyCycleOut(fullReverseRotation()));
-    }
+    // else if (isVisible == true && tx>0 && isLimitedX1 == true && isLimitedX2 == true && isLocked == false) {
+    //   motorX.setControl(new DutyCycleOut(fullReverseRotation()));
+    // }
     else {
       motorX.setControl(new DutyCycleOut(0));
     }
@@ -203,19 +227,38 @@ public class Turret extends SubsystemBase {
     isLocked = true;
   }
   public void upMotorPosX(){
-    moveToPosX(currentPosX() + 5);
+    if (isLimitedX1 == true) {
+      moveToPosX(currentPosX() + 5);
+    }
+    
   }
   public void downMotorPosX(){
-    moveToPosX(currentPosX() - 5);
+    if (isLimitedX2 == true) {
+      moveToPosX(currentPosX() - 5);
+    }
+  }
+  public void upMotorPosY(){
+    if (isLimitedY2 == true) {
+      moveToPosX(currentPosX() - 0.5);
+    }
+  }
+  public void downMotorPosY(){
+    if (isLimitedY1 == true) {
+      moveToPosX(currentPosX() + 0.5);
+    }
   }
   
   public double currentPosX(){
     return motorX.getPosition().getValueAsDouble();
   }
+  public void setEncoder() {
+    goToPosition(currentPosY()+3);
+    encoder.setPosition(2.9);
+  }
   // public boolean getLimitX(){
   //   return limitX.get();
   // }
-  public void limit() {
+  public void limitX() {
     if (currentPosX() >= 3) {
       isLimitedX1 = true;
     }
@@ -225,6 +268,18 @@ public class Turret extends SubsystemBase {
     else {
       isLimitedX1 = false;
       isLimitedX2 = false;
+    }
+  }
+  public void limitY() {
+    if (currentPosY() >= 2.9) {
+      isLimitedY1 = true;
+    }
+    else if (currentPosY() <= 0) {
+      isLimitedY2 = true;
+    }
+    else {
+      isLimitedY1 = false;
+      isLimitedY2 = false;
     }
   }
   public void setHoodMotor(double position) {
@@ -237,7 +292,8 @@ public class Turret extends SubsystemBase {
     // This method will be called once per scheduler run
     updateData();
     autoAlign();
-    limit();
+    limitX();
+    limitY();
     SmartDashboard.putNumber("TurretPosition", encoder.getPosition());
 
     double manualPosition = SmartDashboard.getNumber("TurretManualPosition", 90);

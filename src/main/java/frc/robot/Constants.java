@@ -97,7 +97,7 @@ public class Constants {
     private static final boolean kInvertLeftSide = false;
     private static final boolean kInvertRightSide = true;
 
-    private static final int kPigeonId = 7;
+    private static final int kPigeonId = 8;
 
     // These are only used for simulation
     private static final MomentOfInertia kSteerInertia = KilogramSquareMeters.of(0.01);
@@ -133,10 +133,7 @@ public class Constants {
             .withSteerFrictionVoltage(kSteerFrictionVoltage)
             .withDriveFrictionVoltage(kDriveFrictionVoltage);
 
-    // Front Left
-    private static final int kFrontLeftDriveMotorId = 8;
-    private static final int kFrontLeftSteerMotorId = 10;
-    private static final int kFrontLeftEncoderId = 9;
+   
     private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.312744140625 + 6.28 + 3.14 + 0.0374);
     private static final boolean kFrontLeftSteerMotorInverted = true;
     private static final boolean kFrontLeftEncoderInverted = false;
@@ -144,10 +141,7 @@ public class Constants {
     private static final Distance kFrontLeftXPos = Inches.of(12.5);
     private static final Distance kFrontLeftYPos = Inches.of(12.5);
 
-    // Front Right
-    private static final int kFrontRightDriveMotorId = 11;
-    private static final int kFrontRightSteerMotorId = 13;
-    private static final int kFrontRightEncoderId = 12;
+   
     private static final Angle kFrontRightEncoderOffset = Rotations
             .of(-0.02685546875 + (3.14 / 2) + (3.14 / 4) - 6.28 - 3.14 + 0.0276);
     private static final boolean kFrontRightSteerMotorInverted = true;
@@ -156,21 +150,32 @@ public class Constants {
     private static final Distance kFrontRightXPos = Inches.of(12.5);
     private static final Distance kFrontRightYPos = Inches.of(-12.5);
 
-    // Back Left
-    private static final int kBackLeftDriveMotorId = 4;
-    private static final int kBackLeftSteerMotorId = 6;
-    private static final int kBackLeftEncoderId = 5;
+    
     private static final Angle kBackLeftEncoderOffset = Rotations.of(0.18310546875);
     private static final boolean kBackLeftSteerMotorInverted = true;
     private static final boolean kBackLeftEncoderInverted = false;
 
     private static final Distance kBackLeftXPos = Inches.of(-12.5);
     private static final Distance kBackLeftYPos = Inches.of(12.5);
+    // Swerve Motor IDs
 
+    // Front Left
+    private static final int kFrontLeftDriveMotorId = 4;
+    private static final int kFrontLeftSteerMotorId = 9;
+    private static final int kFrontLeftEncoderId = 16;
+    // Front Right
+    private static final int kFrontRightDriveMotorId = 12;
+    private static final int kFrontRightSteerMotorId = 11;
+    private static final int kFrontRightEncoderId = 5;
     // Back Right
-    private static final int kBackRightDriveMotorId = 1;
-    private static final int kBackRightSteerMotorId = 3;
-    private static final int kBackRightEncoderId = 2;
+    private static final int kBackRightDriveMotorId = 14;
+    private static final int kBackRightSteerMotorId = 13;
+    private static final int kBackRightEncoderId = 10;
+    // Back Left
+    private static final int kBackLeftDriveMotorId = 7;
+    private static final int kBackLeftSteerMotorId = 6;
+    private static final int kBackLeftEncoderId = 1;
+    
     private static final Angle kBackRightEncoderOffset = Rotations.of(0.228759765625 + 0.5);
     private static final boolean kBackRightSteerMotorInverted = true;
     private static final boolean kBackRightEncoderInverted = false;
@@ -324,13 +329,16 @@ public class Constants {
                         areaToAngle.put(8, 80.0);
                         areaToAngle.put(9, 90.0);
                 }
-}
+        }
+
         public final class StorageConstants{
                 public final static int togglePort = 3;
-                public final static int motorid = 19;
+                public final static int flyWheel = 15;
+                public final static int motorid1 = 17;
+                public final static int motorid2 = 19;
                 public final static double attackSpeed = 0.6;
                 public final static double defenseSpeed = 1.0;
                 public final static int limitid = 0;
 
         }
-    }
+}

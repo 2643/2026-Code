@@ -40,6 +40,7 @@ public class Shoot extends Command {
       case DEFENSE -> RobotContainer.m_Storage.moveMotor(Constants.StorageConstants.defenseSpeed);
       default -> throw new AssertionError(phase.name());
     }
+    RobotContainer.m_Storage.delayMotorStart();
   }
   // Returns true when the command should end.
   @Override
