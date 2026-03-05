@@ -25,9 +25,12 @@ import frc.robot.subsystems.Turret;
 
 
 public class RobotContainer {
-    private double MaxSpeed = Constants.OperatorConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-    private double MaxAngularRate = RotationsPerSecond.of(0.05).in(RadiansPerSecond); // 3/4 of a rotation per second
-                                                                                      // max angular velocity
+    // Normal and dynamic (current) max speed/rotation values. Slow mode multiplies these.
+    private final double kSlowMultiplier = 0.4;
+    private final double normalMaxSpeed = Constants.OperatorConstants.kSpeedAt12Volts.in(MetersPerSecond); // desired top speed
+    private final double normalMaxAngularRate = RotationsPerSecond.of(0.05).in(RadiansPerSecond); // max angular velocity
+    private double MaxSpeed = normalMaxSpeed;
+    private double MaxAngularRate = normalMaxAngularRate;
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -43,6 +46,10 @@ public class RobotContainer {
     public static final JoystickButton manual_turret = new JoystickButton(joystick, Constants.TurretConstants.turretPort);
     public final static JoystickButton shoot = new JoystickButton(joystick, Constants.TurretConstants.shootPort);
     public final static JoystickButton toggle = new JoystickButton(joystick, Constants.StorageConstants.togglePort);
+    // Button 10: zero the gyro / seed field-centric heading
+    public final static JoystickButton zeroGyro = new JoystickButton(joystick, 10);
+    // Button 6: hold for slow mode (reduced translation & rotation)
+    public final static JoystickButton slowMode = new JoystickButton(joystick, 6);
     
         private static final int AXIS_X = 0; // X-axis 
         private static final int AXIS_Y = 1; // Y-axis 
@@ -110,6 +117,18 @@ public class RobotContainer {
     
             // reset the field-centric heading on left bumper press
             // buttonLeftBumper.onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+            // zero gyro on button 10
+            zeroGyro.onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+
+            // slow mode (hold button 6 to reduce speeds)
+            slowMode.onTrue(drivetrain.runOnce(() -> {
+                MaxSpeed = normalMaxSpeed * kSlowMultiplier;
+                MaxAngularRate = normalMaxAngularRate * kSlowMultiplier;
+            }));
+            slowMode.onFalse(drivetrain.runOnce(() -> {
+                MaxSpeed = normalMaxSpeed;
+                MaxAngularRate = normalMaxAngularRate;
+            }));
     
             drivetrain.registerTelemetry(logger::telemeterize);
         }

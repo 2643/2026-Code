@@ -55,6 +55,9 @@ public class Turret extends SubsystemBase {
  
   private final String limelightName = "limelight";
   private final String limelightURL = "http://10.26.43.200:5801/";
+
+  private final String limelightName2 = "limelight-bhavik";
+  private final String limelightURL2 = "http://10.26.43.201:5801/";
   MotionMagicVoltage motion = new MotionMagicVoltage(0);
   public SparkMax hoodMotor = new SparkMax(Constants.TurretConstants.hoodID, MotorType.kBrushless);
   public RelativeEncoder encoder = hoodMotor.getEncoder();
@@ -116,17 +119,22 @@ public class Turret extends SubsystemBase {
   }
   public double getPercentOutput() {
     if (tx > 0) {
-      percentOutputValue = Math.log(tx)/600*5;
+      percentOutputValue = Math.log(tx)/600*5/2*8;
       if (percentOutputValue >= 0.2) {
         percentOutputValue = 0.2;
       }
     }
     else if (tx < 0) {
-      percentOutputValue = -(Math.log(-tx)/600*5);
+      percentOutputValue = -(Math.log(-tx)/600/2*5*8);
       if (percentOutputValue <= -0.2) {
         percentOutputValue = -0.2;
       }
     }
+    // if (tx < 0) {
+    //   percentOutputValue = -0.05;
+    // } else if (tx > 0) {
+    //   percentOutputValue = 0.05;
+    // }
     return percentOutputValue;
   }
   // public double fullReverseRotation() {
@@ -157,9 +165,9 @@ public class Turret extends SubsystemBase {
 
   public void updateData() {
     isVisible = LimelightHelpers.getTV(limelightName);
-    yaw = LimelightHelpers.getTX(limelightName);
-    tx = LimelightHelpers.getTX(limelightName);  // Horizontal offset (same as yaw)
-    ty = LimelightHelpers.getTY(limelightName);  // Vertical offset
+    // yaw = LimelightHelpers.getTX(limelightName);
+    tx = LimelightHelpers.getTY(limelightName);  // Horizontal offset (same as yaw)
+    // ty = LimelightHelpers.getTY(limelightName);  // Vertical offset
     area = LimelightHelpers.getTA(limelightName);
     fiducialID = LimelightHelpers.getFiducialID(limelightName);
     
@@ -172,6 +180,8 @@ public class Turret extends SubsystemBase {
     SmartDashboard.putNumber("Target Area", area);
     SmartDashboard.putNumber("Fiducial ID", fiducialID);
     SmartDashboard.putString("Limelight Stream", limelightURL);
+    SmartDashboard.putString("Driver Cam", limelightURL2);
+    SmartDashboard.putNumber("percentOutputValue", percentOutputValue);
     SmartDashboard.putNumber("PositionX", currentPosX());
     SmartDashboard.putNumber("PositionY", currentPosY());
   }
@@ -258,10 +268,10 @@ public class Turret extends SubsystemBase {
   // }
   public void limitX() {
     if (currentPosX() >= 3) {
-      isLimitedX1 = true;
+      isLimitedX1 = false;
     }
     else if (currentPosX() <= -3) {
-      isLimitedX2 = true;
+      isLimitedX2 = false;
     }
     else {
       isLimitedX1 = false;
@@ -269,16 +279,16 @@ public class Turret extends SubsystemBase {
     }
   }
   public void limitY() {
-    if (currentPosY() >= 2.9) {
-      isLimitedY1 = true;
-    }
-    else if (currentPosY() <= 0) {
-      isLimitedY2 = true;
-    }
-    else {
-      isLimitedY1 = false;
-      isLimitedY2 = false;
-    }
+    // if (currentPosY() >= 2.9) {
+    //   isLimitedY1 = true;
+    // }
+    // else if (currentPosY() <= 0) {
+    //   isLimitedY2 = true;
+    // }
+    // else {
+    //   isLimitedY1 = false;
+    //   isLimitedY2 = false;
+    // }
   }
   public void setHoodMotor(double position) {
     hoodMotor.set(position);
