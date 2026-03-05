@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
 import frc.robot.commands.ManualTurret;
+import frc.robot.commands.SetEncoder;
 import frc.robot.commands.Intake.StartIntake;
 import frc.robot.commands.Storage.Shoot;
 import frc.robot.commands.Storage.Toggle;
@@ -66,6 +67,7 @@ public class RobotContainer {
             start.onTrue(new StartIntake());
             shoot.onTrue(new Shoot(m_Storage.getPhase()));
             manual_turret.onTrue(new ManualTurret());
+            manual_turret.onTrue(new SetEncoder());
 
 
             // autoAim.whileTrue(new AutoAim(drivetrain, m_vision));
