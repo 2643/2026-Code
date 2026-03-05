@@ -57,7 +57,7 @@ public class Constants {
     // When not Pro-licensed, Fused*/Sync* automatically fall back to Remote*
     private static final SteerFeedbackType kSteerFeedbackType = SteerFeedbackType.FusedCANcoder;
 
-    // The stator current at which the wheels start to slip;
+    // The Supply current at which the wheels start to slip;
     // This needs to be tuned to your individual robot
     private static final Current kSlipCurrent = Amps.of(120.0);
 
@@ -65,15 +65,20 @@ public class Constants {
     // cannot be null.
     // Some configs will be overwritten; check the `with*InitialConfigs()` API
     // documentation.
-    private static final TalonFXConfiguration driveInitialConfigs = new TalonFXConfiguration();
+    private static final TalonFXConfiguration driveInitialConfigs = new TalonFXConfiguration()
+            .withCurrentLimits(
+                    new CurrentLimitsConfigs()
+                            // Prevent excessive drive Supply current and help avoid brownouts.
+                            .withSupplyCurrentLimit(Amps.of(80))
+                            .withSupplyCurrentLimitEnable(true));
     private static final TalonFXConfiguration steerInitialConfigs = new TalonFXConfiguration()
             .withCurrentLimits(
                     new CurrentLimitsConfigs()
                             // Swerve azimuth does not require much torque output, so we can set a
                             // relatively low
-                            // stator current limit to help avoid brownouts without impacting performance.
-                            .withStatorCurrentLimit(Amps.of(60))
-                            .withStatorCurrentLimitEnable(true));
+                            // Supply current limit to help avoid brownouts without impacting performance.
+                            .withSupplyCurrentLimit(Amps.of(60))
+                            .withSupplyCurrentLimitEnable(true));
     private static final CANcoderConfiguration encoderInitialConfigs = new CANcoderConfiguration();
     // Configs for the Pigeon 2; leave this null to skip applying Pigeon 2 configs
     private static final Pigeon2Configuration pigeonConfigs = null;
@@ -313,7 +318,7 @@ public class Constants {
         public final class TurretConstants {    
                 public final static double hoodGearRatio = 72 / 289;
                 // add real
-                public final static int limitid = 1;
+                public final static int limitid = 2;
                 public final static int hoodid = 16;
                 public final static int swivelid = 0;
                 public final static int shootPort = 1;
