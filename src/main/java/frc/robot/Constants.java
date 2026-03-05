@@ -5,6 +5,8 @@ import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
+import javax.security.auth.login.FailedLoginException;
+
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.hardware.*;
@@ -306,18 +308,26 @@ public class Constants {
         }
         }
         public final class IntakeConstants {
-                public final static int motorid = 18;
-                public final static double speed = -0.6;
+                public final static int intakeID = 18;
+                public final static double intakeSpeed = -0.6;
                 public final static int intakePort = 2;
         }
         public final class TurretConstants {    
                 public final static double hoodGearRatio = 72 / 289;
                 // add real
-                public final static int limitid = 1;
-                public final static int hoodid = 16;
-                public final static int swivelid = 0;
+                public final static int swivelLimitPort = 1;
+                public final static int hoodLimitPort = 2;
+                public final static int hoodID = 16;
+                public final static int swivelID = 0;
                 public final static int shootPort = 1;
                 public final static int turretPort = 4;
+
+                public final static double swivelP = 4.1;
+                public final static double swivelI = 0.0;
+                public final static double swivelD = 0.0;
+                public final static double hoodP = 1.5;
+                public final static double hoodI = 0.01;
+                public final static double hoodD = 0.01;
 
                 public final static Dictionary<Integer, Double> areaToAngle = new Hashtable<Integer, Double>();
                 public TurretConstants() {
@@ -337,8 +347,8 @@ public class Constants {
         public final class StorageConstants{
                 public final static int togglePort = 3;
                 public final static int flyWheel = 15;
-                public final static int motorid1 = 17;
-                public final static int motorid2 = 19;
+                public final static int indexMotorID = 17;
+                public final static int indexMotor2ID = 19;
                 public final static double attackSpeed = -0.6;
                 public final static double defenseSpeed = 1.0;
                 public final static int limitid = 0;

@@ -21,17 +21,17 @@ public class Storage extends SubsystemBase {
   public boolean run = false;
   private Timer timer = new Timer();
   
-  private double lastDetectionTime = 0;
+  // private double lastDetectionTime = 0;
   Phase currentPhase = Phase.ATTACK;
   Indexer currentIndexer = Indexer.OFF;
   TalonFX flyWheel = new TalonFX(Constants.StorageConstants.flyWheel);
-  TalonFX storage1 = new TalonFX(Constants.StorageConstants.motorid1);
-  TalonFX storage2 = new TalonFX(Constants.StorageConstants.motorid2);
+  TalonFX indexMotor1 = new TalonFX(Constants.StorageConstants.indexMotorID);
+  TalonFX indexMotor2 = new TalonFX(Constants.StorageConstants.indexMotor2ID);
   DigitalInput LimitSwitch = new DigitalInput(Constants.StorageConstants.limitid);
   public MotorAlignmentValue MotorAlignment = MotorAlignmentValue.Aligned; // Aligned or Opposed
   /** Creates a new Motor. */
   public Storage() {
-    storage2.setControl(new Follower(storage1.getDeviceID(), MotorAlignment));
+    indexMotor2.setControl(new Follower(indexMotor1.getDeviceID(), MotorAlignment));
   }
   public void delayMotorStart(){
     if (getIndexer() == Indexer.ON) {
@@ -39,10 +39,10 @@ public class Storage extends SubsystemBase {
       if (timer.hasElapsed(3)) {
         timer.stop();
         timer.reset();
-        storage1.setControl(new DutyCycleOut(0.6));
+        indexMotor1.setControl(new DutyCycleOut(0.6));
       } 
     } else {
-      storage1.setControl(new DutyCycleOut(0));
+      indexMotor1.setControl(new DutyCycleOut(0));
     }
     
   }
