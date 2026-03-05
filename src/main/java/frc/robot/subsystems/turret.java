@@ -53,8 +53,8 @@ public class Turret extends SubsystemBase {
   public double percentOutputValue;
   public double targetPosition;
   public double p = 1.5;
-  public double i = 0.02;
-  public double d = 0.02;
+  public double i = 0.01;
+  public double d = 0.01;
   private final String limelightName = "limelight";
   private final String limelightURL = "http://10.26.43.200:5801/";
   MotionMagicVoltage motion = new MotionMagicVoltage(0);
@@ -63,6 +63,7 @@ public class Turret extends SubsystemBase {
   public MAXMotionConfig motorConfig = new MAXMotionConfig();
   public ClosedLoopConfig motorConfigClosed = new ClosedLoopConfig();
   public SparkMaxConfig motorConfigBase = new SparkMaxConfig();
+  public DigitalInput limitSwitch = new DigitalInput(Constants.TurretConstants.limitid);
 
 
   ClosedLoopConfig revConfig = new ClosedLoopConfig();
@@ -98,6 +99,8 @@ public class Turret extends SubsystemBase {
       .d(d)
       .outputRange(-5, 5)
       .apply(motorConfig);
+
+      motorConfigBase.apply(motorConfigClosed);
 
     hoodMotor.configure(motorConfigBase, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
@@ -178,9 +181,10 @@ public class Turret extends SubsystemBase {
     area = LimelightHelpers.getTA(limelightName);
     fiducialID = LimelightHelpers.getFiducialID(limelightName);
     
-    SmartDashboard.putNumber("TurretManualPosition", 90);
+    // SmartDashboard.putNumber("TurretManualPosition", 90);
     SmartDashboard.putBoolean("Has Target", isVisible);
     SmartDashboard.putNumber("Target Yaw", yaw);
+    SmartDashboard.putNumber("Target Position", targetPosition);
     SmartDashboard.putNumber("Limelight TX", tx);
     SmartDashboard.putNumber("Limelight TY", ty);
     SmartDashboard.putNumber("Target Area", area);
@@ -252,8 +256,8 @@ public class Turret extends SubsystemBase {
     return motorX.getPosition().getValueAsDouble();
   }
   public void setEncoder() {
-    goToPosition(currentPosY()+3);
-    encoder.setPosition(2.9);
+    encoder.setPosition(0);
+    goToPosition(2.9);
   }
   // public boolean getLimitX(){
   //   return limitX.get();
@@ -295,8 +299,10 @@ public class Turret extends SubsystemBase {
     limitX();
     limitY();
     SmartDashboard.putNumber("TurretPosition", encoder.getPosition());
+    SmartDashboard.putBoolean("limi2", limitSwitch.get());
+    SmartDashboard.putBoolean("limit3", new DigitalInput(2).get());
 
-    double manualPosition = SmartDashboard.getNumber("TurretManualPosition", 90);
-    goToPosition(manualPosition);
+    // double manualPosition = SmartDashboard.getNumber("TurretManualPosition", 90);
+    // goToPosition(manualPosition);
   }
 }

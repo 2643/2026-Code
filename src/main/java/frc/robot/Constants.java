@@ -134,7 +134,6 @@ public class Constants {
             .withDriveFrictionVoltage(kDriveFrictionVoltage);
 
    
-    private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.312744140625 + 6.28 + 3.14 + 0.0374);
     private static final boolean kFrontLeftSteerMotorInverted = true;
     private static final boolean kFrontLeftEncoderInverted = false;
 
@@ -142,8 +141,6 @@ public class Constants {
     private static final Distance kFrontLeftYPos = Inches.of(12.5);
 
    
-    private static final Angle kFrontRightEncoderOffset = Rotations
-            .of(-0.02685546875 + (3.14 / 2) + (3.14 / 4) - 6.28 - 3.14 + 0.0276);
     private static final boolean kFrontRightSteerMotorInverted = true;
     private static final boolean kFrontRightEncoderInverted = false;
 
@@ -151,7 +148,6 @@ public class Constants {
     private static final Distance kFrontRightYPos = Inches.of(-12.5);
 
     
-    private static final Angle kBackLeftEncoderOffset = Rotations.of(0.18310546875);
     private static final boolean kBackLeftSteerMotorInverted = true;
     private static final boolean kBackLeftEncoderInverted = false;
 
@@ -162,21 +158,28 @@ public class Constants {
     // Front Left
     private static final int kFrontLeftDriveMotorId = 4;
     private static final int kFrontLeftSteerMotorId = 9;
-    private static final int kFrontLeftEncoderId = 16;
-    // Front Right
+    private static final int kFrontLeftEncoderId = 31;
+    private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.312744140625 + 6.28 + 3.14 + 0.0374 );
+
+    // Front Right 
     private static final int kFrontRightDriveMotorId = 12;
     private static final int kFrontRightSteerMotorId = 11;
     private static final int kFrontRightEncoderId = 5;
+    private static final Angle kFrontRightEncoderOffset = Rotations
+            .of(-0.02685546875 + (3.14 / 2) + (3.14 / 4) - 6.28 - 3.14 + 0.0276 -(3.14/2/2)+(3.14/12)+(3.14/4));
     // Back Right
     private static final int kBackRightDriveMotorId = 14;
     private static final int kBackRightSteerMotorId = 13;
     private static final int kBackRightEncoderId = 10;
+    private static final Angle kBackRightEncoderOffset = Rotations.of(0.228759765625 + 0.5);
+
     // Back Left
     private static final int kBackLeftDriveMotorId = 7;
     private static final int kBackLeftSteerMotorId = 6;
     private static final int kBackLeftEncoderId = 1;
+    private static final Angle kBackLeftEncoderOffset = Rotations.of(0.18310546875+(3.14/4)-(3.14/8)+3.14+6.28+(3.14/12)+(3.14/4));
+
     
-    private static final Angle kBackRightEncoderOffset = Rotations.of(0.228759765625 + 0.5);
     private static final boolean kBackRightSteerMotorInverted = true;
     private static final boolean kBackRightEncoderInverted = false;
 
@@ -304,15 +307,15 @@ public class Constants {
         }
         public final class IntakeConstants {
                 public final static int motorid = 18;
-                public final static double speed = 0.6;
+                public final static double speed = -0.6;
                 public final static int intakePort = 2;
         }
         public final class TurretConstants {    
                 public final static double hoodGearRatio = 72 / 289;
                 // add real
                 public final static int limitid = 1;
-                public final static int hoodid = 99;
-                public final static int swivelid = 99;
+                public final static int hoodid = 16;
+                public final static int swivelid = 0;
                 public final static int shootPort = 1;
                 public final static int turretPort = 4;
 
@@ -336,7 +339,7 @@ public class Constants {
                 public final static int flyWheel = 15;
                 public final static int motorid1 = 17;
                 public final static int motorid2 = 19;
-                public final static double attackSpeed = 0.6;
+                public final static double attackSpeed = -0.6;
                 public final static double defenseSpeed = 1.0;
                 public final static int limitid = 0;
 
