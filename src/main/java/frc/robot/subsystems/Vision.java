@@ -7,11 +7,11 @@ package frc.robot.subsystems;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.HttpCamera;
 
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
@@ -23,8 +23,17 @@ public class Vision extends SubsystemBase {
   public double area;
   public double fiducialID;
     
-  private final String limelightName = "limelight";
-  
+  // private final String limelightName = "limelight";
+
+  // Names/URLs for limelights
+  private final String primaryLimelight = "limelight-allen";
+
+  // Additional named Limelight cameras on the robot (HTTP streams)
+  private final String limelightName1 = "limelight-allen";
+  private final String limelightURL1 = "http://10.26.43.200:5801/";
+
+  private final String limelightName2 = "limelight-bhavik";
+  private final String limelightURL2 = "http://10.26.43.201:5801/";
 
   public final PhotonCamera camera = new PhotonCamera("placeholder");
  
@@ -37,72 +46,111 @@ public class Vision extends SubsystemBase {
 
   /** Creates a new Vision. */
   public Vision() {
-    LimelightHelpers.setLEDMode_PipelineControl(limelightName);
+  LimelightHelpers.setLEDMode_PipelineControl(primaryLimelight);
+    // Start automatic MJPEG captures for both Limelight HTTP streams so dashboards
+    // (Shuffleboard/SmartDashboard/CameraServer/Elastic) can view them.
+    // Try starting HTTP camera captures. Some dashboards need an explicit
+    // HttpCamera with a proper MJPEG stream path. Try a few common endpoints.
+    try {
+      var cam1 = new HttpCamera(limelightName1, limelightURL1 + "stream.mjpg");
+      CameraServer.startAutomaticCapture(cam1);
+    } catch (Exception e1) {
+      try {
+        var cam1b = new HttpCamera(limelightName1, limelightURL1 + "stream");
+        CameraServer.startAutomaticCapture(cam1b);
+      } catch (Exception ignored) {
+        try {
+          var cam1c = new HttpCamera(limelightName1, limelightURL1);
+          CameraServer.startAutomaticCapture(cam1c);
+        } catch (Exception ignored2) {
+        }
+      }
+    }
+
+    try {
+      var cam2 = new HttpCamera(limelightName2, limelightURL2 + "stream.mjpg");
+      CameraServer.startAutomaticCapture(cam2);
+    } catch (Exception e2) {
+      try {
+        var cam2b = new HttpCamera(limelightName2, limelightURL2 + "stream");
+        CameraServer.startAutomaticCapture(cam2b);
+      } catch (Exception ignored) {
+        try {
+          var cam2c = new HttpCamera(limelightName2, limelightURL2);
+          CameraServer.startAutomaticCapture(cam2c);
+        } catch (Exception ignored2) {
+        }
+      }
+    }
   }
 
 
   
   public void updateData() {
-    isVisible = LimelightHelpers.getTV(limelightName);
-    yaw = LimelightHelpers.getTX(limelightName);
-    area = LimelightHelpers.getTA(limelightName);
-    fiducialID = LimelightHelpers.getFiducialID(limelightName);
-        
-    SmartDashboard.putBoolean("Has Target", isVisible);
-    SmartDashboard.putNumber("Target Yaw", yaw);
-    SmartDashboard.putNumber("Target Area", area);
-    SmartDashboard.putNumber("Fiducial ID", fiducialID);
+  // Primary (default) limelight
+  isVisible = LimelightHelpers.getTV(primaryLimelight);
+  yaw = LimelightHelpers.getTX(primaryLimelight);
+  area = LimelightHelpers.getTA(primaryLimelight);
+  fiducialID = LimelightHelpers.getFiducialID(primaryLimelight);
+
+  SmartDashboard.putBoolean("Has Target (primary)", isVisible);
+  SmartDashboard.putNumber("Target Yaw (primary)", yaw);
+  SmartDashboard.putNumber("Target Area (primary)", area);
+  SmartDashboard.putNumber("Fiducial ID (primary)", fiducialID);
+
+  // Secondary named limelights (if present)
+  boolean ll1Visible = LimelightHelpers.getTV(limelightName1);
+  double ll1Yaw = LimelightHelpers.getTX(limelightName1);
+  double ll1Area = LimelightHelpers.getTA(limelightName1);
+
+  boolean ll2Visible = LimelightHelpers.getTV(limelightName2);
+  double ll2Yaw = LimelightHelpers.getTX(limelightName2);
+  double ll2Area = LimelightHelpers.getTA(limelightName2);
+
+  SmartDashboard.putBoolean("Has Target (allen)", ll1Visible);
+  SmartDashboard.putNumber("Target Yaw (allen)", ll1Yaw);
+  SmartDashboard.putNumber("Target Area (allen)", ll1Area);
+
+  SmartDashboard.putBoolean("Has Target (bhavik)", ll2Visible);
+  SmartDashboard.putNumber("Target Yaw (bhavik)", ll2Yaw);
+  SmartDashboard.putNumber("Target Area (bhavik)", ll2Area);
   }
 
   public void autoAlign() { //test auto align (doesn't work)
-      boolean targetVisible = false;
-      double targetYaw = 0.0;
-      double targetRange = 0.0;
-      var results = camera.getAllUnreadResults();
+    boolean targetVisible = false;
+    double targetYaw = 0.0;
+    double targetRange = 0.0;
 
-      if (!results.isEmpty()) {
+    var results = camera.getAllUnreadResults();
 
-          var result = results.get(results.size() - 1);
-
-          if (result.hasTargets()) {
-
-              for (var target : result.getTargets()) {
-
-                  if (target.getFiducialId() == 7) {
-
-                      // Found Tag 7, record its information
-
-                      targetYaw = target.getYaw();
-
-                      targetRange =
-
-                              PhotonUtils.calculateDistanceToTargetMeters(
-
-                                      0.5, // Measured with a tape measure, or in CAD.
-
-                                      1.435, // From 2024 game manual for ID 7
-
-                                      Units.degreesToRadians(-30.0), // Measured with a protractor, or in CAD.
-
-                                      Units.degreesToRadians(target.getPitch()));
-
-
-                      targetVisible = true;
-
-                  }
-
-              }
+    if (!results.isEmpty()) {
+      var result = results.get(results.size() - 1);
+      if (result.hasTargets()) {
+        for (var target : result.getTargets()) {
+          if (target.getFiducialId() == 7) {
+            // Found Tag 7, record its information
+            targetYaw = target.getYaw();
+            targetRange = PhotonUtils.calculateDistanceToTargetMeters(
+                0.5, // camera height (meters)
+                1.435, // target height (meters)
+                Units.degreesToRadians(-30.0), // camera pitch
+                Units.degreesToRadians(target.getPitch()));
+            targetVisible = true;
+            break; // stop after finding the tag
           }
+        }
       }
+    }
 
-  } 
+    // Publish the detected tag info to the subsystem fields for use elsewhere
+    this.isVisible = targetVisible;
+    this.yaw = targetYaw;
+    this.range = targetRange;
+  }
 
   @Override
   public void periodic() {
-    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-    NetworkTableEntry targetpose_cameraspace = table.getEntry("targetpose_cameraspace");
-
-    updateData();
+  updateData();
     // This method will be called once per scheduler run
   }
 }

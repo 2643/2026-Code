@@ -20,34 +20,44 @@ public class Storage extends SubsystemBase {
   public boolean detected = false;
   public boolean run = false;
   private Timer timer = new Timer();
-  private double lastDetectionTime = 0;
+  
+  // private double lastDetectionTime = 0;
   Phase currentPhase = Phase.ATTACK;
+  Indexer currentIndexer = Indexer.OFF;
   TalonFX flyWheel = new TalonFX(Constants.StorageConstants.flyWheel);
-  TalonFX storage1 = new TalonFX(Constants.StorageConstants.motorid1);
-  TalonFX storage2 = new TalonFX(Constants.StorageConstants.motorid2);
-  DigitalInput limitSwitch = new DigitalInput(Constants.StorageConstants.limitid);
-  public MotorAlignmentValue MotorAlignment = MotorAlignmentValue.Opposed; // Aligned or Opposed
+  TalonFX indexMotor1 = new TalonFX(Constants.StorageConstants.indexMotorID);
+  TalonFX indexMotor2 = new TalonFX(Constants.StorageConstants.indexMotor2ID);
+  DigitalInput LimitSwitch = new DigitalInput(Constants.StorageConstants.limitid);
+  public MotorAlignmentValue MotorAlignment = MotorAlignmentValue.Aligned; // Aligned or Opposed
   /** Creates a new Motor. */
   public Storage() {
-    storage1.setControl(new Follower(storage2.getDeviceID(), MotorAlignment));
-    timer.start(); // Start the timer when subsystem is created
+    indexMotor2.setControl(new Follower(indexMotor1.getDeviceID(), MotorAlignment));
   }
   public void delayMotorStart(){
-    if (timer.get() == 3) {
-      storage1.setControl(new DutyCycleOut(0.6));
+    if (getIndexer() == Indexer.ON) {
+      timer.start();
+      if (timer.hasElapsed(3)) {
+        timer.stop();
+        timer.reset();
+        indexMotor1.setControl(new DutyCycleOut(0.6));
+      } 
+    } else {
+      indexMotor1.setControl(new DutyCycleOut(0));
     }
-    else {
-      storage1.setControl(new DutyCycleOut(0));
-    }
+    
   }
   public enum Phase {
     ATTACK,
     DEFENSE,
   }
+  public enum Indexer {
+    ON,
+    OFF,
+  }
 
 
 public void moveMotor(double speed) {
-   if (currentSpeed == 0)
+   if (getIndexer() == Indexer.ON)
   { 
     flyWheel.setControl(new DutyCycleOut(speed));
     currentSpeed = speed;
@@ -67,6 +77,14 @@ public void setPhase(Phase phase) {
   currentPhase = phase;
 }
 
+public void setIndexer(Indexer indexer) {
+  currentIndexer = indexer;
+}
+
+public Indexer getIndexer() {
+  return currentIndexer;
+}
+
 public boolean getRun() {
   return run;
 }
@@ -74,21 +92,29 @@ public boolean getRun() {
 public double getSpeed() {
   return currentSpeed;
 }
+public void fuckTheTimer(){
+  timer.stop();
+  timer.reset();
+}
 
   @Override
   public void periodic() {
-    if(limitSwitch.get()) {
-      detected = true;
-      lastDetectionTime = timer.get();
-    }
-    else {
-      detected = false;
-    }
 
-    if (timer.get() - lastDetectionTime >= 5.0) {
-      moveMotor(0);
-    }
+    delayMotorStart();
 
+
+    // if("limit switch", LimitSwitch.get()) {
+    //   detected = true;
+    //   lastDetectionTime = timer.get();
+    // }
+    // else {
+    //   detected = false;
+    // }
+
+    // if (timer.get() - lastDetectionTime >= 5.0) {
+    //   moveMotor(0);
+    // }
+    SmartDashboard.putBoolean("limit switch", LimitSwitch.get());
     SmartDashboard.putBoolean("Detected", detected);
     SmartDashboard.putString("Phase", currentPhase.toString());
     SmartDashboard.putNumber("Speed", currentSpeed);

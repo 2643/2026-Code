@@ -8,13 +8,14 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.GenericEntry;
 
 
 public class Intake extends SubsystemBase {
   public double speed = 0;
-  TalonFX motor = new TalonFX(Constants.IntakeConstants.motorid);
-  /** Creates a new Motor. */
+  TalonFX motor = new TalonFX(Constants.IntakeConstants.intakeID);
+
   public Intake() {
     
   }
@@ -24,8 +25,8 @@ public class Intake extends SubsystemBase {
 public void moveMotor() {
    if (speed == 0)
   { 
-    motor.setControl(new DutyCycleOut(Constants.IntakeConstants.speed));
-    speed = Constants.IntakeConstants.speed;
+    motor.setControl(new DutyCycleOut(Constants.IntakeConstants.intakeSpeed));
+    speed = Constants.IntakeConstants.intakeSpeed;
   }
   else
   {
@@ -46,7 +47,7 @@ public boolean getSpeed() {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Intake Speed", speed);
   }
 }
 

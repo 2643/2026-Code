@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.subsystems.Storage.Indexer;
 import frc.robot.subsystems.Storage.Phase;
 
 
@@ -34,13 +35,20 @@ public class Shoot extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
+
   public void end(boolean interrupted) {
+    RobotContainer.m_Storage.fuckTheTimer();
+    switch (RobotContainer.m_Storage.getIndexer()){
+      case ON -> RobotContainer.m_Storage.setIndexer(Indexer.OFF);
+      case OFF -> RobotContainer.m_Storage.setIndexer(Indexer.ON);
+    }
+
     switch (phase) {
       case ATTACK -> RobotContainer.m_Storage.moveMotor(Constants.StorageConstants.attackSpeed);
       case DEFENSE -> RobotContainer.m_Storage.moveMotor(Constants.StorageConstants.defenseSpeed);
       default -> throw new AssertionError(phase.name());
     }
-    RobotContainer.m_Storage.delayMotorStart();
+    
   }
   // Returns true when the command should end.
   @Override

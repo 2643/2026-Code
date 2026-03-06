@@ -9,6 +9,9 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Storage.Phase;
+import frc.robot.RobotContainer;
+import frc.robot.commands.Turret.ResetTurret;
+import frc.robot.commands.Turret.SetEncoder;
 
 
 public class Robot extends TimedRobot {
@@ -58,8 +61,9 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
-  
+    System.out.println("jegnergnergnkjergnkerngkerngnrgkjnekjgnerngenrgkreng");
+    CommandScheduler.getInstance().schedule(new ResetTurret());
+    CommandScheduler.getInstance().schedule(new SetEncoder());
   }
 
   /** This function is called periodically during operator control. */

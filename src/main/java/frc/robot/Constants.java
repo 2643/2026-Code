@@ -5,6 +5,8 @@ import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
+import javax.security.auth.login.FailedLoginException;
+
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.hardware.*;
@@ -57,7 +59,7 @@ public class Constants {
     // When not Pro-licensed, Fused*/Sync* automatically fall back to Remote*
     private static final SteerFeedbackType kSteerFeedbackType = SteerFeedbackType.FusedCANcoder;
 
-    // The stator current at which the wheels start to slip;
+    // The Supply current at which the wheels start to slip;
     // This needs to be tuned to your individual robot
     private static final Current kSlipCurrent = Amps.of(120.0);
 
@@ -65,15 +67,20 @@ public class Constants {
     // cannot be null.
     // Some configs will be overwritten; check the `with*InitialConfigs()` API
     // documentation.
-    private static final TalonFXConfiguration driveInitialConfigs = new TalonFXConfiguration();
+    private static final TalonFXConfiguration driveInitialConfigs = new TalonFXConfiguration()
+            .withCurrentLimits(
+                    new CurrentLimitsConfigs()
+                            // Prevent excessive drive Supply current and help avoid brownouts.
+                            .withSupplyCurrentLimit(Amps.of(80))
+                            .withSupplyCurrentLimitEnable(true));
     private static final TalonFXConfiguration steerInitialConfigs = new TalonFXConfiguration()
             .withCurrentLimits(
                     new CurrentLimitsConfigs()
                             // Swerve azimuth does not require much torque output, so we can set a
                             // relatively low
-                            // stator current limit to help avoid brownouts without impacting performance.
-                            .withStatorCurrentLimit(Amps.of(60))
-                            .withStatorCurrentLimitEnable(true));
+                            // Supply current limit to help avoid brownouts without impacting performance.
+                            .withSupplyCurrentLimit(Amps.of(60))
+                            .withSupplyCurrentLimitEnable(true));
     private static final CANcoderConfiguration encoderInitialConfigs = new CANcoderConfiguration();
     // Configs for the Pigeon 2; leave this null to skip applying Pigeon 2 configs
     private static final Pigeon2Configuration pigeonConfigs = null;
@@ -134,7 +141,6 @@ public class Constants {
             .withDriveFrictionVoltage(kDriveFrictionVoltage);
 
    
-    private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.312744140625 + 6.28 + 3.14 + 0.0374);
     private static final boolean kFrontLeftSteerMotorInverted = true;
     private static final boolean kFrontLeftEncoderInverted = false;
 
@@ -142,8 +148,6 @@ public class Constants {
     private static final Distance kFrontLeftYPos = Inches.of(12.5);
 
    
-    private static final Angle kFrontRightEncoderOffset = Rotations
-            .of(-0.02685546875 + (3.14 / 2) + (3.14 / 4) - 6.28 - 3.14 + 0.0276);
     private static final boolean kFrontRightSteerMotorInverted = true;
     private static final boolean kFrontRightEncoderInverted = false;
 
@@ -151,7 +155,6 @@ public class Constants {
     private static final Distance kFrontRightYPos = Inches.of(-12.5);
 
     
-    private static final Angle kBackLeftEncoderOffset = Rotations.of(0.18310546875);
     private static final boolean kBackLeftSteerMotorInverted = true;
     private static final boolean kBackLeftEncoderInverted = false;
 
@@ -162,21 +165,28 @@ public class Constants {
     // Front Left
     private static final int kFrontLeftDriveMotorId = 4;
     private static final int kFrontLeftSteerMotorId = 9;
-    private static final int kFrontLeftEncoderId = 16;
-    // Front Right
+    private static final int kFrontLeftEncoderId = 31;
+    private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.312744140625 + 6.28 + 3.14 + 0.0374 );
+
+    // Front Right 
     private static final int kFrontRightDriveMotorId = 12;
     private static final int kFrontRightSteerMotorId = 11;
     private static final int kFrontRightEncoderId = 5;
+    private static final Angle kFrontRightEncoderOffset = Rotations
+            .of(-0.02685546875 + (3.14 / 2) + (3.14 / 4) - 6.28 - 3.14 + 0.0276 -(3.14/2/2)+(3.14/12)+(3.14/4));
     // Back Right
     private static final int kBackRightDriveMotorId = 14;
     private static final int kBackRightSteerMotorId = 13;
     private static final int kBackRightEncoderId = 10;
+    private static final Angle kBackRightEncoderOffset = Rotations.of(0.228759765625 + 0.5);
+
     // Back Left
     private static final int kBackLeftDriveMotorId = 7;
     private static final int kBackLeftSteerMotorId = 6;
     private static final int kBackLeftEncoderId = 1;
+    private static final Angle kBackLeftEncoderOffset = Rotations.of(0.18310546875+(3.14/4)-(3.14/8)+3.14+6.28+(3.14/12)+(3.14/4));
+
     
-    private static final Angle kBackRightEncoderOffset = Rotations.of(0.228759765625 + 0.5);
     private static final boolean kBackRightSteerMotorInverted = true;
     private static final boolean kBackRightEncoderInverted = false;
 
@@ -303,18 +313,26 @@ public class Constants {
         }
         }
         public final class IntakeConstants {
-                public final static int motorid = 18;
-                public final static double speed = 0.6;
+                public final static int intakeID = 18;
+                public final static double intakeSpeed = -0.6;
                 public final static int intakePort = 2;
         }
         public final class TurretConstants {    
                 public final static double hoodGearRatio = 72 / 289;
                 // add real
-                public final static int limitid = 1;
-                public final static int hoodid = 99;
-                public final static int swivelid = 99;
+                public final static int swivelLimitPort = 1;
+                public final static int hoodLimitPort = 2;
+                public final static int hoodID = 16;
+                public final static int swivelID = 0;
                 public final static int shootPort = 1;
                 public final static int turretPort = 4;
+
+                public final static double swivelP = 4.1;
+                public final static double swivelI = 0.0;
+                public final static double swivelD = 0.0;
+                public final static double hoodP = 1.5;
+                public final static double hoodI = 0.01;
+                public final static double hoodD = 0.01;
 
                 public final static Dictionary<Integer, Double> areaToAngle = new Hashtable<Integer, Double>();
                 public TurretConstants() {
@@ -334,9 +352,9 @@ public class Constants {
         public final class StorageConstants{
                 public final static int togglePort = 3;
                 public final static int flyWheel = 15;
-                public final static int motorid1 = 17;
-                public final static int motorid2 = 19;
-                public final static double attackSpeed = 0.6;
+                public final static int indexMotorID = 17;
+                public final static int indexMotor2ID = 19;
+                public final static double attackSpeed = -0.6;
                 public final static double defenseSpeed = 1.0;
                 public final static int limitid = 0;
 
