@@ -37,7 +37,7 @@ public class Shoot extends Command {
   @Override
 
   public void end(boolean interrupted) {
-    RobotContainer.m_Storage.fuckTheTimer();
+    RobotContainer.m_Storage.resetTimer();
     switch (RobotContainer.m_Storage.getIndexer()){
       case ON -> RobotContainer.m_Storage.setIndexer(Indexer.OFF);
       case OFF -> RobotContainer.m_Storage.setIndexer(Indexer.ON);

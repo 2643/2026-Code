@@ -10,6 +10,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig;
@@ -23,21 +24,21 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.config.MAXMotionConfig;
-
-
-
-
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
-
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class Turret extends SubsystemBase {
-  public double target = 0;
-  public double pos;
+
+  public enum States {
+    INITIALIZED,
+    INITIALIZING,
+    NOT_INITIALIZED
+  }
+
   public boolean isLimitedX1;
   public boolean isLimitedX2;
   public boolean isLimitedY1;
@@ -51,40 +52,49 @@ public class Turret extends SubsystemBase {
   public double fiducialID;
   public double range;
   public double percentOutputValue;
-  public double targetPosition;
+  public static double hoodTarget;
+  public static double swivelTarget;
+  States currentState = States.INITIALIZING;
+
+
+  public TalonFX swivelMotor = new TalonFX(Constants.TurretConstants.swivelID);
+
+  public SparkMax hoodMotor = new SparkMax(Constants.TurretConstants.hoodID, MotorType.kBrushless);
+  public RelativeEncoder encoder = hoodMotor.getEncoder();
  
   private final String limelightName2 = "limelight";
   private final String limelightURL2 = "http://10.26.43.200:5801/";
 
   private final String limelightName = "limelight-bhavik";
   private final String limelightURL = "http://10.26.43.201:5801/";
-  MotionMagicVoltage motion = new MotionMagicVoltage(0);
-  public SparkMax hoodMotor = new SparkMax(Constants.TurretConstants.hoodID, MotorType.kBrushless);
-  public RelativeEncoder encoder = hoodMotor.getEncoder();
+
+  // public DigitalInput hoodLimit = new DigitalInput(Constants.TurretConstants.hoodLimitPort); //removed bc different initialization method
+  public DigitalInput swivelLimit = new DigitalInput(Constants.TurretConstants.swivelLimitPort);
+
+  TalonFXConfiguration configs = new TalonFXConfiguration();
+  
   public MAXMotionConfig motorConfig = new MAXMotionConfig();
   public ClosedLoopConfig motorConfigClosed = new ClosedLoopConfig();
   public SparkMaxConfig motorConfigBase = new SparkMaxConfig();
-  public DigitalInput hoodLimit = new DigitalInput(Constants.TurretConstants.hoodLimitPort);
-  public DigitalInput swivelLimit = new DigitalInput(Constants.TurretConstants.swivelLimitPort);
-
-  public TalonFX swivelMotor = new TalonFX(Constants.TurretConstants.swivelID);
-  TalonFXConfiguration configs = new TalonFXConfiguration();
-
-
   ClosedLoopConfig revConfig = new ClosedLoopConfig();
   SparkClosedLoopController m_controller = hoodMotor.getClosedLoopController();
+
+  
+
+
   public Turret() {
-    var motionmagicconfigs = configs.MotionMagic;
-    var slot0configs = configs.Slot0;
+    configs.Slot0.kP = Constants.TurretConstants.swivelP;
+    configs.Slot0.kI = Constants.TurretConstants.swivelP;
+    configs.Slot0.kD = Constants.TurretConstants.swivelP;
+    
+    configs.MotionMagic.MotionMagicAcceleration = 50;
+    configs.MotionMagic.MotionMagicCruiseVelocity = 50;
   
-    slot0configs.kP = Constants.TurretConstants.swivelP;
-    slot0configs.kI = Constants.TurretConstants.swivelI;
-    slot0configs.kD = Constants.TurretConstants.swivelD;
-  
-    motionmagicconfigs.MotionMagicAcceleration = 50;
-    motionmagicconfigs.MotionMagicCruiseVelocity = 50;
-  
+    swivelMotor.setPosition(0);
+
     swivelMotor.getConfigurator().apply(configs);
+    swivelMotor.setNeutralMode(NeutralModeValue.Coast);
+    
     motorConfig.cruiseVelocity(100).maxAcceleration(100);
 
     motorConfigClosed
@@ -99,16 +109,18 @@ public class Turret extends SubsystemBase {
 
     hoodMotor.configure(motorConfigBase, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
-    
+  
+  public States getState() {
+    return currentState;
+  }
+
+  public void setState(States state) {
+    currentState = state;
+  }
+
   public void setPos(double pos) {
       swivelMotor.setPosition(pos);
   }
-
-
-    // public void NeoMotorPosition(double p, double i, double d, double ff) {
-    //     double targetRPM = 3000;
-    // }
-    
 
   public String getLimelightURL() {
     return limelightURL;
@@ -146,49 +158,29 @@ public class Turret extends SubsystemBase {
   //   }
   //   return percentOutputValue;
   // }
-  public void goToPosition(double position) {
-    targetPosition = position;
-    m_controller.setSetpoint(targetPosition, ControlType.kMAXMotionPositionControl);
+   public void moveSwivel(double position) {
+    swivelTarget = position;
+    swivelMotor.setControl(new MotionMagicVoltage(swivelTarget));
   }
-  public double currentPosY() {
+
+  public void moveHood(double position) {
+    hoodTarget = position;
+    m_controller.setSetpoint(hoodTarget, ControlType.kMAXMotionPositionControl);
+  }
+  public double getHoodPos() {
     return encoder.getPosition();
   }
 
   public boolean isAtPosition() {
     double encoderPosition = encoder.getPosition();
-    return Math.abs(encoderPosition - targetPosition) <= 1; // MARGIN OF ERROR
+    return Math.abs(encoderPosition - hoodTarget) <= 1; // MARGIN OF ERROR
   }
 
   public double getTY() {
     return ty;
   }
 
-  public void updateData() {
-    isVisible = LimelightHelpers.getTV(limelightName);
-    // yaw = LimelightHelpers.getTX(limelightName);
-    tx = LimelightHelpers.getTY(limelightName);  // Horizontal offset (same as yaw)
-    // ty = LimelightHelpers.getTY(limelightName);  // Vertical offset
-    area = LimelightHelpers.getTA(limelightName);
-    fiducialID = LimelightHelpers.getFiducialID(limelightName);
-    
-    // SmartDashboard.putNumber("TurretManualPosition", 90);
-    SmartDashboard.putBoolean("Has Target", isVisible);
-    SmartDashboard.putNumber("Target Yaw", yaw);
-    SmartDashboard.putNumber("Target Hood Position", targetPosition);
-    SmartDashboard.putNumber("Target Swivel Position", target);
 
-    SmartDashboard.putNumber("Limelight TX", tx);
-    SmartDashboard.putNumber("Limelight TY", ty);
-    SmartDashboard.putNumber("Target Area", area);
-    SmartDashboard.putNumber("Fiducial ID", fiducialID);
-    SmartDashboard.putString("Limelight Stream", limelightURL);
-    SmartDashboard.putString("Driver Cam", limelightURL2);
-    SmartDashboard.putNumber("percentOutputValue", percentOutputValue);
-    SmartDashboard.putNumber("PositionX", currentPosX());
-    SmartDashboard.putNumber("PositionY", currentPosY());
-    SmartDashboard.putBoolean("Swivel Limit", swivelLimit.get());
-    SmartDashboard.putBoolean("Hood Limit", hoodLimit.get());
-  }
   public void autoAlign(){
     if (isVisible == true && tx>0 && isLimitedX1 == false && isLimitedX2 == false && isLocked == false) {
       swivelMotor.setControl(new DutyCycleOut(getPercentOutput()));
@@ -216,56 +208,43 @@ public class Turret extends SubsystemBase {
     int roundedArea = (int) Math.round(Math.log(1/area));
     Double angle = Constants.TurretConstants.areaToAngle.get(roundedArea);
     if (angle != null) {
-      m_controller.setSetpoint(angle, ControlType.kMAXMotionPositionControl);
+      moveHood(angle);
     }
   }
- 
-  
-  public void moveToPosX(double pos){
-    target = pos;
-    swivelMotor.setControl(new MotionMagicVoltage(target));
-    // isLocked = true;
-  }
-  public void upMotorPosX(){
-    if (isLimitedX1 == true) {
-      moveToPosX(currentPosX() + 5);
-    }
+
     
-  }
   public void downMotorPosX(){
     if (isLimitedX2 == true) {
-      moveToPosX(currentPosX() - 5);
+      moveSwivel(getSwivelPos() - 5);
     }
   }
   public void upMotorPosY(){
     if (isLimitedY2 == true) {
-      moveToPosX(currentPosX() - 0.5);
+      moveSwivel(getSwivelPos() - 0.5);
     }
   }
   public void downMotorPosY(){
     if (isLimitedY1 == true) {
-      moveToPosX(currentPosX() + 0.5);
+      moveSwivel(getSwivelPos() + 0.5);
     }
   }
   
-  public double currentPosX(){
+  public double getSwivelPos(){
     return swivelMotor.getPosition().getValueAsDouble();
   }
   public void setEncoder() {
     encoder.setPosition(0);
-    goToPosition(2.9);
+    moveHood(2.9);
   }
   public boolean getSwivelLimit(){
     return swivelLimit.get();
   }
-  // public boolean getLimitX(){
-  //   return limitX.get();
-  // }
+
   public void limitX() {
-    if (currentPosX() >= 3) {
+    if (getSwivelPos() >= 3) {
       isLimitedX1 = false;
     }
-    else if (currentPosX() <= -3) {
+    else if (getSwivelPos() <= -3) {
       isLimitedX2 = false;
     }
     else {
@@ -274,10 +253,10 @@ public class Turret extends SubsystemBase {
     }
   }
   public void limitY() {
-    // if (currentPosY() >= 2.9) {
+    // if (getHoodPos() >= 2.9) {
     //   isLimitedY1 = true;
     // }
-    // else if (currentPosY() <= 0) {
+    // else if (getHoodPos() <= 0) {
     //   isLimitedY2 = true;
     // }
     // else {
@@ -285,21 +264,40 @@ public class Turret extends SubsystemBase {
     //   isLimitedY2 = false;
     // }
   }
-  public void setHoodMotor(double position) {
+  public void setHood(double position) {
     hoodMotor.set(position);
   }
+
   
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    updateData();
     autoAlign();
     limitX();
     limitY();
-   
 
-    // double manualPosition = SmartDashboard.getNumber("TurretManualPosition", 90);
-    // goToPosition(manualPosition);
+    isVisible = LimelightHelpers.getTV(limelightName);
+    // yaw = LimelightHelpers.getTX(limelightName);
+    tx = LimelightHelpers.getTY(limelightName);  // Horizontal offset (same as yaw)
+    // ty = LimelightHelpers.getTY(limelightName);  // Vertical offset
+    area = LimelightHelpers.getTA(limelightName);
+    fiducialID = LimelightHelpers.getFiducialID(limelightName);
+    
+    SmartDashboard.putBoolean("Has Target", isVisible);
+    SmartDashboard.putNumber("Target Yaw", yaw);
+    SmartDashboard.putNumber("Target Hood Position", hoodTarget);
+    SmartDashboard.putNumber("Target Swivel Position", swivelTarget);
+    SmartDashboard.putNumber("Limelight TX", tx);
+    SmartDashboard.putNumber("Limelight TY", ty);
+    SmartDashboard.putNumber("Target Area", area);
+    SmartDashboard.putNumber("Fiducial ID", fiducialID);
+    SmartDashboard.putString("Limelight Stream", limelightURL);
+    SmartDashboard.putString("Driver Cam", limelightURL2);
+    SmartDashboard.putNumber("percentOutputValue", percentOutputValue);
+    SmartDashboard.putNumber("Current Swivel Pos", getSwivelPos());
+    SmartDashboard.putNumber("Current Hood Pos", getHoodPos());
+    SmartDashboard.putBoolean("Swivel Limit", swivelLimit.get());
+    SmartDashboard.putString("Current State", currentState.toString());
   }
 }

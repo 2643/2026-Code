@@ -16,36 +16,7 @@ import frc.robot.Constants;
 
 
 public class Storage extends SubsystemBase {
-  public double currentSpeed = 0;
-  public boolean detected = false;
-  public boolean run = false;
-  private Timer timer = new Timer();
-  
-  // private double lastDetectionTime = 0;
-  Phase currentPhase = Phase.ATTACK;
-  Indexer currentIndexer = Indexer.OFF;
-  TalonFX flyWheel = new TalonFX(Constants.StorageConstants.flyWheel);
-  TalonFX indexMotor1 = new TalonFX(Constants.StorageConstants.indexMotorID);
-  TalonFX indexMotor2 = new TalonFX(Constants.StorageConstants.indexMotor2ID);
-  DigitalInput LimitSwitch = new DigitalInput(Constants.StorageConstants.limitid);
-  public MotorAlignmentValue MotorAlignment = MotorAlignmentValue.Aligned; // Aligned or Opposed
-  /** Creates a new Motor. */
-  public Storage() {
-    indexMotor2.setControl(new Follower(indexMotor1.getDeviceID(), MotorAlignment));
-  }
-  public void delayMotorStart(){
-    if (getIndexer() == Indexer.ON) {
-      timer.start();
-      if (timer.hasElapsed(3)) {
-        timer.stop();
-        timer.reset();
-        indexMotor1.setControl(new DutyCycleOut(0.6));
-      } 
-    } else {
-      indexMotor1.setControl(new DutyCycleOut(0));
-    }
-    
-  }
+
   public enum Phase {
     ATTACK,
     DEFENSE,
@@ -55,7 +26,39 @@ public class Storage extends SubsystemBase {
     OFF,
   }
 
+  public double currentSpeed = 0;
+  public boolean detected = false;
+  public boolean run = false;
 
+  TalonFX flyWheel = new TalonFX(Constants.StorageConstants.flyWheel);
+  TalonFX indexMotor1 = new TalonFX(Constants.StorageConstants.indexMotorID);
+  TalonFX indexMotor2 = new TalonFX(Constants.StorageConstants.indexMotor2ID);
+
+  DigitalInput indexLimit = new DigitalInput(Constants.StorageConstants.indexLimitPort);
+
+  private Timer timer = new Timer();
+  
+  Phase currentPhase = Phase.ATTACK;
+  Indexer currentIndexer = Indexer.OFF;
+  
+  public MotorAlignmentValue MotorAlignment = MotorAlignmentValue.Aligned; // Aligned or Opposed
+
+  public Storage() {
+    indexMotor2.setControl(new Follower(indexMotor1.getDeviceID(), MotorAlignment));
+  }
+  public void delayMotorStart(){
+    if (getIndexer() == Indexer.ON) {
+      timer.start();
+      if (timer.hasElapsed(3)) {
+        resetTimer();
+        indexMotor1.setControl(new DutyCycleOut(Constants.StorageConstants.indexSpeed));
+      } 
+    } else {
+      indexMotor1.setControl(new DutyCycleOut(0));
+    }
+    
+  }
+  
 public void moveMotor(double speed) {
    if (getIndexer() == Indexer.ON)
   { 
@@ -92,7 +95,7 @@ public boolean getRun() {
 public double getSpeed() {
   return currentSpeed;
 }
-public void fuckTheTimer(){
+public void resetTimer(){
   timer.stop();
   timer.reset();
 }
@@ -103,7 +106,7 @@ public void fuckTheTimer(){
     delayMotorStart();
 
 
-    // if("limit switch", LimitSwitch.get()) {
+    // if("limit switch", indexLimit.get()) {
     //   detected = true;
     //   lastDetectionTime = timer.get();
     // }
@@ -114,9 +117,10 @@ public void fuckTheTimer(){
     // if (timer.get() - lastDetectionTime >= 5.0) {
     //   moveMotor(0);
     // }
-    SmartDashboard.putBoolean("limit switch", LimitSwitch.get());
+    SmartDashboard.putBoolean("Storage Limit Switch", indexLimit.get());
     SmartDashboard.putBoolean("Detected", detected);
     SmartDashboard.putString("Phase", currentPhase.toString());
+    SmartDashboard.putString("On/Off", currentIndexer.toString());
     SmartDashboard.putNumber("Speed", currentSpeed);
   }
 }

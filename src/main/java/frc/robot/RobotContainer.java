@@ -45,25 +45,21 @@ public class RobotContainer {
 
     private final static Joystick joystick = new Joystick(0);
     public static final JoystickButton start = new JoystickButton(joystick, Constants.IntakeConstants.intakePort);
-    public static final JoystickButton manual_turret = new JoystickButton(joystick, Constants.TurretConstants.turretPort);
+    public static final JoystickButton manualTurret = new JoystickButton(joystick, Constants.TurretConstants.turretPort);
     public final static JoystickButton shoot = new JoystickButton(joystick, Constants.TurretConstants.shootPort);
     public final static JoystickButton toggle = new JoystickButton(joystick, Constants.StorageConstants.togglePort);
-    // Button 10: zero the gyro / seed field-centric heading
     public final static JoystickButton zeroGyro = new JoystickButton(joystick, 10);
-    // Button 6: hold for slow mode (reduced translation & rotation)
     public final static JoystickButton slowMode = new JoystickButton(joystick, 6);
     public final static JoystickButton hoodDown = new JoystickButton(joystick, 7);
     public final static JoystickButton hoodUp = new JoystickButton(joystick, 8);
 
     
-        private static final int AXIS_X = 0; // X-axis 
-        private static final int AXIS_Y = 1; // Y-axis 
-        private static final int AXIS_TWIST = 2; // rotation
+        
     
         public final Swerve drivetrain = Constants.OperatorConstants.createDrivetrain();
-        public final Vision m_vision = new Vision();
-        public final static Intake m_intake = new Intake();
-        public static final Turret m_turret = new Turret();
+        public final Vision m_Vision = new Vision();
+        public final static Intake m_Intake = new Intake();
+        public static final Turret m_Turret = new Turret();
         public static final Storage m_Storage = new Storage();
     
         public RobotContainer() {
@@ -80,20 +76,20 @@ public class RobotContainer {
             shoot.onTrue(new Shoot(m_Storage.getPhase()));
             hoodDown.onTrue(new ManualHoodDown());
             hoodUp.onTrue(new ManualHoodUp());
-            manual_turret.onTrue(new ManualTurret());
+            manualTurret.onTrue(new ManualTurret());
 
 
-            // autoAim.whileTrue(new AutoAim(drivetrain, m_vision));
+            // autoAim.whileTrue(new AutoAim(drivetrain, m_Vision));
             // Note that X is defined as forward according to WPILib convention,
             // and Y is defined as to the left according to WPILib convention.
             drivetrain.setDefaultCommand(
                     // Drivetrain will execute this command periodically
                     drivetrain.applyRequest(() -> drive
-                            .withVelocityX(-applyDeadzone(joystick.getRawAxis(AXIS_Y), 0.2) * MaxSpeed) // Drive forward
+                            .withVelocityX(-applyDeadzone(joystick.getRawAxis(Constants.AXIS_Y), 0.2) * MaxSpeed) // Drive forward
                                                                                                         // with deadzone
-                            .withVelocityY(-applyDeadzone(joystick.getRawAxis(AXIS_X), 0.2) * MaxSpeed) // Drive left with
+                            .withVelocityY(-applyDeadzone(joystick.getRawAxis(Constants.AXIS_X), 0.2) * MaxSpeed) // Drive left with
                                                                                                         // deadzone
-                            .withRotationalRate(-applyDeadzone(joystick.getRawAxis(AXIS_TWIST), 0.2) * MaxAngularRate) // Rotate
+                            .withRotationalRate(-applyDeadzone(joystick.getRawAxis(Constants.AXIS_TWIST), 0.2) * MaxAngularRate) // Rotate
                                                                                                                        // with
                                                                                                                        // deadzone
                     ));

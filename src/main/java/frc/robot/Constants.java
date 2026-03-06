@@ -312,6 +312,11 @@ public class Constants {
         }
         }
         }
+
+        public static final int AXIS_X = 0; // X-axis 
+        public static final int AXIS_Y = 1; // Y-axis 
+        public static final int AXIS_TWIST = 2; // rotation
+
         public final class IntakeConstants {
                 public final static int intakeID = 18;
                 public final static double intakeSpeed = -0.6;
@@ -356,7 +361,8 @@ public class Constants {
                 public final static int indexMotor2ID = 19;
                 public final static double attackSpeed = -0.6;
                 public final static double defenseSpeed = 1.0;
-                public final static int limitid = 0;
+                public final static double indexSpeed = -0.6;
+                public final static int indexLimitPort = 0;
 
         }
 }

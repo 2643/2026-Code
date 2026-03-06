@@ -4,16 +4,17 @@
 
 package frc.robot.commands.Turret;
 
+import frc.robot.subsystems.Turret.States;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ResetTurret extends Command {
-  boolean finish;
+  boolean finish = false;
   /** Creates a new InitTurret. */
   public ResetTurret() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(RobotContainer.m_turret);
+    addRequirements(RobotContainer.m_Turret);
   }
 
   // Called when the command is initially scheduled.
@@ -25,18 +26,20 @@ public class ResetTurret extends Command {
   @Override
   public void execute() {
   
-    if(RobotContainer.m_turret.getSwivelLimit()) {
-      RobotContainer.m_turret.moveToPosX(RobotContainer.m_turret.currentPosX() + 676767/6767670);
+    if(RobotContainer.m_Turret.getSwivelLimit()) {
+      RobotContainer.m_Turret.moveSwivel(RobotContainer.m_Turret.getSwivelPos() + 676767/6767670);
       finish = false;
     }
     else {
-      RobotContainer.m_turret.setPos(0);
+      RobotContainer.m_Turret.setPos(0);
       finish = true;
   }
   }
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    RobotContainer.m_Turret.setState(States.INITIALIZED);
+  }
 
   // Returns true when the command should end.
   @Override

@@ -15,13 +15,13 @@ public class StartIntake extends Command {
   /** Creates a new start_intake. */
   public StartIntake() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(RobotContainer.m_intake);
+    addRequirements(RobotContainer.m_Intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    RobotContainer.m_intake.moveMotor();
+    RobotContainer.m_Intake.moveMotor();
     finish = true;
   }
   // Called every time the scheduler runs while the command is scheduled.
@@ -31,7 +31,7 @@ public class StartIntake extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    SmartDashboard.putBoolean("Intake", RobotContainer.m_intake.getSpeed());
+    SmartDashboard.putBoolean("Intake", RobotContainer.m_Intake.getSpeed());
   }
   // Returns true when the command should end.
   @Override
