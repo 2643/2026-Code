@@ -30,7 +30,7 @@ public class ResetTurret extends Command {
       finish = false;
     }
     else {
-      RobotContainer.m_turret.swivelMotor.setPosition(0);
+      RobotContainer.m_turret.setPos(0);
       finish = true;
   }
   }

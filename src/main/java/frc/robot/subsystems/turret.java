@@ -53,11 +53,11 @@ public class Turret extends SubsystemBase {
   public double percentOutputValue;
   public double targetPosition;
  
-  private final String limelightName = "limelight";
-  private final String limelightURL = "http://10.26.43.200:5801/";
+  private final String limelightName2 = "limelight";
+  private final String limelightURL2 = "http://10.26.43.200:5801/";
 
-  private final String limelightName2 = "limelight-bhavik";
-  private final String limelightURL2 = "http://10.26.43.201:5801/";
+  private final String limelightName = "limelight-bhavik";
+  private final String limelightURL = "http://10.26.43.201:5801/";
   MotionMagicVoltage motion = new MotionMagicVoltage(0);
   public SparkMax hoodMotor = new SparkMax(Constants.TurretConstants.hoodID, MotorType.kBrushless);
   public RelativeEncoder encoder = hoodMotor.getEncoder();
@@ -81,8 +81,8 @@ public class Turret extends SubsystemBase {
     slot0configs.kI = Constants.TurretConstants.swivelI;
     slot0configs.kD = Constants.TurretConstants.swivelD;
   
-    motionmagicconfigs.MotionMagicAcceleration = 20;
-    motionmagicconfigs.MotionMagicCruiseVelocity = 20;
+    motionmagicconfigs.MotionMagicAcceleration = 50;
+    motionmagicconfigs.MotionMagicCruiseVelocity = 50;
   
     swivelMotor.getConfigurator().apply(configs);
     motorConfig.cruiseVelocity(100).maxAcceleration(100);
@@ -100,8 +100,8 @@ public class Turret extends SubsystemBase {
     hoodMotor.configure(motorConfigBase, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
     
-  public void setPos() {
-      swivelMotor.setPosition(0);
+  public void setPos(double pos) {
+      swivelMotor.setPosition(pos);
   }
 
 
@@ -174,7 +174,9 @@ public class Turret extends SubsystemBase {
     // SmartDashboard.putNumber("TurretManualPosition", 90);
     SmartDashboard.putBoolean("Has Target", isVisible);
     SmartDashboard.putNumber("Target Yaw", yaw);
-    SmartDashboard.putNumber("Target Position", targetPosition);
+    SmartDashboard.putNumber("Target Hood Position", targetPosition);
+    SmartDashboard.putNumber("Target Swivel Position", target);
+
     SmartDashboard.putNumber("Limelight TX", tx);
     SmartDashboard.putNumber("Limelight TY", ty);
     SmartDashboard.putNumber("Target Area", area);
@@ -184,6 +186,8 @@ public class Turret extends SubsystemBase {
     SmartDashboard.putNumber("percentOutputValue", percentOutputValue);
     SmartDashboard.putNumber("PositionX", currentPosX());
     SmartDashboard.putNumber("PositionY", currentPosY());
+    SmartDashboard.putBoolean("Swivel Limit", swivelLimit.get());
+    SmartDashboard.putBoolean("Hood Limit", hoodLimit.get());
   }
   public void autoAlign(){
     if (isVisible == true && tx>0 && isLimitedX1 == false && isLimitedX2 == false && isLocked == false) {
@@ -217,10 +221,10 @@ public class Turret extends SubsystemBase {
   }
  
   
-  public void moveToPosX(double target){
+  public void moveToPosX(double pos){
     target = pos;
-    swivelMotor.setControl(motion.withPosition(target));
-    isLocked = true;
+    swivelMotor.setControl(new MotionMagicVoltage(target));
+    // isLocked = true;
   }
   public void upMotorPosX(){
     if (isLimitedX1 == true) {
@@ -293,9 +297,7 @@ public class Turret extends SubsystemBase {
     autoAlign();
     limitX();
     limitY();
-    SmartDashboard.putNumber("TurretPosition", encoder.getPosition());
-    SmartDashboard.putBoolean("Swivel Limit", swivelLimit.get());
-    SmartDashboard.putBoolean("Hood Limit", hoodLimit.get());
+   
 
     // double manualPosition = SmartDashboard.getNumber("TurretManualPosition", 90);
     // goToPosition(manualPosition);

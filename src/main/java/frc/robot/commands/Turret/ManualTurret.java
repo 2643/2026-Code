@@ -19,13 +19,16 @@ public class ManualTurret extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (RobotContainer.m_turret.isLocked == true) {
-      RobotContainer.m_turret.moveToPosX(0);
-      finish = true;
-    }
-    else {
-      RobotContainer.m_turret.isLocked = false;
-    }
+    System.out.println("hello");
+    RobotContainer.m_turret.moveToPosX(-1);
+    finish = true;
+    // if (RobotContainer.m_turret.isLocked == true) {
+    //   RobotContainer.m_turret.moveToPosX(0);
+    //   finish = true;
+    // }
+    // else {
+    //   RobotContainer.m_turret.isLocked = false;
+    // }
     
   }
   // Called every time the scheduler runs while the command is scheduled.

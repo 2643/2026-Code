@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
+import frc.robot.commands.Turret.ManualHoodDown;
+import frc.robot.commands.Turret.ManualHoodUp;
 import frc.robot.commands.Turret.ManualTurret;
 import frc.robot.commands.Turret.SetEncoder;
 import frc.robot.commands.Intake.StartIntake;
@@ -50,6 +52,9 @@ public class RobotContainer {
     public final static JoystickButton zeroGyro = new JoystickButton(joystick, 10);
     // Button 6: hold for slow mode (reduced translation & rotation)
     public final static JoystickButton slowMode = new JoystickButton(joystick, 6);
+    public final static JoystickButton hoodDown = new JoystickButton(joystick, 7);
+    public final static JoystickButton hoodUp = new JoystickButton(joystick, 8);
+
     
         private static final int AXIS_X = 0; // X-axis 
         private static final int AXIS_Y = 1; // Y-axis 
@@ -73,7 +78,9 @@ public class RobotContainer {
             toggle.onTrue(new Toggle());
             start.onTrue(new StartIntake());
             shoot.onTrue(new Shoot(m_Storage.getPhase()));
-            // manual_turret.onTrue(new ManualTurret());
+            hoodDown.onTrue(new ManualHoodDown());
+            hoodUp.onTrue(new ManualHoodUp());
+            manual_turret.onTrue(new ManualTurret());
 
 
             // autoAim.whileTrue(new AutoAim(drivetrain, m_vision));
