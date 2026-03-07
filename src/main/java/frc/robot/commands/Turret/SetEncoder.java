@@ -12,14 +12,14 @@ public class SetEncoder extends Command {
   boolean finish;
   /** Creates a new SetEncoder. */
   public SetEncoder() {
-    addRequirements(RobotContainer.m_Turret);
+    addRequirements(RobotContainer.m_Hood);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    RobotContainer.m_Turret.setEncoder();
+    RobotContainer.m_Hood.setEncoder();
     finish = true;
   }
 

@@ -13,13 +13,13 @@ public class ManualHoodDown extends Command {
   /** Creates a new ManualHood. */
   public ManualHoodDown() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(RobotContainer.m_Turret);
+    addRequirements(RobotContainer.m_Hood);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    RobotContainer.m_Turret.moveHood(RobotContainer.m_Turret.getHoodPos() - 0.1);
+    RobotContainer.m_Hood.moveHood(RobotContainer.m_Hood.getHoodPos() - 0.1);
     finish = true;
   }
 

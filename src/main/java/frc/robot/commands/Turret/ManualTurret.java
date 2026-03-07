@@ -6,6 +6,8 @@ package frc.robot.commands.Turret;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
+import frc.robot.Constants;
+import frc.robot.Constants.TurretConstants;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ManualTurret extends Command {
@@ -13,7 +15,8 @@ public class ManualTurret extends Command {
   /** Creates a new ManualTurret. */
   public ManualTurret() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(RobotContainer.m_Turret);
+    addRequirements(RobotContainer.m_Swivel);
+
   }
 
   // Called when the command is initially scheduled.
@@ -28,7 +31,7 @@ public class ManualTurret extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.m_Turret.moveSwivel(RobotContainer.m_Turret.getSwivelPos()+0.5);
+    RobotContainer.m_Swivel.moveSwivel(Constants.TurretConstants.manualTurret);
   }
 
   // Returns true when the command should end.
