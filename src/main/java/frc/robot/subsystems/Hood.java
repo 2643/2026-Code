@@ -40,6 +40,7 @@ public class Hood extends SubsystemBase {
   public double ty;
   public double fiducialID;
   public double range;
+  public int roundedArea;
   public static double hoodTarget;
 
   public SparkMax hoodMotor = new SparkMax(Constants.TurretConstants.hoodID, MotorType.kBrushless);
@@ -47,6 +48,8 @@ public class Hood extends SubsystemBase {
  
   private final String limelightName2 = "limelight";
   private final String limelightURL2 = "http://10.26.43.200:5801/";
+   private final String limelightName = "limelight-bhavik";
+  private final String limelightURL = "http://10.26.43.201:5801/";
 
   // public DigitalInput hoodLimit = new DigitalInput(Constants.TurretConstants.hoodLimitPort); //removed bc different initialization method
 
@@ -112,18 +115,7 @@ public class Hood extends SubsystemBase {
   }
 
 
-  // public void autoAlign(){
-  //   if (isVisible == true && tx>0 && isLimitedX1 == false && isLimitedX2 == false && isLocked == false) {
-  //     swivelMotor.setControl(new DutyCycleOut(getPercentOutput()));
-  //   } 
-  //   // else if (isVisible == true && tx>0 && isLimitedX1 == true && isLimitedX2 == true && isLocked == false) {
-  //   //   swivelMotor.setControl(new DutyCycleOut(fullReverseRotation()));
-  //   // }
-  //   else {
-  //     swivelMotor.setControl(new DutyCycleOut(0));
-  //   }
-  // }
-
+  
   public void autoPitch() {
     // old
     // Enumeration<Integer> keys = Constants.TurretConstants.areaToAngle.keys();
@@ -136,11 +128,11 @@ public class Hood extends SubsystemBase {
     //     }
     //   }
     
-    int roundedArea = (int) Math.round(Math.log(1/area));
-    Double angle = Constants.TurretConstants.areaToAngle.get(roundedArea);
-    if (angle != null) {
-      moveHood(angle);
-    }
+    roundedArea = (int) Math.round(Math.log(1/area));
+    // Double angle = Constants.TurretConstants.areaToAngle.get(roundedArea);
+    // if (angle != null) {
+    //   moveHood(angle);
+    // }
   }
 
 
@@ -160,23 +152,24 @@ public class Hood extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    // autoAlign();
+    area = LimelightHelpers.getTA(limelightName);
+    autoPitch();
     // limitX();
-     if (getHoodPos() > Constants.TurretConstants.hoodSoftLimit1) {
-      moveHood(Constants.TurretConstants.hoodSoftLimit1 - 0.1);
-    } else if (getHoodPos() < Constants.TurretConstants.hoodSoftLimit2) {
-      moveHood(Constants.TurretConstants.hoodSoftLimit2 + 0.1);
-    } else if (getHoodPos() >= Constants.TurretConstants.hoodHardLimit1 || getHoodPos() <= Constants.TurretConstants.hoodHardLimit2) {
-      disable = true;
-    }
+    //  if (getHoodPos() > Constants.TurretConstants.hoodSoftLimit1) {
+    //   moveHood(Constants.TurretConstants.hoodSoftLimit1 - 0.1);
+    // } else if (getHoodPos() < Constants.TurretConstants.hoodSoftLimit2) {
+    //   moveHood(Constants.TurretConstants.hoodSoftLimit2 + 0.1);
+    // } else if (getHoodPos() >= Constants.TurretConstants.hoodHardLimit1 || getHoodPos() <= Constants.TurretConstants.hoodHardLimit2) {
+    //   disable = true;
+    // }
    
     
-    SmartDashboard.putBoolean("Has Target", isVisible);
-    SmartDashboard.putNumber("Target Yaw", yaw);
+    
     SmartDashboard.putNumber("Target Hood Position", hoodTarget);
     SmartDashboard.putNumber("Target Area", area);
     SmartDashboard.putNumber("Fiducial ID", fiducialID);
-    SmartDashboard.putString("Driver Cam", limelightURL2);
+    SmartDashboard.putString("Driver Cam", limelightURL);
     SmartDashboard.putNumber("Current Hood Pos", getHoodPos());
+    SmartDashboard.putNumber("Rounded Area", roundedArea);
   }
 }

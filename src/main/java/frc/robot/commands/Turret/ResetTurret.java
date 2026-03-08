@@ -21,25 +21,32 @@ public class ResetTurret extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
+    if(!RobotContainer.m_Swivel.getSwivelLimit()) {
+      RobotContainer.m_Swivel.setState(States.NOT_INITIALIZED);
+      finish = true;
+    }
   }
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     if(RobotContainer.m_Swivel.getSwivelLimit()) {
-      RobotContainer.m_Swivel.moveSwivel(RobotContainer.m_Swivel.getSwivelPos() + 0.05);
+      RobotContainer.m_Swivel.moveSwivel(RobotContainer.m_Swivel.getSwivelPos() + 0.1);
       finish = false;
     }
     else {
-      RobotContainer.m_Swivel.setSwivelPos(0);
       finish = true;
   }
   }
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.m_Swivel.moveSwivel(Constants.TurretConstants.manualTurret);
-    RobotContainer.m_Swivel.setState(States.INITIALIZED);
+    if(!(RobotContainer.m_Swivel.getState() == States.NOT_INITIALIZED)) {
+      RobotContainer.m_Swivel.setSwivelPos(0);
+      RobotContainer.m_Swivel.setState(States.INITIALIZED);
+      RobotContainer.m_Swivel.moveSwivel(Constants.TurretConstants.manualTurret);
+    } else {
+      System.out.println("fuck you bhavik");
+    } 
   }
 
   // Returns true when the command should end.

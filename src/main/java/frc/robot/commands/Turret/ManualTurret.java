@@ -6,6 +6,7 @@ package frc.robot.commands.Turret;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.Swivel.Mode;
 import frc.robot.Constants;
 import frc.robot.Constants.TurretConstants;
 
@@ -31,7 +32,14 @@ public class ManualTurret extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.m_Swivel.moveSwivel(Constants.TurretConstants.manualTurret);
+    if(RobotContainer.m_Swivel.getMode() == Mode.MANUAL) {
+      // RobotContainer.m_Swivel.moveSwivel(Constants.TurretConstants.manualTurret);
+      RobotContainer.m_Swivel.setMode(Mode.AUTOAIM);
+    } else {
+      RobotContainer.m_Swivel.setMode(Mode.MANUAL);
+      RobotContainer.m_Swivel.moveSwivel(Constants.TurretConstants.manualTurret);
+
+    }
   }
 
   // Returns true when the command should end.

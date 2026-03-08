@@ -13,7 +13,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 
 public class Swivel extends SubsystemBase {
 
@@ -21,6 +24,11 @@ public class Swivel extends SubsystemBase {
     INITIALIZED,
     INITIALIZING,
     NOT_INITIALIZED
+  }
+
+  public enum Mode {
+    AUTOAIM,
+    MANUAL
   }
 
   public static TalonFX swivelMotor = new TalonFX(0); 
@@ -34,7 +42,8 @@ public class Swivel extends SubsystemBase {
   public double yaw;
   public double area;
   public double fiducialID;
-  States currentState = States.INITIALIZING;
+  public States currentState = States.INITIALIZING;
+  public Mode currentMode = Mode.MANUAL;
 
   
   TalonFXConfiguration configs = new TalonFXConfiguration();
@@ -49,7 +58,7 @@ public class Swivel extends SubsystemBase {
     magicmotionconfig.MotionMagicAcceleration = 40;
     magicmotionconfig.MotionMagicCruiseVelocity = 40;
     swivelMotor.getConfigurator().apply(configs);
-
+    swivelMotor.setNeutralMode(NeutralModeValue.Brake);
     setSwivelPos(0);
     
   }
@@ -57,10 +66,16 @@ public class Swivel extends SubsystemBase {
    public void moveSwivel(double target) {
     swivelTarget = target;
     swivelMotor.setControl(new MotionMagicVoltage(target));
-        System.out.println("hi2");
-
   }
 
+  public Mode getMode() {
+    return currentMode;
+  }
+
+  public void setMode(Mode mode) {
+    currentMode = mode;
+  }
+  
   public States getState() {
     return currentState;
   }
@@ -83,26 +98,39 @@ public class Swivel extends SubsystemBase {
 
     public double getPercentOutput() {
     if (tx > 0) {
-      percentOutputValue = Math.log(tx)/600*5/2*8;
+      percentOutputValue = Math.log(tx)/600*5/2*5;
       if (percentOutputValue >= 0.2) {
         percentOutputValue = 0.2;
       }
     }
     else if (tx < 0) {
-      percentOutputValue = -(Math.log(-tx)/600/2*5*8);
+      percentOutputValue = -(Math.log(-tx)/600/2*5*5);
       if (percentOutputValue <= -0.2) {
         percentOutputValue = -0.2;
       }
     }
     return percentOutputValue;
   }
+
+  public void autoAlign(){
+    if (currentMode == Mode.AUTOAIM) {
+      if (isVisible == true && currentState == States.INITIALIZED) {
+        swivelMotor.setControl(new DutyCycleOut(getPercentOutput()));
+      } 
+    // else if (isVisible == true && tx>0 && isLimitedX1 == true && isLimitedX2 == true && isLocked == false) {
+    //   swivelMotor.setControl(new DutyCycleOut(fullReverseRotation()));
+    // }
+      else {
+        swivelMotor.setControl(new DutyCycleOut(0));
+      }
+    }
+  }
+
     @Override
   public void periodic() {
-    // This method will be called once per scheduler run  s123
+    autoAlign();
     tx = LimelightHelpers.getTY(limelightName);  // Horizontal offset (same as yaw)
     isVisible = LimelightHelpers.getTV(limelightName);
-    // yaw = LimelightHelpers.getTX(limelightName);
-    // ty = LimelightHelpers.getTY(limelightName);  // Vertical offset
     area = LimelightHelpers.getTA(limelightName);
     fiducialID = LimelightHelpers.getFiducialID(limelightName);
     SmartDashboard.putNumber("Current Swivel Pos", getSwivelPos());
@@ -111,6 +139,7 @@ public class Swivel extends SubsystemBase {
     SmartDashboard.putNumber("Limelight TX", tx);
     SmartDashboard.putString("Current State", currentState.toString());
     SmartDashboard.putBoolean("Swivel Limit", getSwivelLimit());
+    SmartDashboard.putString("Current Mode", getMode().toString());
 
     //  if (getSwivelPos() > Constants.TurretConstants.swivelSoftLimit1) {
     //   moveSwivel(Constants.TurretConstants.swivelSoftLimit1 - 0.1);
