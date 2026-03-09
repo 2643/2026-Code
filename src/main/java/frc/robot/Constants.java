@@ -331,9 +331,9 @@ public class Constants {
                 public final static int shootPort = 1;
                 public final static int turretPort = 4;
 
-                public final static double swivelP = 4.1;
-                public final static double swivelI = 0.0;
-                public final static double swivelD = 0.0;
+                public final static double swivelP = 20;
+                public final static double swivelI = 0.01;
+                public final static double swivelD = 0.01;
                 public final static double hoodP = 1.5;
                 public final static double hoodI = 0.01;
                 public final static double hoodD = 0.01;
@@ -374,7 +374,7 @@ public class Constants {
                 public final static int flyWheel = 15;
                 public final static int indexMotorID = 17;
                 public final static int indexMotor2ID = 19;
-                public final static double attackSpeed = -0.675;
+                public final static double attackSpeed = -0.6;
                 public final static double defenseSpeed = -1.0;
                 public final static double indexSpeed = 0.55;
                 public final static int indexLimitPort = 0;

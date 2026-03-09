@@ -18,6 +18,7 @@ import frc.robot.commands.Turret.ManualHoodDown;
 import frc.robot.commands.Turret.ManualHoodUp;
 import frc.robot.commands.Turret.ManualTurret;
 import frc.robot.commands.Turret.SetEncoder;
+import frc.robot.commands.Scram;
 import frc.robot.commands.Intake.StartIntake;
 import frc.robot.commands.Storage.Shoot;
 import frc.robot.commands.Storage.Toggle;
@@ -53,6 +54,7 @@ public class RobotContainer {
     public final static JoystickButton slowMode = new JoystickButton(joystick, 6);
     public final static JoystickButton hoodDown = new JoystickButton(joystick, 7);
     public final static JoystickButton hoodUp = new JoystickButton(joystick, 8);
+    public final static JoystickButton scram = new JoystickButton(joystick, 9);
 
     
         
@@ -80,6 +82,7 @@ public class RobotContainer {
             hoodDown.onTrue(new ManualHoodDown());
             hoodUp.onTrue(new ManualHoodUp());
             manualTurret.onTrue(new ManualTurret());
+            scram.onTrue(new Scram());
 
 
             // autoAim.whileTrue(new AutoAim(drivetrain, m_Vision));

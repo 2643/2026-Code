@@ -16,6 +16,10 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.RobotContainer;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class Swivel extends SubsystemBase {
@@ -34,7 +38,7 @@ public class Swivel extends SubsystemBase {
   public static TalonFX swivelMotor = new TalonFX(0); 
   public DigitalInput swivelLimit = new DigitalInput(Constants.TurretConstants.swivelLimitPort);
   public static double swivelTarget;
-  public double percentOutputValue;
+  public double dist;
   public double tx;
   private final String limelightName = "limelight-bhavik";
   private final String limelightURL = "http://10.26.43.201:5801/";
@@ -55,12 +59,11 @@ public class Swivel extends SubsystemBase {
     configs.Slot0.kI = Constants.TurretConstants.swivelI;
     configs.Slot0.kD = Constants.TurretConstants.swivelD;
 
-    magicmotionconfig.MotionMagicAcceleration = 40;
-    magicmotionconfig.MotionMagicCruiseVelocity = 40;
+    magicmotionconfig.MotionMagicAcceleration = 100;
+    magicmotionconfig.MotionMagicCruiseVelocity = 100;
     swivelMotor.getConfigurator().apply(configs);
     swivelMotor.setNeutralMode(NeutralModeValue.Brake);
     setSwivelPos(0);
-    
   }
 
    public void moveSwivel(double target) {
@@ -96,35 +99,136 @@ public class Swivel extends SubsystemBase {
     return swivelLimit.get();
   }
 
-    public double getPercentOutput() {
+    public double getDist() {
     if (tx > 0) {
-      percentOutputValue = Math.log(tx)/600*5/2*5;
-      if (percentOutputValue >= 0.2) {
-        percentOutputValue = 0.2;
-      }
+      dist = Math.log(tx)/600*5/2*5/1.25;
+      // if (dist >= 0.2) {
+      //   dist = 0.2;
+      // }
     }
     else if (tx < 0) {
-      percentOutputValue = -(Math.log(-tx)/600/2*5*5);
-      if (percentOutputValue <= -0.2) {
-        percentOutputValue = -0.2;
-      }
+      dist = -(Math.log(-tx)/600/2*5*5/1.25);
+      // if (dist <= -0.2) {
+      //   dist = -0.2;
+      // }
     }
-    return percentOutputValue;
+    return dist;
   }
 
-  public void autoAlign(){
-    if (currentMode == Mode.AUTOAIM) {
-      if (isVisible == true && currentState == States.INITIALIZED) {
-        swivelMotor.setControl(new DutyCycleOut(getPercentOutput()));
-      } 
-    // else if (isVisible == true && tx>0 && isLimitedX1 == true && isLimitedX2 == true && isLocked == false) {
-    //   swivelMotor.setControl(new DutyCycleOut(fullReverseRotation()));
-    // }
-      else {
-        swivelMotor.setControl(new DutyCycleOut(0));
+  // Convert a Limelight tx (degrees or normalized) into a small swivel rotation offset.
+  // This scale is intentionally small; tune on robot.
+  private double txToOffset(double txVal) {
+    return txVal * 0.01; // scale factor: 0.01 rotations per degree (tune as needed)
+  }
+
+  
+   public void autoAlign(){
+     if (currentMode == Mode.AUTOAIM) {
+        if (isVisible == true && currentState == States.INITIALIZED) {
+          moveSwivel(getSwivelPos()+getDist());
+        }
+        // else if (isVisible == true && tx>0 && isLimitedX1 == true && isLimitedX2 == true && isLocked == false) {
+        //   swivelMotor.setControl(new DutyCycleOut(fullReverseRotation()));
+        // }
+        else {
+          moveSwivel(getSwivelPos());
+        }
       }
     }
-  }
+   
+
+  // public void autoAlign(){
+  //   if (currentMode != Mode.AUTOAIM) {
+  //     return;
+  //   }
+
+  //   // Read raw fiducials from Limelight (gives id and txnc)
+  //   var fiducials = LimelightHelpers.getRawFiducials(limelightName);
+  //   int n = fiducials.length;
+
+  //   // Determine current alliance and phase (attack/defense)
+  //   var alliance = DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue);
+  //   var phase = RobotContainer.m_Storage.getPhase();
+
+  //   // Helper method defined at class scope: txToOffset
+
+  //   if (isVisible && currentState == States.INITIALIZED) {
+  //     if (n >= 2) {
+  //       // Map ids -> tx
+  //       Map<Integer, Double> map = new HashMap<>();
+  //       for (var f : fiducials) {
+  //         map.put(f.id, f.txnc);
+  //       }
+
+  //       // choose candidate pairs depending on phase+alliance
+  //       int[][] pairs;
+  //       if (phase == frc.robot.subsystems.Storage.Phase.DEFENSE) {
+  //         if (alliance == DriverStation.Alliance.Red) {
+  //           pairs = new int[][]{{6,4},{4,1}};
+  //         } else {
+  //           pairs = new int[][]{{17,20},{20,22}};
+  //         }
+  //       } else { // ATTACK
+  //         if (alliance == DriverStation.Alliance.Red) {
+  //           pairs = new int[][]{{8,10},{10,11}};
+  //         } else {
+  //           pairs = new int[][]{{27,26},{26,24}};
+  //         }
+  //       }
+
+  //       // Search for a matching pair we can aim between
+  //       for (var pair : pairs) {
+  //         if (map.containsKey(pair[0]) && map.containsKey(pair[1])) {
+  //           double txA = map.get(pair[0]);
+  //           double txB = map.get(pair[1]);
+  //           double meanTx = (txA + txB) / 2.0;
+  //           double offset = txToOffset(meanTx);
+  //           moveSwivel(getSwivelPos() + offset);
+  //           return;
+  //         }
+  //       }
+
+  //       // No targeted pair found: fallback to average of all detections
+  //       double sum = 0;
+  //       for (var f : fiducials) sum += f.txnc;
+  //       double avg = sum / n;
+  //       moveSwivel(getSwivelPos() + txToOffset(avg));
+  //       return;
+  //     } else if (n == 1) {
+  //       var f = fiducials[0];
+  //       double baseOffset = txToOffset(f.txnc);
+  //       if (phase == frc.robot.subsystems.Storage.Phase.ATTACK) {
+  //         // In attack phase, simply aim at the detected tag
+  //         moveSwivel(getSwivelPos() + baseOffset);
+  //         return;
+  //       } else {
+  //         // Defense: apply small adjustments based on tag ID
+  //         double tweak = 0.05; // rotation tweak; tune on robot
+  //         int id = f.id;
+  //         if (id == 17 || id == 1) {
+  //           // shoot a little to the right
+  //           moveSwivel(getSwivelPos() + baseOffset + Math.abs(tweak));
+  //           return;
+  //         } else if (id == 20 || id == 4) {
+  //           // shoot a little to whatever side you're on (use sign of tx)
+  //           moveSwivel(getSwivelPos() + baseOffset + Math.signum(f.txnc) * tweak);
+  //           return;
+  //         } else if (id == 22 || id == 6) {
+  //           // shoot a little to the left
+  //           moveSwivel(getSwivelPos() + baseOffset - Math.abs(tweak));
+  //           return;
+  //         } else {
+  //           // Unknown tag: just aim at it
+  //           moveSwivel(getSwivelPos() + baseOffset);
+  //           return;
+  //         }
+  //       }
+  //     }
+  //   }
+
+    // Default fallback: manual turret position
+  //   moveSwivel(Constants.TurretConstants.manualTurret);
+  // }
 
     @Override
   public void periodic() {
@@ -135,7 +239,7 @@ public class Swivel extends SubsystemBase {
     fiducialID = LimelightHelpers.getFiducialID(limelightName);
     SmartDashboard.putNumber("Current Swivel Pos", getSwivelPos());
     SmartDashboard.putNumber("Target Swivel Position", swivelTarget);
-    SmartDashboard.putNumber("percentOutputValue", percentOutputValue);
+    SmartDashboard.putNumber("dist", getDist());
     SmartDashboard.putNumber("Limelight TX", tx);
     SmartDashboard.putString("Current State", currentState.toString());
     SmartDashboard.putBoolean("Swivel Limit", getSwivelLimit());

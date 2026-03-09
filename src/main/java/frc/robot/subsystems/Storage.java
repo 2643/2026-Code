@@ -29,6 +29,7 @@ public class Storage extends SubsystemBase {
   public double currentSpeed = 0;
   public boolean detected = false;
   public boolean run = false;
+  public double flyWheelSpeed;
 
   TalonFX flyWheel = new TalonFX(Constants.StorageConstants.flyWheel);
   TalonFX indexMotor1 = new TalonFX(Constants.StorageConstants.indexMotorID);
@@ -37,6 +38,7 @@ public class Storage extends SubsystemBase {
   DigitalInput indexLimit = new DigitalInput(Constants.StorageConstants.indexLimitPort);
 
   private Timer timer = new Timer();
+  private Timer flyTimer = new Timer();
   
   Phase currentPhase = Phase.ATTACK;
   Indexer currentIndexer = Indexer.OFF;
@@ -45,6 +47,9 @@ public class Storage extends SubsystemBase {
 
   public Storage() {
     indexMotor2.setControl(new Follower(indexMotor1.getDeviceID(), MotorAlignment));
+  }
+  public void getFlywheelSpeed(){
+    flyWheelSpeed = flyWheel.getRotorVelocity().getValueAsDouble();
   }
   public void delayMotorStart(){
     if (getIndexer() == Indexer.ON) {
@@ -64,6 +69,17 @@ public void moveMotor(double speed) {
   { 
     flyWheel.setControl(new DutyCycleOut(speed));
     currentSpeed = speed;
+    flyTimer.start();
+      if (flyTimer.hasElapsed(5)) {
+        flyWheel.setControl(new DutyCycleOut(speed-0.1));
+      } if (flyTimer.hasElapsed(7)) {
+        flyWheel.setControl(new DutyCycleOut(speed-0.15));
+      } if (flyTimer.hasElapsed(9)) {
+        flyWheel.setControl(new DutyCycleOut(speed));
+      } if (flyTimer.hasElapsed(11)) {
+        flyWheel.setControl(new DutyCycleOut(speed+0.1));
+        resetFlyTimer();
+      } 
   }
   else
   {
@@ -99,12 +115,15 @@ public void resetTimer(){
   timer.stop();
   timer.reset();
 }
-
+public void resetFlyTimer(){
+  flyTimer.stop();
+  flyTimer.reset();
+}
   @Override
   public void periodic() {
 
     delayMotorStart();
-
+    getFlywheelSpeed();
 
     // if("limit switch", indexLimit.get()) {
     //   detected = true;
@@ -122,6 +141,8 @@ public void resetTimer(){
     SmartDashboard.putString("Phase", currentPhase.toString());
     SmartDashboard.putString("On/Off", currentIndexer.toString());
     SmartDashboard.putNumber("Speed", currentSpeed);
+    SmartDashboard.putNumber("flyWheelSpeed", flyWheelSpeed);
+
   }
 }
 

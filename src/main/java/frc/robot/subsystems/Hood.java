@@ -25,11 +25,14 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.config.MAXMotionConfig;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.Swivel.States;
 
 public class Hood extends SubsystemBase {
   public boolean disable = false;
@@ -40,8 +43,10 @@ public class Hood extends SubsystemBase {
   public double ty;
   public double fiducialID;
   public double range;
-  public int roundedArea;
+  public double roundedArea;
   public static double hoodTarget;
+  public double angle = -1;
+  private Timer timer = new Timer();
 
   public SparkMax hoodMotor = new SparkMax(Constants.TurretConstants.hoodID, MotorType.kBrushless);
   public RelativeEncoder encoder = hoodMotor.getEncoder();
@@ -117,6 +122,7 @@ public class Hood extends SubsystemBase {
 
   
   public void autoPitch() {
+
     // old
     // Enumeration<Integer> keys = Constants.TurretConstants.areaToAngle.keys();
     // double ta = 1/Math.log(area);
@@ -128,11 +134,12 @@ public class Hood extends SubsystemBase {
     //     }
     //   }
     
-    roundedArea = (int) Math.round(Math.log(1/area));
+    roundedArea = Math.log(1/area);
+    angle = -0.611888 * Math.pow(roundedArea, 3) - 0.0605644 * Math.pow(roundedArea, 2) + 5.34194 * roundedArea - 4.07386;
     // Double angle = Constants.TurretConstants.areaToAngle.get(roundedArea);
-    // if (angle != null) {
-    //   moveHood(angle);
-    // }
+    if (angle > 0) {
+      // moveHood(angle);
+    }
   }
 
 
@@ -147,13 +154,14 @@ public class Hood extends SubsystemBase {
     hoodMotor.set(position);
   }
 
-  
+  public void startTimer() {
+      timer.start();
+  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     area = LimelightHelpers.getTA(limelightName);
-    autoPitch();
     // limitX();
     //  if (getHoodPos() > Constants.TurretConstants.hoodSoftLimit1) {
     //   moveHood(Constants.TurretConstants.hoodSoftLimit1 - 0.1);
@@ -162,8 +170,10 @@ public class Hood extends SubsystemBase {
     // } else if (getHoodPos() >= Constants.TurretConstants.hoodHardLimit1 || getHoodPos() <= Constants.TurretConstants.hoodHardLimit2) {
     //   disable = true;
     // }
-   
-    
+   if (RobotContainer.m_Swivel.getState() == States.INITIALIZED && timer.hasElapsed(3)){
+    moveHood(SmartDashboard.getNumber("Target Hood Position", hoodTarget));
+    autoPitch();
+  }
     
     SmartDashboard.putNumber("Target Hood Position", hoodTarget);
     SmartDashboard.putNumber("Target Area", area);

@@ -41,7 +41,7 @@ public class ResetTurret extends Command {
   @Override
   public void end(boolean interrupted) {
     if(!(RobotContainer.m_Swivel.getState() == States.NOT_INITIALIZED)) {
-      RobotContainer.m_Swivel.setSwivelPos(0);
+      RobotContainer.m_Swivel.setSwivelPos(0); 
       RobotContainer.m_Swivel.setState(States.INITIALIZED);
       RobotContainer.m_Swivel.moveSwivel(Constants.TurretConstants.manualTurret);
     } else {

@@ -19,7 +19,7 @@ public class ManualHoodDown extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    RobotContainer.m_Hood.moveHood(RobotContainer.m_Hood.getHoodPos() - 0.1);
+    RobotContainer.m_Hood.moveHood(RobotContainer.m_Hood.getHoodPos() - 0.05);
     finish = true;
   }
 
