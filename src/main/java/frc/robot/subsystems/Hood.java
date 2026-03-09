@@ -51,8 +51,8 @@ public class Hood extends SubsystemBase {
   public SparkMax hoodMotor = new SparkMax(Constants.TurretConstants.hoodID, MotorType.kBrushless);
   public RelativeEncoder encoder = hoodMotor.getEncoder();
  
-  private final String limelightName2 = "limelight";
-  private final String limelightURL2 = "http://10.26.43.200:5801/";
+  // private final String limelightName2 = "limelight";
+  // private final String limelightURL2 = "http://10.26.43.200:5801/";
    private final String limelightName = "limelight-bhavik";
   private final String limelightURL = "http://10.26.43.201:5801/";
 
@@ -70,7 +70,7 @@ public class Hood extends SubsystemBase {
 
 
   public Hood() {
-    motorConfig.cruiseVelocity(100).maxAcceleration(100);
+    motorConfig.cruiseVelocity(Constants.TurretConstants.hoodVel).maxAcceleration(Constants.TurretConstants.hoodAccel);
 
     motorConfigClosed
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
@@ -118,8 +118,6 @@ public class Hood extends SubsystemBase {
   public double getTY() {
     return ty;
   }
-
-
   
   public void autoPitch() {
 
@@ -164,7 +162,8 @@ public class Hood extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     area = LimelightHelpers.getTA(limelightName);
-    // limitX();
+
+    // doesn't work during init
     //  if (getHoodPos() > Constants.TurretConstants.hoodSoftLimit1) {
     //   moveHood(Constants.TurretConstants.hoodSoftLimit1 - 0.1);
     // } else if (getHoodPos() < Constants.TurretConstants.hoodSoftLimit2) {

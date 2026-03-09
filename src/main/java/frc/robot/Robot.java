@@ -5,14 +5,13 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.Storage.Phase;
 import frc.robot.subsystems.Swivel.States;
 import frc.robot.RobotContainer;
-import frc.robot.commands.Turret.ResetTurret;
-import frc.robot.commands.Turret.SetEncoder;
+import frc.robot.commands.Turret.ResetSwivel;
+import frc.robot.commands.ParallelCommands.ResetTurret;
+import frc.robot.commands.Turret.ResetHood;
 
 
 public class Robot extends TimedRobot {
@@ -20,7 +19,6 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private final RobotContainer m_robotContainer;
-  public Phase curPhase = RobotContainer.m_Storage.getPhase();
 
   public Robot() {
     m_robotContainer = new RobotContainer();
@@ -61,11 +59,12 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
-    }
-    System.out.println("jegnergnergnkjergnkerngkerngnrgkjnekjgnerngenrgkreng");
-    if(RobotContainer.m_Swivel.getState() == States.INITIALIZING) {
-      CommandScheduler.getInstance().schedule(new ResetTurret());
-      CommandScheduler.getInstance().schedule(new SetEncoder());
+    } else  {
+      if(RobotContainer.m_Swivel.getState() == States.INITIALIZING) {
+        // CommandScheduler.getInstance().schedule(new ResetSwivel());
+        // CommandScheduler.getInstance().schedule(new ResetHood());
+        CommandScheduler.getInstance().schedule(new ResetTurret());
+      }
     }
   }
 

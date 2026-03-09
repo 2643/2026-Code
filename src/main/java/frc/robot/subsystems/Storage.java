@@ -28,12 +28,10 @@ public class Storage extends SubsystemBase {
     OFF,
   }
 
-  public double currentSpeed = 0;
   public boolean detected = false;
-  public boolean run = false;
   public double flyWheelSpeed;
 
-  TalonFX flyWheel = new TalonFX(Constants.StorageConstants.flyWheel);
+  TalonFX flyWheel = new TalonFX(Constants.StorageConstants.wheelPort);
   TalonFX indexMotor1 = new TalonFX(Constants.StorageConstants.indexMotorID);
   TalonFX indexMotor2 = new TalonFX(Constants.StorageConstants.indexMotor2ID);
 
@@ -45,13 +43,15 @@ public class Storage extends SubsystemBase {
   Phase currentPhase = Phase.ATTACK;
   Indexer currentIndexer = Indexer.OFF;
 
-  public final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
+  public final VelocityVoltage vel = new VelocityVoltage(0).withSlot(0);
   
   public MotorAlignmentValue MotorAlignment = MotorAlignmentValue.Aligned; // Aligned or Opposed
   TalonFXConfiguration configs = new TalonFXConfiguration();
 
   public Storage() {
-    configs.Slot0.kP = 0.35;
+    configs.Slot0.kP = Constants.StorageConstants.wheelP;
+    configs.Slot0.kI = Constants.StorageConstants.wheelI;
+    configs.Slot0.kD = Constants.StorageConstants.wheelD;
     
 
     flyWheel.getConfigurator().apply(configs);
@@ -70,7 +70,6 @@ public class Storage extends SubsystemBase {
     } else {
       indexMotor1.setControl(new DutyCycleOut(0));
     }
-    
   }
   
 public void moveMotor(double speed) {
@@ -89,12 +88,11 @@ public void moveMotor(double speed) {
     //     flyWheel.setControl(new DutyCycleOut(speed+0.1));
         // resetFlyTimer();
       // } 
-      flyWheel.setControl(m_request.withVelocity(-110).withFeedForward(12));
+      flyWheel.setControl(vel.withVelocity(speed).withFeedForward(Constants.StorageConstants.wheelFF));
   }
   else
   {
     flyWheel.setControl(new DutyCycleOut(0));
-    currentSpeed = 0;
   }
 }
 
@@ -114,13 +112,7 @@ public Indexer getIndexer() {
   return currentIndexer;
 }
 
-public boolean getRun() {
-  return run;
-}
 
-public double getSpeed() {
-  return currentSpeed;
-}
 public void resetTimer(){
   timer.stop();
   timer.reset();
@@ -150,8 +142,7 @@ public void resetFlyTimer(){
     SmartDashboard.putBoolean("Detected", detected);
     SmartDashboard.putString("Phase", currentPhase.toString());
     SmartDashboard.putString("On/Off", currentIndexer.toString());
-    SmartDashboard.putNumber("Speed", currentSpeed);
-    SmartDashboard.putNumber("flyWheelSpeed", flyWheelSpeed);
+    SmartDashboard.putNumber("Current Wheel Speed", flyWheelSpeed);
 
   }
 }

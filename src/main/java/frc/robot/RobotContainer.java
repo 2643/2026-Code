@@ -8,7 +8,13 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
@@ -17,8 +23,8 @@ import frc.robot.subsystems.Vision;
 import frc.robot.commands.Turret.ManualHoodDown;
 import frc.robot.commands.Turret.ManualHoodUp;
 import frc.robot.commands.Turret.ManualTurret;
-import frc.robot.commands.Turret.SetEncoder;
-import frc.robot.commands.Scram;
+import frc.robot.commands.Turret.ResetHood;
+import frc.robot.commands.Turret.Scram;
 import frc.robot.commands.Intake.StartIntake;
 import frc.robot.commands.Storage.Shoot;
 import frc.robot.commands.Storage.Toggle;
@@ -26,10 +32,12 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Swivel;
 import frc.robot.subsystems.Storage;
 import frc.robot.subsystems.Hood;
+import frc.robot.subsystems.Storage.Phase;
+
 
 
 public class RobotContainer {
-    // Normal and dynamic (current) max speed/rotation values. Slow mode multiplies these.
+    // slow mode
     private final double kSlowMultiplier = 0.4;
     private final double normalMaxSpeed = Constants.OperatorConstants.kSpeedAt12Volts.in(MetersPerSecond); // desired top speed
     private final double normalMaxAngularRate = RotationsPerSecond.of(0.05).in(RadiansPerSecond); // max angular velocity
@@ -56,19 +64,28 @@ public class RobotContainer {
     public final static JoystickButton hoodUp = new JoystickButton(joystick, 8);
     public final static JoystickButton scram = new JoystickButton(joystick, 9);
 
-    
-        
-    
-        public final Swerve drivetrain = Constants.OperatorConstants.createDrivetrain();
-        public final Vision m_Vision = new Vision();
-        public final static Intake m_Intake = new Intake();
-        public static final Hood m_Hood = new Hood();
-        public static final Storage m_Storage = new Storage();
-        public static final Swivel m_Swivel = new Swivel();
+    public final Swerve drivetrain = Constants.OperatorConstants.createDrivetrain();
+    public final Vision m_Vision = new Vision();
+    public final static Intake m_Intake = new Intake();
+    public static final Hood m_Hood = new Hood();
+    public static final Storage m_Storage = new Storage();
+    public static final Swivel m_Swivel = new Swivel();
+
+    private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+  ComplexWidget ShuffleBoardAutonomousRoutines = Shuffleboard.getTab("Driver")
+      .add("Autonomous Routines Selector", autoChooser).withWidget(BuiltInWidgets.kComboBoxChooser).withSize(2, 2)
+      .withPosition(0, 2);
 
     
         public RobotContainer() {
+            NamedCommands.registerCommand("Intake", new StartIntake());
+            NamedCommands.registerCommand("Shoot", new Shoot(Phase.ATTACK));
+            NamedCommands.registerCommand("Manual Turret", new ManualTurret());
+            NamedCommands.registerCommand("Reset", getAutonomousCommand());
+
             configureBindings();
+
+            //put autochooser options here
         }
     
         private double applyDeadzone(double value, double deadzone) {
@@ -175,6 +192,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-   return null;
+   return autoChooser.getSelected();
   }
 }

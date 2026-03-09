@@ -53,22 +53,20 @@ public class Swivel extends SubsystemBase {
   TalonFXConfiguration configs = new TalonFXConfiguration();
 
  public Swivel() {
-    var slot0config = configs.Slot0;
-    var magicmotionconfig = configs.MotionMagic;
     configs.Slot0.kP = Constants.TurretConstants.swivelP;
     configs.Slot0.kI = Constants.TurretConstants.swivelI;
     configs.Slot0.kD = Constants.TurretConstants.swivelD;
 
-    magicmotionconfig.MotionMagicAcceleration = 100;
-    magicmotionconfig.MotionMagicCruiseVelocity = 100;
+    configs.MotionMagic.MotionMagicAcceleration = Constants.TurretConstants.swivelAccel;
+    configs.MotionMagic.MotionMagicCruiseVelocity = Constants.TurretConstants.swivelVel;
     swivelMotor.getConfigurator().apply(configs);
     swivelMotor.setNeutralMode(NeutralModeValue.Brake);
     setSwivelPos(0);
   }
 
-   public void moveSwivel(double target) {
-    swivelTarget = target;
-    swivelMotor.setControl(new MotionMagicVoltage(target));
+   public void moveSwivel(double pos) {
+    swivelTarget = pos;
+    swivelMotor.setControl(new MotionMagicVoltage(pos));
   }
 
   public Mode getMode() {
@@ -233,7 +231,7 @@ public class Swivel extends SubsystemBase {
     @Override
   public void periodic() {
     autoAlign();
-    tx = LimelightHelpers.getTYNC(limelightName);  // Horizontal offset (same as yaw)
+    tx = LimelightHelpers.getTYNC(limelightName);
     isVisible = LimelightHelpers.getTV(limelightName);
     area = LimelightHelpers.getTA(limelightName);
     fiducialID = LimelightHelpers.getFiducialID(limelightName);
@@ -245,6 +243,7 @@ public class Swivel extends SubsystemBase {
     SmartDashboard.putBoolean("Swivel Limit", getSwivelLimit());
     SmartDashboard.putString("Current Mode", getMode().toString());
 
+    // doesn't work when initializing
     //  if (getSwivelPos() > Constants.TurretConstants.swivelSoftLimit1) {
     //   moveSwivel(Constants.TurretConstants.swivelSoftLimit1 - 0.1);
     // } else if (getSwivelPos() < Constants.TurretConstants.hoodSoftLimit2) {

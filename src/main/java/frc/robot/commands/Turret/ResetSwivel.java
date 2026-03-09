@@ -10,10 +10,10 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ResetTurret extends Command {
+public class ResetSwivel extends Command {
   boolean finish = false;
   /** Creates a new InitTurret. */
-  public ResetTurret() {
+  public ResetSwivel() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.m_Swivel);
   }

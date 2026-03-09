@@ -334,9 +334,14 @@ public class Constants {
                 public final static double swivelP = 20;
                 public final static double swivelI = 0.01;
                 public final static double swivelD = 0.01;
+                public final static double swivelAccel = 100;
+                public final static double swivelVel = 100;
+
                 public final static double hoodP = 1.5;
                 public final static double hoodI = 0.01;
                 public final static double hoodD = 0.01;
+                public final static double hoodAccel = 100;
+                public final static double hoodVel = 100;
 
                 public final static double swivelHardLimit2 = -2.83;
                 public final static double swivelHardLimit1 = 5.57;
@@ -351,8 +356,6 @@ public class Constants {
                 public final static double hoodSoftLimit2 = 0.1;
 
                 public final static double manualTurret = 2.7470703125;
-
-
 
                 public final static Dictionary<Integer, Double> areaToAngle = new Hashtable<Integer, Double>();
                 public TurretConstants() {
@@ -369,15 +372,21 @@ public class Constants {
                 }
         }
 
-        public final class StorageConstants{
+        public final class StorageConstants {
                 public final static int togglePort = 3;
-                public final static int flyWheel = 15;
+                
+                public final static int wheelPort = 15;
                 public final static int indexMotorID = 17;
                 public final static int indexMotor2ID = 19;
-                public final static double attackSpeed = -0.6;
-                public final static double defenseSpeed = -1.0;
-                public final static double indexSpeed = 0.55;
                 public final static int indexLimitPort = 0;
 
+                public final static double attackSpeed = -110;
+                public final static double defenseSpeed = -200;
+                public final static double indexSpeed = 0.55;
+               
+                public final static double wheelFF = 12.0;
+                public final static double wheelP = 3.5;
+                public final static double wheelI = 0;
+                public final static double wheelD = 0;
         }
 }
