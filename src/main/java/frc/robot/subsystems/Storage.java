@@ -3,8 +3,10 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
@@ -42,10 +44,17 @@ public class Storage extends SubsystemBase {
   
   Phase currentPhase = Phase.ATTACK;
   Indexer currentIndexer = Indexer.OFF;
+
+  public final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
   
   public MotorAlignmentValue MotorAlignment = MotorAlignmentValue.Aligned; // Aligned or Opposed
+  TalonFXConfiguration configs = new TalonFXConfiguration();
 
   public Storage() {
+    configs.Slot0.kP = 0.35;
+    
+
+    flyWheel.getConfigurator().apply(configs);
     indexMotor2.setControl(new Follower(indexMotor1.getDeviceID(), MotorAlignment));
   }
   public void getFlywheelSpeed(){
@@ -67,19 +76,20 @@ public class Storage extends SubsystemBase {
 public void moveMotor(double speed) {
    if (getIndexer() == Indexer.ON)
   { 
-    flyWheel.setControl(new DutyCycleOut(speed));
-    currentSpeed = speed;
-    flyTimer.start();
-      if (flyTimer.hasElapsed(5)) {
-        flyWheel.setControl(new DutyCycleOut(speed-0.1));
-      } if (flyTimer.hasElapsed(7)) {
-        flyWheel.setControl(new DutyCycleOut(speed-0.15));
-      } if (flyTimer.hasElapsed(9)) {
-        flyWheel.setControl(new DutyCycleOut(speed));
-      } if (flyTimer.hasElapsed(11)) {
-        flyWheel.setControl(new DutyCycleOut(speed+0.1));
-        resetFlyTimer();
-      } 
+    // flyWheel.setControl(new DutyCycleOut(speed));
+    // currentSpeed = speed;
+    // flyTimer.start();
+    //   if (flyTimer.hasElapsed(5)) {
+    //     flyWheel.setControl(new DutyCycleOut(speed-0.1));
+    //   } if (flyTimer.hasElapsed(7)) {
+    //     flyWheel.setControl(new DutyCycleOut(speed-0.15));
+    //   } if (flyTimer.hasElapsed(9)) {
+    //     flyWheel.setControl(new DutyCycleOut(speed));
+    //   } if (flyTimer.hasElapsed(11)) {
+    //     flyWheel.setControl(new DutyCycleOut(speed+0.1));
+        // resetFlyTimer();
+      // } 
+      flyWheel.setControl(m_request.withVelocity(-110).withFeedForward(12));
   }
   else
   {

@@ -233,7 +233,7 @@ public class Swivel extends SubsystemBase {
     @Override
   public void periodic() {
     autoAlign();
-    tx = LimelightHelpers.getTY(limelightName);  // Horizontal offset (same as yaw)
+    tx = LimelightHelpers.getTYNC(limelightName);  // Horizontal offset (same as yaw)
     isVisible = LimelightHelpers.getTV(limelightName);
     area = LimelightHelpers.getTA(limelightName);
     fiducialID = LimelightHelpers.getFiducialID(limelightName);

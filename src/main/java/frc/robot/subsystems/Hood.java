@@ -135,10 +135,10 @@ public class Hood extends SubsystemBase {
     //   }
     
     roundedArea = Math.log(1/area);
-    angle = -0.611888 * Math.pow(roundedArea, 3) - 0.0605644 * Math.pow(roundedArea, 2) + 5.34194 * roundedArea - 4.07386;
+    angle = (1.38693*roundedArea)-1.13255;
     // Double angle = Constants.TurretConstants.areaToAngle.get(roundedArea);
     if (angle > 0) {
-      // moveHood(angle);
+      moveHood(angle);
     }
   }
 
@@ -146,6 +146,8 @@ public class Hood extends SubsystemBase {
   public void setEncoder() {
     encoder.setPosition(0);
     moveHood(2.9);
+  // moveHood(1.2);
+
     moveHood(Constants.TurretConstants.hoodSoftLimit1);
   }
 
