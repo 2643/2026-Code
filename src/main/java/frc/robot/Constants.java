@@ -323,8 +323,6 @@ public class Constants {
                 public final static int intakePort = 2;
         }
         public final class TurretConstants {    
-                public final static double hoodGearRatio = 72 / 289;
-                // add real
                 public final static int swivelLimitPort = 2;
                 public final static int hoodID = 16;
                 public final static int swivelID = 0;
@@ -334,8 +332,10 @@ public class Constants {
                 public final static double swivelP = 20;
                 public final static double swivelI = 0.01;
                 public final static double swivelD = 0.01;
-                public final static double swivelAccel = 100;
-                public final static double swivelVel = 100;
+                public final static double swivelAccel = 80;
+                public final static double swivelVel = 80;
+                public final static double swivelStatorLimit = 40;
+                public final static double swivelSupplyLimit = 40;
 
                 public final static double hoodP = 1.5;
                 public final static double hoodI = 0.01;
@@ -356,6 +356,8 @@ public class Constants {
                 public final static double hoodSoftLimit2 = 0.1;
 
                 public final static double manualTurret = 2.7470703125;
+
+                public final static double hoodGearRatio = 72 / 289;
 
                 public final static Dictionary<Integer, Double> areaToAngle = new Hashtable<Integer, Double>();
                 public TurretConstants() {

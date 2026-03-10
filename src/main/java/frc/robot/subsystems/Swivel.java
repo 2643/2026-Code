@@ -59,6 +59,13 @@ public class Swivel extends SubsystemBase {
 
     configs.MotionMagic.MotionMagicAcceleration = Constants.TurretConstants.swivelAccel;
     configs.MotionMagic.MotionMagicCruiseVelocity = Constants.TurretConstants.swivelVel;
+
+    configs.CurrentLimits.StatorCurrentLimit = Constants.TurretConstants.swivelStatorLimit;
+    configs.CurrentLimits.StatorCurrentLimitEnable = true;
+
+    configs.CurrentLimits.SupplyCurrentLimit = Constants.TurretConstants.swivelSupplyLimit;
+    configs.CurrentLimits.SupplyCurrentLimitEnable = true;
+
     swivelMotor.getConfigurator().apply(configs);
     swivelMotor.setNeutralMode(NeutralModeValue.Brake);
     setSwivelPos(0);

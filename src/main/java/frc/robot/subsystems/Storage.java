@@ -58,7 +58,7 @@ public class Storage extends SubsystemBase {
     indexMotor2.setControl(new Follower(indexMotor1.getDeviceID(), MotorAlignment));
   }
   public void getFlywheelSpeed(){
-    flyWheelSpeed = flyWheel.getRotorVelocity().getValueAsDouble();
+    flyWheelSpeed = flyWheel.getRotorVelocity().refresh().getValueAsDouble();
   }
   public void delayMotorStart(){
     if (getIndexer() == Indexer.ON) {

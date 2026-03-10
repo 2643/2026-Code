@@ -4,7 +4,12 @@
 
 package frc.robot;
 
+import java.util.Optional;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Swivel.States;
@@ -17,6 +22,7 @@ import frc.robot.commands.Turret.ResetHood;
 public class Robot extends TimedRobot {
   
   private Command m_autonomousCommand;
+  public static boolean isRed;
 
   private final RobotContainer m_robotContainer;
 
@@ -27,6 +33,24 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run(); 
+    SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
+  }
+
+  @Override
+  public void robotInit() {
+     Optional<Alliance> ally = DriverStation.getAlliance();
+      if (ally.isPresent()) {
+        if (ally.get() == Alliance.Red) {
+            SmartDashboard.putString("Alliance", "Red");
+            isRed = true;
+      } else if (ally.get() == Alliance.Blue) {
+          SmartDashboard.putString("Alliance", "Blue");
+          isRed = false;
+        }
+      }
+      SmartDashboard.putString("Station Number", DriverStation.getLocation().toString());
+      SmartDashboard.putNumber("Match Number", DriverStation.getMatchNumber());
+      SmartDashboard.putString("Game Specific Message", DriverStation.getGameSpecificMessage());
   }
 
   @Override
@@ -50,24 +74,29 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
+  }
 
   @Override
   public void autonomousExit() {}
 
   @Override
   public void teleopInit() {
+    
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     } else  {
       if(RobotContainer.m_Swivel.getState() == States.INITIALIZING) {
-        // CommandScheduler.getInstance().schedule(new ResetSwivel());
-        // CommandScheduler.getInstance().schedule(new ResetHood());
-        CommandScheduler.getInstance().schedule(new ResetTurret());
+        CommandScheduler.getInstance().schedule(new ResetSwivel());
+        CommandScheduler.getInstance().schedule(new ResetHood());
+        // CommandScheduler.getInstance().schedule(new ResetTurret());
       }
     }
   }
 
+  
+  
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {

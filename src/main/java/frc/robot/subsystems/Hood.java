@@ -143,13 +143,13 @@ public class Hood extends SubsystemBase {
 
   public void setEncoder() {
     encoder.setPosition(0);
-    moveHood(2.9);
-  // moveHood(1.2);
+  //   moveHood(2.9);
+  // // moveHood(1.2);
 
-    moveHood(Constants.TurretConstants.hoodSoftLimit1);
+  //   moveHood(Constants.TurretConstants.hoodSoftLimit1);
   }
 
-
+//hello sigmas, this is joshua, I am now in the code mwahhahahahh (signed 3/9/2026)
   public void setHood(double position) {
     hoodMotor.set(position);
   }
