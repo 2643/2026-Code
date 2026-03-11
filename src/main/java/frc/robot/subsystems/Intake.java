@@ -13,18 +13,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Intake extends SubsystemBase {
   public double speed = 0;
 
-  TalonFX motor = new TalonFX(Constants.IntakeConstants.intakeID);
+  TalonFX intakeMotor = new TalonFX(Constants.IntakeConstants.intakeID);
 
   public Intake() {
   }
 
   public void moveMotor() {
     if (speed == 0) { 
-      motor.setControl(new DutyCycleOut(Constants.IntakeConstants.intakeSpeed));
+      intakeMotor.setControl(new DutyCycleOut(Constants.IntakeConstants.intakeSpeed));
       speed = Constants.IntakeConstants.intakeSpeed;
     }
     else {
-      motor.setControl(new DutyCycleOut(0));
+      intakeMotor.setControl(new DutyCycleOut(0));
       speed = 0;
     }
   }
@@ -40,7 +40,8 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Intake Speed", speed);
+    SmartDashboard.putNumber("Target Intake Speed", speed);
+    SmartDashboard.putNumber("Current Intake Speed", intakeMotor.getRotorVelocity().refresh().getValueAsDouble());
   }
 }
 

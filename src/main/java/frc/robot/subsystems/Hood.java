@@ -162,6 +162,7 @@ public class Hood extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     area = LimelightHelpers.getTA(limelightName);
+    fiducialID = LimelightHelpers.getFiducialID(limelightName);
 
     // doesn't work during init
     //  if (getHoodPos() > Constants.TurretConstants.hoodSoftLimit1) {
@@ -180,7 +181,8 @@ public class Hood extends SubsystemBase {
     SmartDashboard.putNumber("Target Area", area);
     SmartDashboard.putNumber("Fiducial ID", fiducialID);
     SmartDashboard.putString("Driver Cam", limelightURL);
-    SmartDashboard.putNumber("Current Hood Pos", getHoodPos());
+    SmartDashboard.putNumber("Current Hood Position", getHoodPos());
     SmartDashboard.putNumber("Rounded Area", roundedArea);
+    SmartDashboard.putNumber("Angle", angle);
   }
 }

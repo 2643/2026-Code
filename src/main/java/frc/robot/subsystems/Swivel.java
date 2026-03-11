@@ -39,7 +39,7 @@ public class Swivel extends SubsystemBase {
   public DigitalInput swivelLimit = new DigitalInput(Constants.TurretConstants.swivelLimitPort);
   public static double swivelTarget;
   public double dist;
-  public double tx;
+  public double ty;
   private final String limelightName = "limelight-bhavik";
   private final String limelightURL = "http://10.26.43.201:5801/";
   public boolean isVisible;
@@ -105,14 +105,14 @@ public class Swivel extends SubsystemBase {
   }
 
     public double getDist() {
-    if (tx > 0) {
-      dist = Math.log(tx)/600*5/2*5/1.25;
+    if (ty > 0) {
+      dist = Math.log(ty)/600*5/2*5/1.25;
       // if (dist >= 0.2) {
       //   dist = 0.2;
       // }
     }
-    else if (tx < 0) {
-      dist = -(Math.log(-tx)/600/2*5*5/1.25);
+    else if (ty < 0) {
+      dist = -(Math.log(-ty)/600/2*5*5/1.25);
       // if (dist <= -0.2) {
       //   dist = -0.2;
       // }
@@ -132,6 +132,7 @@ public class Swivel extends SubsystemBase {
         if (isVisible == true && currentState == States.INITIALIZED) {
           moveSwivel(getSwivelPos()+getDist());
         }
+        // duty code
         // else if (isVisible == true && tx>0 && isLimitedX1 == true && isLimitedX2 == true && isLocked == false) {
         //   swivelMotor.setControl(new DutyCycleOut(fullReverseRotation()));
         // }
@@ -238,18 +239,20 @@ public class Swivel extends SubsystemBase {
     @Override
   public void periodic() {
     autoAlign();
-    tx = LimelightHelpers.getTYNC(limelightName);
+    ty = LimelightHelpers.getTYNC(limelightName);
     isVisible = LimelightHelpers.getTV(limelightName);
     area = LimelightHelpers.getTA(limelightName);
     fiducialID = LimelightHelpers.getFiducialID(limelightName);
-    SmartDashboard.putNumber("Current Swivel Pos", getSwivelPos());
+  
+    SmartDashboard.putNumber("Current Swivel Position", getSwivelPos());
     SmartDashboard.putNumber("Target Swivel Position", swivelTarget);
-    SmartDashboard.putNumber("dist", getDist());
-    SmartDashboard.putNumber("Limelight TX", tx);
+    SmartDashboard.putNumber("Distance", getDist());
+    SmartDashboard.putNumber("Target Yaw", ty);
     SmartDashboard.putString("Current State", currentState.toString());
     SmartDashboard.putBoolean("Swivel Limit", getSwivelLimit());
     SmartDashboard.putString("Current Mode", getMode().toString());
-
+    SmartDashboard.putBoolean("Apriltag", isVisible);
+;
     // doesn't work when initializing
     //  if (getSwivelPos() > Constants.TurretConstants.swivelSoftLimit1) {
     //   moveSwivel(Constants.TurretConstants.swivelSoftLimit1 - 0.1);

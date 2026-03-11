@@ -28,8 +28,11 @@ public class Storage extends SubsystemBase {
     OFF,
   }
 
-  public boolean detected = false;
-  public double flyWheelSpeed;
+  // public boolean detected = false;
+  public double wheelSpeed;
+  public double targetWheelSpeed;
+  public double indexSpeed;
+
 
   TalonFX flyWheel = new TalonFX(Constants.StorageConstants.wheelPort);
   TalonFX indexMotor1 = new TalonFX(Constants.StorageConstants.indexMotorID);
@@ -57,9 +60,11 @@ public class Storage extends SubsystemBase {
     flyWheel.getConfigurator().apply(configs);
     indexMotor2.setControl(new Follower(indexMotor1.getDeviceID(), MotorAlignment));
   }
-  public void getFlywheelSpeed(){
-    flyWheelSpeed = flyWheel.getRotorVelocity().refresh().getValueAsDouble();
+
+  public double getFlywheelSpeed(){
+    return wheelSpeed;
   }
+
   public void delayMotorStart(){
     if (getIndexer() == Indexer.ON) {
       timer.start();
@@ -73,6 +78,7 @@ public class Storage extends SubsystemBase {
   }
   
 public void moveMotor(double speed) {
+  targetWheelSpeed = speed;
    if (getIndexer() == Indexer.ON)
   { 
     // flyWheel.setControl(new DutyCycleOut(speed));
@@ -125,24 +131,16 @@ public void resetFlyTimer(){
   public void periodic() {
 
     delayMotorStart();
-    getFlywheelSpeed();
 
-    // if("limit switch", indexLimit.get()) {
-    //   detected = true;
-    //   lastDetectionTime = timer.get();
-    // }
-    // else {
-    //   detected = false;
-    // }
+    wheelSpeed = flyWheel.getRotorVelocity().refresh().getValueAsDouble();
+    indexSpeed = indexMotor1.getRotorVelocity().refresh().getValueAsDouble();
 
-    // if (timer.get() - lastDetectionTime >= 5.0) {
-    //   moveMotor(0);
-    // }
     SmartDashboard.putBoolean("Storage Limit Switch", indexLimit.get());
-    SmartDashboard.putBoolean("Detected", detected);
     SmartDashboard.putString("Phase", currentPhase.toString());
-    SmartDashboard.putString("On/Off", currentIndexer.toString());
-    SmartDashboard.putNumber("Current Wheel Speed", flyWheelSpeed);
+    SmartDashboard.putString("On Off", currentIndexer.toString());
+    SmartDashboard.putNumber("Current Wheel Speed", wheelSpeed);
+    SmartDashboard.putNumber("Target Wheel Speed", targetWheelSpeed);
+    SmartDashboard.putNumber("Current Indexer Speed", indexSpeed);
 
   }
 }

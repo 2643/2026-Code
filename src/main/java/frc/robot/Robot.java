@@ -75,8 +75,8 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
-  }
+  
+    }
 
   @Override
   public void autonomousExit() {}
