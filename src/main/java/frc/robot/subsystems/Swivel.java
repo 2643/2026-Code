@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.LimelightHelpers;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -18,6 +17,9 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.Storage.Phase;
+import frc.robot.util.LimelightHelpers;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,7 +41,7 @@ public class Swivel extends SubsystemBase {
   public DigitalInput swivelLimit = new DigitalInput(Constants.TurretConstants.swivelLimitPort);
   public static double swivelTarget;
   public double dist;
-  public double ty;
+  public double tx;
   private final String limelightName = "limelight-bhavik";
   private final String limelightURL = "http://10.26.43.201:5801/";
   public boolean isVisible;
@@ -53,27 +55,22 @@ public class Swivel extends SubsystemBase {
   TalonFXConfiguration configs = new TalonFXConfiguration();
 
  public Swivel() {
+    var slot0config = configs.Slot0;
+    var magicmotionconfig = configs.MotionMagic;
     configs.Slot0.kP = Constants.TurretConstants.swivelP;
     configs.Slot0.kI = Constants.TurretConstants.swivelI;
     configs.Slot0.kD = Constants.TurretConstants.swivelD;
 
-    configs.MotionMagic.MotionMagicAcceleration = Constants.TurretConstants.swivelAccel;
-    configs.MotionMagic.MotionMagicCruiseVelocity = Constants.TurretConstants.swivelVel;
-
-    configs.CurrentLimits.StatorCurrentLimit = Constants.TurretConstants.swivelStatorLimit;
-    configs.CurrentLimits.StatorCurrentLimitEnable = true;
-
-    configs.CurrentLimits.SupplyCurrentLimit = Constants.TurretConstants.swivelSupplyLimit;
-    configs.CurrentLimits.SupplyCurrentLimitEnable = true;
-
+    magicmotionconfig.MotionMagicAcceleration = 100;
+    magicmotionconfig.MotionMagicCruiseVelocity = 100;
     swivelMotor.getConfigurator().apply(configs);
     swivelMotor.setNeutralMode(NeutralModeValue.Brake);
     setSwivelPos(0);
   }
 
-   public void moveSwivel(double pos) {
-    swivelTarget = pos;
-    swivelMotor.setControl(new MotionMagicVoltage(pos));
+   public void moveSwivel(double target) {
+    swivelTarget = target;
+    swivelMotor.setControl(new MotionMagicVoltage(target));
   }
 
   public Mode getMode() {
@@ -105,14 +102,14 @@ public class Swivel extends SubsystemBase {
   }
 
     public double getDist() {
-    if (ty > 0) {
-      dist = Math.log(ty)/600*5/2*5/1.25;
+    if (tx > 0) {
+      dist = Math.log(tx)/600*5/2*5/1.25;
       // if (dist >= 0.2) {
       //   dist = 0.2;
       // }
     }
-    else if (ty < 0) {
-      dist = -(Math.log(-ty)/600/2*5*5/1.25);
+    else if (tx < 0) {
+      dist = -(Math.log(-tx)/600/2*5*5/1.25);
       // if (dist <= -0.2) {
       //   dist = -0.2;
       // }
@@ -128,11 +125,12 @@ public class Swivel extends SubsystemBase {
 
   
    public void autoAlign(){
-     if (currentMode == Mode.AUTOAIM) {
+     if (currentMode == Mode.AUTOAIM && RobotContainer.m_Storage.getPhase() == Phase.ATTACK) {
+        var fiducials = LimelightHelpers.getRawFiducials(limelightName);
+
         if (isVisible == true && currentState == States.INITIALIZED) {
           moveSwivel(getSwivelPos()+getDist());
         }
-        // duty code
         // else if (isVisible == true && tx>0 && isLimitedX1 == true && isLimitedX2 == true && isLocked == false) {
         //   swivelMotor.setControl(new DutyCycleOut(fullReverseRotation()));
         // }
@@ -239,21 +237,18 @@ public class Swivel extends SubsystemBase {
     @Override
   public void periodic() {
     autoAlign();
-    ty = LimelightHelpers.getTYNC(limelightName);
+    tx = LimelightHelpers.getTYNC(limelightName);  // Horizontal offset (same as yaw)
     isVisible = LimelightHelpers.getTV(limelightName);
     area = LimelightHelpers.getTA(limelightName);
     fiducialID = LimelightHelpers.getFiducialID(limelightName);
-  
-    SmartDashboard.putNumber("Current Swivel Position", getSwivelPos());
+    SmartDashboard.putNumber("Current Swivel Pos", getSwivelPos());
     SmartDashboard.putNumber("Target Swivel Position", swivelTarget);
-    SmartDashboard.putNumber("Distance", getDist());
-    SmartDashboard.putNumber("Target Yaw", ty);
+    SmartDashboard.putNumber("dist", getDist());
+    SmartDashboard.putNumber("Limelight TX", tx);
     SmartDashboard.putString("Current State", currentState.toString());
     SmartDashboard.putBoolean("Swivel Limit", getSwivelLimit());
     SmartDashboard.putString("Current Mode", getMode().toString());
-    SmartDashboard.putBoolean("Apriltag", isVisible);
-;
-    // doesn't work when initializing
+
     //  if (getSwivelPos() > Constants.TurretConstants.swivelSoftLimit1) {
     //   moveSwivel(Constants.TurretConstants.swivelSoftLimit1 - 0.1);
     // } else if (getSwivelPos() < Constants.TurretConstants.hoodSoftLimit2) {

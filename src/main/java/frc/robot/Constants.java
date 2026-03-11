@@ -382,12 +382,12 @@ public class Constants {
                 public final static int indexMotor2ID = 19;
                 public final static int indexLimitPort = 0;
 
-                public final static double attackSpeed = -110;
-                public final static double defenseSpeed = -200;
+                public final static double attackSpeed = -70;
+                public final static double defenseSpeed = -100;
                 public final static double indexSpeed = 0.55;
                
-                public final static double wheelFF = 12.0;
-                public final static double wheelP = 3.5;
+                public final static double wheelFF = 0.12;
+                public final static double wheelP = 0.5;
                 public final static double wheelI = 0;
                 public final static double wheelD = 0;
         }

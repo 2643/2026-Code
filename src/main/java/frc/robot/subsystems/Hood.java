@@ -29,10 +29,11 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.LimelightHelpers;
+
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Swivel.States;
+import frc.robot.util.LimelightHelpers;
 
 public class Hood extends SubsystemBase {
   public boolean disable = false;
@@ -135,7 +136,7 @@ public class Hood extends SubsystemBase {
     roundedArea = Math.log(1/area);
     angle = (1.38693*roundedArea)-1.13255;
     // Double angle = Constants.TurretConstants.areaToAngle.get(roundedArea);
-    if (angle > 0) {
+    if (angle < Constants.TurretConstants.hoodSoftLimit1 && angle > Constants.TurretConstants.hoodSoftLimit2) {
       moveHood(angle);
     }
   }
@@ -143,10 +144,10 @@ public class Hood extends SubsystemBase {
 
   public void setEncoder() {
     encoder.setPosition(0);
-  //   moveHood(2.9);
+    moveHood(2.9);
   // // moveHood(1.2);
 
-  //   moveHood(Constants.TurretConstants.hoodSoftLimit1);
+    moveHood(Constants.TurretConstants.hoodSoftLimit1);
   }
 
 //hello sigmas, this is joshua, I am now in the code mwahhahahahh (signed 3/9/2026)

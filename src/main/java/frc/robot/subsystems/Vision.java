@@ -14,7 +14,7 @@ import edu.wpi.first.math.util.Units;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.LimelightHelpers;
+import frc.robot.util.LimelightHelpers;
 
 public class Vision extends SubsystemBase {
   public boolean isVisible;

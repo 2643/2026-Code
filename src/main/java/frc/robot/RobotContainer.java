@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import frc.robot.util.TrapezoidLimiter;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -71,10 +72,13 @@ public class RobotContainer {
     public static final Storage m_Storage = new Storage();
     public static final Swivel m_Swivel = new Swivel();
 
-    private final SendableChooser<Command> autoChooser = new SendableChooser<>();
-  ComplexWidget ShuffleBoardAutonomousRoutines = Shuffleboard.getTab("Driver")
-      .add("Autonomous Routines Selector", autoChooser).withWidget(BuiltInWidgets.kComboBoxChooser).withSize(2, 2)
-      .withPosition(0, 2);
+        private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+        ComplexWidget ShuffleBoardAutonomousRoutines = Shuffleboard.getTab("Driver")
+                .add("Autonomous Routines Selector", autoChooser).withWidget(BuiltInWidgets.kComboBoxChooser).withSize(2, 2)
+                .withPosition(0, 2);
+
+        // Trapezoidal limiter (fast ramp). Tune values as needed.
+        private final TrapezoidLimiter m_trapezoidLimiter = new TrapezoidLimiter(10.0, 20.0);
 
     
         public RobotContainer() {
@@ -105,17 +109,22 @@ public class RobotContainer {
             // autoAim.whileTrue(new AutoAim(drivetrain, m_Vision));
             // Note that X is defined as forward according to WPILib convention,
             // and Y is defined as to the left according to WPILib convention.
-            drivetrain.setDefaultCommand(
-                    // Drivetrain will execute this command periodically
-                    drivetrain.applyRequest(() -> drive
-                            .withVelocityX(-applyDeadzone(joystick.getRawAxis(Constants.AXIS_Y), 0.2) * MaxSpeed) // Drive forward
-                                                                                                        // with deadzone
-                            .withVelocityY(-applyDeadzone(joystick.getRawAxis(Constants.AXIS_X), 0.2) * MaxSpeed) // Drive left with
-                                                                                                        // deadzone
-                            .withRotationalRate(-applyDeadzone(joystick.getRawAxis(Constants.AXIS_TWIST), 0.2) * MaxAngularRate) // Rotate
-                                                                                                                       // with
-                                                                                                                       // deadzone
-                    ));
+        drivetrain.setDefaultCommand(
+            // Drivetrain will execute this command periodically
+            drivetrain.applyRequest(() -> {
+                // raw desired velocities from joystick
+                double desiredX = -applyDeadzone(joystick.getRawAxis(Constants.AXIS_Y), 0.2) * MaxSpeed; // forward
+                double desiredY = -applyDeadzone(joystick.getRawAxis(Constants.AXIS_X), 0.2) * MaxSpeed; // left
+                double desiredOmega = -applyDeadzone(joystick.getRawAxis(Constants.AXIS_TWIST), 0.2) * MaxAngularRate; // rotate
+
+                // Apply trapezoidal limiter (fast ramp)
+                double[] smoothed = m_trapezoidLimiter.calculate(desiredX, desiredY, desiredOmega);
+
+                return drive
+                    .withVelocityX(smoothed[0])
+                    .withVelocityY(smoothed[1])
+                    .withRotationalRate(smoothed[2]);
+            }));
     
             // Idle while the robot is disabled. This ensures the configured
             // neutral mode is applied to the drive motors while disabled.
