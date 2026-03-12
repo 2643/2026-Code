@@ -78,7 +78,7 @@ public class RobotContainer {
                 .withPosition(0, 2);
 
         // Trapezoidal limiter (fast ramp). Tune values as needed.
-        private final TrapezoidLimiter m_trapezoidLimiter = new TrapezoidLimiter(10.0, 20.0);
+        // private final TrapezoidLimiter m_trapezoidLimiter = new TrapezoidLimiter(10.0, 20.0);
 
     
         public RobotContainer() {
@@ -118,12 +118,12 @@ public class RobotContainer {
                 double desiredOmega = -applyDeadzone(joystick.getRawAxis(Constants.AXIS_TWIST), 0.2) * MaxAngularRate; // rotate
 
                 // Apply trapezoidal limiter (fast ramp)
-                double[] smoothed = m_trapezoidLimiter.calculate(desiredX, desiredY, desiredOmega);
+                // double[] smoothed = m_trapezoidLimiter.calculate(desiredX, desiredY, desiredOmega);
 
                 return drive
-                    .withVelocityX(smoothed[0])
-                    .withVelocityY(smoothed[1])
-                    .withRotationalRate(smoothed[2]);
+                    .withVelocityX(desiredX)
+                    .withVelocityY(desiredY)
+                    .withRotationalRate(desiredOmega);
             }));
     
             // Idle while the robot is disabled. This ensures the configured

@@ -20,6 +20,7 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.Storage.Phase;
 import frc.robot.util.LimelightHelpers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,6 +51,9 @@ public class Swivel extends SubsystemBase {
   public double fiducialID;
   public States currentState = States.INITIALIZING;
   public Mode currentMode = Mode.MANUAL;
+  public java.util.Set<Integer> seen = new java.util.HashSet<>();
+  public ArrayList<Double> tags = new ArrayList<Double>();
+
 
   
   TalonFXConfiguration configs = new TalonFXConfiguration();
@@ -117,27 +121,40 @@ public class Swivel extends SubsystemBase {
     return dist;
   }
 
-  // Convert a Limelight tx (degrees or normalized) into a small swivel rotation offset.
-  // This scale is intentionally small; tune on robot.
-  private double txToOffset(double txVal) {
-    return txVal * 0.01; // scale factor: 0.01 rotations per degree (tune as needed)
-  }
+
 
   
    public void autoAlign(){
-     if (currentMode == Mode.AUTOAIM && RobotContainer.m_Storage.getPhase() == Phase.ATTACK) {
-        var fiducials = LimelightHelpers.getRawFiducials(limelightName);
+    var fiducials = LimelightHelpers.getRawFiducials(limelightName);
+    for (var f : fiducials) {
+        seen.add(f.id);
+    }
 
-        if (isVisible == true && currentState == States.INITIALIZED) {
+    if(currentState == States.INITIALIZED && currentMode == Mode.AUTOAIM) {
+     if (RobotContainer.m_Storage.getPhase() == Phase.ATTACK) {
+        if (isVisible == true && (seen.contains(10) || seen.contains(26))) 
           moveSwivel(getSwivelPos()+getDist());
-        }
-        // else if (isVisible == true && tx>0 && isLimitedX1 == true && isLimitedX2 == true && isLocked == false) {
-        //   swivelMotor.setControl(new DutyCycleOut(fullReverseRotation()));
-        // }
-        else {
+        else 
           moveSwivel(getSwivelPos());
+      }
+      
+
+      if (RobotContainer.m_Storage.getPhase() == Phase.DEFENSE) {
+        if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+              if (isVisible == true && (seen.contains(1) || seen.contains(4) || seen.contains(5))) 
+                moveSwivel(getSwivelPos()+getDist()+0.25);
+              else if (isVisible == true && (seen.contains(2)|| seen.contains(6))) 
+                moveSwivel(getSwivelPos()+getDist()-0.25);
+        } else {
+          if (isVisible == true && (seen.contains(17) || seen.contains(20) || seen.contains(21))) 
+            moveSwivel(getSwivelPos()+getDist()+0.25);
+          else if (isVisible == true && (seen.contains(22)|| seen.contains(18))) 
+            moveSwivel(getSwivelPos()+getDist()-0.25);
         }
       }
+    }
+      seen.clear();
+      tags.clear();
     }
    
 
@@ -236,7 +253,12 @@ public class Swivel extends SubsystemBase {
 
     @Override
   public void periodic() {
-    autoAlign();
+
+    for (int id : seen) {
+      tags.add((double)id);
+    } 
+
+
     tx = LimelightHelpers.getTYNC(limelightName);  // Horizontal offset (same as yaw)
     isVisible = LimelightHelpers.getTV(limelightName);
     area = LimelightHelpers.getTA(limelightName);
@@ -248,6 +270,9 @@ public class Swivel extends SubsystemBase {
     SmartDashboard.putString("Current State", currentState.toString());
     SmartDashboard.putBoolean("Swivel Limit", getSwivelLimit());
     SmartDashboard.putString("Current Mode", getMode().toString());
+    SmartDashboard.putNumberArray("Seen", tags.stream().mapToDouble(Double::doubleValue).toArray());
+
+    autoAlign();
 
     //  if (getSwivelPos() > Constants.TurretConstants.swivelSoftLimit1) {
     //   moveSwivel(Constants.TurretConstants.swivelSoftLimit1 - 0.1);
