@@ -10,6 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import frc.robot.util.TrapezoidLimiter;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -90,6 +91,8 @@ public class RobotContainer {
             configureBindings();
 
             //put autochooser options here
+            autoChooser.addOption("S1 Shoot", new PathPlannerAuto("S1-O-Shoot"));
+            autoChooser.addOption("S2 Shoot", new PathPlannerAuto("S2-MID-Shoot"));
         }
     
         private double applyDeadzone(double value, double deadzone) {
