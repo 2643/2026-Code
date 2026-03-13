@@ -107,6 +107,7 @@ public class RobotContainer {
             //put autochooser options here
             autoChooser.addOption("S1 Shoot", new PathPlannerAuto("S1-O-Shoot"));
             autoChooser.addOption("S2 Shoot", new PathPlannerAuto("S2-MID-Shoot"));
+            autoChooser.addOption("null", null);
         }
     
         private double applyDeadzone(double value, double deadzone) {
