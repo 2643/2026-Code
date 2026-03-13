@@ -33,7 +33,6 @@ public class ManualTurret extends Command {
   @Override
   public void end(boolean interrupted) {
     if(RobotContainer.m_Swivel.getMode() == Mode.MANUAL) {
-      // RobotContainer.m_Swivel.moveSwivel(Constants.TurretConstants.manualTurret);
       RobotContainer.m_Swivel.setMode(Mode.AUTOAIM);
     } else {
       RobotContainer.m_Swivel.setMode(Mode.MANUAL);

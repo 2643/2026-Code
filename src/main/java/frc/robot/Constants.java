@@ -359,13 +359,13 @@ public class Constants {
                 public final static double swivelHardLimit2 = -2.83;
                 public final static double swivelHardLimit1 = 5.57;
 
-                public final static double hoodHardLimit1 = 2.8;
+                public final static double hoodHardLimit1 = 2.7;
                 public final static double hoodHardLimit2 = 0;
 
                 public final static double swivelSoftLimit2 = -2.7;
                 public final static double swivelSoftLimit1 = 5.47;
 
-                public final static double hoodSoftLimit1 = 2.7;
+                public final static double hoodSoftLimit1 = 2.5;
                 public final static double hoodSoftLimit2 = 0.1;
 
                 public final static double manualTurret = 2.92041015625;

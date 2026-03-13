@@ -170,14 +170,15 @@ public class Hood extends SubsystemBase {
     area = LimelightHelpers.getTA(limelightName);
     fiducialID = LimelightHelpers.getFiducialID(limelightName);
 
-    // doesn't work during init
-    //  if (getHoodPos() > Constants.TurretConstants.hoodSoftLimit1) {
-    //   moveHood(Constants.TurretConstants.hoodSoftLimit1 - 0.1);
-    // } else if (getHoodPos() < Constants.TurretConstants.hoodSoftLimit2) {
-    //   moveHood(Constants.TurretConstants.hoodSoftLimit2 + 0.1);
-    // } else if (getHoodPos() >= Constants.TurretConstants.hoodHardLimit1 || getHoodPos() <= Constants.TurretConstants.hoodHardLimit2) {
-    //   disable = true;
-    // }
+    if(RobotContainer.m_Swivel.getState() == States.INITIALIZED) {
+     if (getHoodPos() > Constants.TurretConstants.hoodSoftLimit1) {
+      moveHood(Constants.TurretConstants.hoodSoftLimit1 - 0.1);
+    } else if (getHoodPos() < Constants.TurretConstants.hoodSoftLimit2) {
+      moveHood(Constants.TurretConstants.hoodSoftLimit2 + 0.1);
+    } else if (getHoodPos() >= Constants.TurretConstants.hoodHardLimit1 || getHoodPos() <= Constants.TurretConstants.hoodHardLimit2) {
+      disable = true;
+    }
+    }
    if (RobotContainer.m_Swivel.getState() == States.INITIALIZED && timer.hasElapsed(3)){
     moveHood(SmartDashboard.getNumber("Target Hood Position", hoodTarget));
     if (!reset){

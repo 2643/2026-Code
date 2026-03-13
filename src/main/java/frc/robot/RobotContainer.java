@@ -63,7 +63,7 @@ public class RobotContainer {
     private final static Joystick operator = new Joystick(Constants.operatorPort);
     private final static Joystick progJoystick = new Joystick(Constants.progJoystickPort);
 
-    public static final JoystickButton start = new JoystickButton(driver, Constants.IntakeConstants.intakePort);
+    public static final JoystickButton intake = new JoystickButton(driver, Constants.IntakeConstants.intakePort);
     public static final JoystickButton manualTurret = new JoystickButton(driver, Constants.TurretConstants.turretPort);
     public final static JoystickButton shoot = new JoystickButton(driver, Constants.TurretConstants.shootPort);
     public final static JoystickButton toggle = new JoystickButton(operator, Constants.StorageConstants.togglePort);
@@ -115,7 +115,7 @@ public class RobotContainer {
     
         private void configureBindings() {
             toggle.onTrue(new Toggle());
-            start.onTrue(new StartIntake());
+            intake.onTrue(new StartIntake());
             shoot.onTrue(new Shoot(m_Storage.getPhase()));
             hoodDown.onTrue(new ManualHoodDown());
             hoodUp.onTrue(new ManualHoodUp());

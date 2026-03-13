@@ -283,13 +283,14 @@ public class Swivel extends SubsystemBase {
     SmartDashboard.putNumberArray("Seen", tags.stream().mapToDouble(Double::doubleValue).toArray());
 
     autoAlign();
-
-    //  if (getSwivelPos() > Constants.TurretConstants.swivelSoftLimit1) {
-    //   moveSwivel(Constants.TurretConstants.swivelSoftLimit1 - 0.1);
-    // } else if (getSwivelPos() < Constants.TurretConstants.hoodSoftLimit2) {
-    //   moveSwivel(Constants.TurretConstants.swivelSoftLimit2 + 0.1);
-    // } else if (getSwivelPos() >= Constants.TurretConstants.swivelHardLimit1 || getSwivelPos() <= Constants.TurretConstants.swivelHardLimit2) {
-    //   swivelMotor.disable();
-    // }
+    if(getState() == States.INITIALIZED) {
+     if (getSwivelPos() > Constants.TurretConstants.swivelSoftLimit1) {
+      moveSwivel(Constants.TurretConstants.swivelSoftLimit1 - 0.1);
+    } else if (getSwivelPos() < Constants.TurretConstants.swivelSoftLimit2) {
+      moveSwivel(Constants.TurretConstants.swivelSoftLimit2 + 0.1);
+    } else if (getSwivelPos() >= Constants.TurretConstants.swivelHardLimit1 || getSwivelPos() <= Constants.TurretConstants.swivelHardLimit2) {
+      swivelMotor.disable();
+    }
+    }
   }
 }
