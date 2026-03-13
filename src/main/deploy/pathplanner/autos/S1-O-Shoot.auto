@@ -13,7 +13,13 @@
         {
           "type": "named",
           "data": {
-            "name": "ResetTurret"
+            "name": "ResetHood"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ResetSwivel"
           }
         },
         {
@@ -55,7 +61,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 5.0
+            "waitTime": 8.0
           }
         },
         {

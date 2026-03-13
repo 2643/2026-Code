@@ -35,7 +35,7 @@ public class Constants {
     // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
     private static final Slot0Configs steerGains = new Slot0Configs()
             .withKP(CHOSEN_MODULE.angleKP).withKI(CHOSEN_MODULE.angleKI).withKD(CHOSEN_MODULE.angleKD)
-            .withKS(0).withKV(0).withKA(0)
+            .withKS(0.1).withKV(0.1).withKA(0.1)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
@@ -61,7 +61,7 @@ public class Constants {
 
     // The Supply current at which the wheels start to slip;
     // This needs to be tuned to your individual robot
-    private static final Current kSlipCurrent = Amps.of(120.0);
+    private static final Current kSlipCurrent = Amps.of(25.0);
 
     // Initial configs for the drive and steer motors and the azimuth encoder; these
     // cannot be null.
@@ -309,13 +309,20 @@ public class Constants {
                     TalonFX::new, TalonFX::new, CANcoder::new,
                     drivetrainConstants, odometryUpdateFrequency,
                     odometryStandardDeviation, visionStandardDeviation, modules);
-        }
-        }
+                }
+                }
         }
 
         public static final int AXIS_X = 0; // X-axis 
         public static final int AXIS_Y = 1; // Y-axis 
         public static final int AXIS_TWIST = 2; // rotation
+
+        public static final int operatorPort = 1;
+        public static final int driverPort = 0;
+        public static final int progJoystickPort = 2;
+
+        public static final int resetGyroPort = 10; 
+        public static final int slowModePort = 6;
 
         public final class IntakeConstants {
                 public final static int intakeID = 18;
@@ -326,14 +333,20 @@ public class Constants {
                 public final static int swivelLimitPort = 2;
                 public final static int hoodID = 16;
                 public final static int swivelID = 0;
+
                 public final static int shootPort = 1;
                 public final static int turretPort = 4;
+                public final static int hoodDownPort = 7;
+                public final static int hoodUpPort = 8;
+                public final static int swivelUpPort = 7;
+                public final static int swivelDownPort = 8;
+                public final static int scramPort = 9;
 
                 public final static double swivelP = 20;
                 public final static double swivelI = 0.01;
                 public final static double swivelD = 0.01;
-                public final static double swivelAccel = 80;
-                public final static double swivelVel = 80;
+                public final static double swivelAccel = 60;
+                public final static double swivelVel = 60;
                 public final static double swivelStatorLimit = 40;
                 public final static double swivelSupplyLimit = 40;
 
@@ -355,7 +368,7 @@ public class Constants {
                 public final static double hoodSoftLimit1 = 2.7;
                 public final static double hoodSoftLimit2 = 0.1;
 
-                public final static double manualTurret = 2.7470703125;
+                public final static double manualTurret = 2.92041015625;
 
                 public final static double hoodGearRatio = 72 / 289;
 

@@ -148,6 +148,10 @@ public class Hood extends SubsystemBase {
   // // moveHood(1.2);
 
     moveHood(Constants.TurretConstants.hoodSoftLimit1);
+      //  if (RobotContainer.m_Swivel.getState() == States.INITIALIZED && timer.hasElapsed(3))
+      //  {
+      //   moveHood(1);
+      // }
   }
 
 //hello sigmas, this is joshua, I am now in the code mwahhahahahh (signed 3/9/2026)
@@ -174,7 +178,7 @@ public class Hood extends SubsystemBase {
     //   disable = true;
     // }
    if (RobotContainer.m_Swivel.getState() == States.INITIALIZED && timer.hasElapsed(3)){
-    moveHood(SmartDashboard.getNumber("Target Hood Position", hoodTarget));
+    // moveHood(SmartDashboard.getNumber("Target Hood Position", hoodTarget));
     autoPitch();
   }
     

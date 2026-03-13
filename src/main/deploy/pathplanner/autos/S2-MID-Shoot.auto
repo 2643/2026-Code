@@ -11,12 +11,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "ResetTurret"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Shake2-Mid"

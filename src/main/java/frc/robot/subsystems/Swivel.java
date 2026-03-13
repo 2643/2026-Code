@@ -16,6 +16,7 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Storage.Phase;
 import frc.robot.util.LimelightHelpers;
@@ -53,13 +54,13 @@ public class Swivel extends SubsystemBase {
   public Mode currentMode = Mode.MANUAL;
   public java.util.Set<Integer> seen = new java.util.HashSet<>();
   public ArrayList<Double> tags = new ArrayList<Double>();
+  public Timer timer = new Timer();
 
 
   
   TalonFXConfiguration configs = new TalonFXConfiguration();
 
  public Swivel() {
-    var slot0config = configs.Slot0;
     var magicmotionconfig = configs.MotionMagic;
     configs.Slot0.kP = Constants.TurretConstants.swivelP;
     configs.Slot0.kI = Constants.TurretConstants.swivelI;
@@ -89,6 +90,15 @@ public class Swivel extends SubsystemBase {
     return currentState;
   }
 
+   public void startTimer() {
+      timer.start();
+  }
+
+  public void resetTimer() {
+    timer.stop();
+    timer.reset();
+  }
+
   public void setState(States state) {
     currentState = state;
   }
@@ -107,13 +117,13 @@ public class Swivel extends SubsystemBase {
 
     public double getDist() {
     if (tx > 0) {
-      dist = Math.log(tx)/600*5/2*5/1.25;
+      dist = Math.log(tx)/600*5/2*6/1.25;
       // if (dist >= 0.2) {
       //   dist = 0.2;
       // }
     }
     else if (tx < 0) {
-      dist = -(Math.log(-tx)/600/2*5*5/1.25);
+      dist = -(Math.log(-tx)/600/2*5*6/1.25);
       // if (dist <= -0.2) {
       //   dist = -0.2;
       // }
@@ -142,14 +152,14 @@ public class Swivel extends SubsystemBase {
       if (RobotContainer.m_Storage.getPhase() == Phase.DEFENSE) {
         if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
               if (isVisible == true && (seen.contains(1) || seen.contains(4) || seen.contains(5))) 
-                moveSwivel(getSwivelPos()+getDist()+0.25);
+                moveSwivel(getSwivelPos()+getDist()+0.1);
               else if (isVisible == true && (seen.contains(2)|| seen.contains(6))) 
-                moveSwivel(getSwivelPos()+getDist()-0.25);
+                moveSwivel(getSwivelPos()+getDist()-0.1);
         } else {
           if (isVisible == true && (seen.contains(17) || seen.contains(20) || seen.contains(21))) 
-            moveSwivel(getSwivelPos()+getDist()+0.25);
+            moveSwivel(getSwivelPos()+getDist()+0.1);
           else if (isVisible == true && (seen.contains(22)|| seen.contains(18))) 
-            moveSwivel(getSwivelPos()+getDist()-0.25);
+            moveSwivel(getSwivelPos()+getDist()-0.1);
         }
       }
     }
@@ -263,7 +273,7 @@ public class Swivel extends SubsystemBase {
     isVisible = LimelightHelpers.getTV(limelightName);
     area = LimelightHelpers.getTA(limelightName);
     fiducialID = LimelightHelpers.getFiducialID(limelightName);
-    SmartDashboard.putNumber("Current Swivel Pos", getSwivelPos());
+    SmartDashboard.putNumber("Current Swivel Position", getSwivelPos());
     SmartDashboard.putNumber("Target Swivel Position", swivelTarget);
     SmartDashboard.putNumber("dist", getDist());
     SmartDashboard.putNumber("Limelight TX", tx);

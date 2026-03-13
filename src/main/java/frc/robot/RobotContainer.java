@@ -7,6 +7,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import frc.robot.util.TrapezoidLimiter;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -24,10 +25,13 @@ import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
 import frc.robot.commands.Turret.ManualHoodDown;
 import frc.robot.commands.Turret.ManualHoodUp;
+import frc.robot.commands.Turret.ManualMoveSwivel;
 import frc.robot.commands.Turret.ManualTurret;
 import frc.robot.commands.Turret.ResetHood;
+import frc.robot.commands.Turret.ResetSwivel;
 import frc.robot.commands.Turret.Scram;
 import frc.robot.commands.Intake.StartIntake;
+import frc.robot.commands.ParallelCommands.ResetTurret;
 import frc.robot.commands.Storage.Shoot;
 import frc.robot.commands.Storage.Toggle;
 import frc.robot.subsystems.Intake;
@@ -55,16 +59,22 @@ public class RobotContainer {
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    private final static Joystick joystick = new Joystick(0);
-    public static final JoystickButton start = new JoystickButton(joystick, Constants.IntakeConstants.intakePort);
-    public static final JoystickButton manualTurret = new JoystickButton(joystick, Constants.TurretConstants.turretPort);
-    public final static JoystickButton shoot = new JoystickButton(joystick, Constants.TurretConstants.shootPort);
-    public final static JoystickButton toggle = new JoystickButton(joystick, Constants.StorageConstants.togglePort);
-    public final static JoystickButton zeroGyro = new JoystickButton(joystick, 10);
-    public final static JoystickButton slowMode = new JoystickButton(joystick, 6);
-    public final static JoystickButton hoodDown = new JoystickButton(joystick, 7);
-    public final static JoystickButton hoodUp = new JoystickButton(joystick, 8);
-    public final static JoystickButton scram = new JoystickButton(joystick, 9);
+    private final static Joystick driver = new Joystick(Constants.driverPort);
+    private final static Joystick operator = new Joystick(Constants.operatorPort);
+    private final static Joystick progJoystick = new Joystick(Constants.progJoystickPort);
+
+    public static final JoystickButton start = new JoystickButton(progJoystick, Constants.IntakeConstants.intakePort);
+    public static final JoystickButton manualTurret = new JoystickButton(progJoystick, Constants.TurretConstants.turretPort);
+    public final static JoystickButton shoot = new JoystickButton(progJoystick, Constants.TurretConstants.shootPort);
+    public final static JoystickButton toggle = new JoystickButton(progJoystick, Constants.StorageConstants.togglePort);
+    public final static JoystickButton zeroGyro = new JoystickButton(progJoystick, Constants.resetGyroPort);
+    public final static JoystickButton slowMode = new JoystickButton(progJoystick, Constants.slowModePort);
+    public final static JoystickButton hoodDown = new JoystickButton(progJoystick, Constants.TurretConstants.hoodDownPort);
+    public final static JoystickButton hoodUp = new JoystickButton(progJoystick, Constants.TurretConstants.hoodUpPort);
+    public final static JoystickButton scram = new JoystickButton(progJoystick, Constants.TurretConstants.scramPort);
+    public final static JoystickButton swivelUp = new JoystickButton(operator, Constants.TurretConstants.swivelUpPort);
+    public final static JoystickButton swivelDown = new JoystickButton(operator, Constants.TurretConstants.swivelDownPort);
+
 
     public final Swerve drivetrain = Constants.OperatorConstants.createDrivetrain();
     public final Vision m_Vision = new Vision();
@@ -85,8 +95,12 @@ public class RobotContainer {
         public RobotContainer() {
             NamedCommands.registerCommand("Intake", new StartIntake());
             NamedCommands.registerCommand("Shoot", new Shoot(Phase.ATTACK));
-            NamedCommands.registerCommand("Manual Turret", new ManualTurret());
-            NamedCommands.registerCommand("Reset", getAutonomousCommand());
+            NamedCommands.registerCommand("ManualTurret", new ManualTurret());
+            // NamedCommands.registerCommand("Reset", new ResetTurret());
+            NamedCommands.registerCommand("ResetHood", new ResetHood());
+            NamedCommands.registerCommand("ResetSwivel", new ResetSwivel());
+
+
 
             configureBindings();
 
@@ -108,6 +122,10 @@ public class RobotContainer {
             manualTurret.onTrue(new ManualTurret());
             scram.onTrue(new Scram());
 
+            swivelUp.whileTrue(new ManualMoveSwivel(true));
+            swivelDown.whileTrue(new ManualMoveSwivel(false));
+
+
 
             // autoAim.whileTrue(new AutoAim(drivetrain, m_Vision));
             // Note that X is defined as forward according to WPILib convention,
@@ -116,9 +134,13 @@ public class RobotContainer {
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> {
                 // raw desired velocities from joystick
-                double desiredX = -applyDeadzone(joystick.getRawAxis(Constants.AXIS_Y), 0.2) * MaxSpeed; // forward
-                double desiredY = -applyDeadzone(joystick.getRawAxis(Constants.AXIS_X), 0.2) * MaxSpeed; // left
-                double desiredOmega = -applyDeadzone(joystick.getRawAxis(Constants.AXIS_TWIST), 0.2) * MaxAngularRate; // rotate
+                double desiredX = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_Y), 0.2) * MaxSpeed; // forward
+                double desiredY = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_X), 0.2) * MaxSpeed; // left
+                double desiredOmega = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_TWIST), 0.2) * MaxAngularRate; // rotate
+
+                // double desiredX = -applyDeadzone(driver.getRawAxis(Constants.AXIS_Y), 0.2) * MaxSpeed; // forward
+                // double desiredY = -applyDeadzone(driver.getRawAxis(Constants.AXIS_X), 0.2) * MaxSpeed; // left
+                // double desiredOmega = -applyDeadzone(driver.getRawAxis(Constants.AXIS_TWIST), 0.2) * MaxAngularRate; // rotate
 
                 // Apply trapezoidal limiter (fast ramp)
                 // double[] smoothed = m_trapezoidLimiter.calculate(desiredX, desiredY, desiredOmega);
