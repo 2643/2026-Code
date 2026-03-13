@@ -44,7 +44,7 @@ public class ResetSwivel extends Command {
       RobotContainer.m_Swivel.startTimer();
       RobotContainer.m_Swivel.setSwivelPos(0); 
       RobotContainer.m_Swivel.setState(States.INITIALIZED);
-      RobotContainer.m_Swivel.moveSwivel(Constants.TurretConstants.manualTurret);
+      RobotContainer.m_Swivel.moveSwivel(Constants.TurretConstants.manualSwivel);
     } else {
       System.out.println("Swivel Disabled");
     } 
