@@ -46,7 +46,7 @@ public class RobotContainer {
     // slow mode
     private final double kSlowMultiplier = 0.4;
     private final double normalMaxSpeed = Constants.OperatorConstants.kSpeedAt12Volts.in(MetersPerSecond); // desired top speed
-    private final double normalMaxAngularRate = RotationsPerSecond.of(0.05).in(RadiansPerSecond); // max angular velocity
+    private final double normalMaxAngularRate = RotationsPerSecond.of(0.1).in(RadiansPerSecond); // max angular velocity
     private double MaxSpeed = normalMaxSpeed;
     private double MaxAngularRate = normalMaxAngularRate;
 
@@ -63,15 +63,15 @@ public class RobotContainer {
     private final static Joystick operator = new Joystick(Constants.operatorPort);
     private final static Joystick progJoystick = new Joystick(Constants.progJoystickPort);
 
-    public static final JoystickButton start = new JoystickButton(progJoystick, Constants.IntakeConstants.intakePort);
-    public static final JoystickButton manualTurret = new JoystickButton(progJoystick, Constants.TurretConstants.turretPort);
-    public final static JoystickButton shoot = new JoystickButton(progJoystick, Constants.TurretConstants.shootPort);
-    public final static JoystickButton toggle = new JoystickButton(progJoystick, Constants.StorageConstants.togglePort);
-    public final static JoystickButton zeroGyro = new JoystickButton(progJoystick, Constants.resetGyroPort);
-    public final static JoystickButton slowMode = new JoystickButton(progJoystick, Constants.slowModePort);
-    public final static JoystickButton hoodDown = new JoystickButton(progJoystick, Constants.TurretConstants.hoodDownPort);
-    public final static JoystickButton hoodUp = new JoystickButton(progJoystick, Constants.TurretConstants.hoodUpPort);
-    public final static JoystickButton scram = new JoystickButton(progJoystick, Constants.TurretConstants.scramPort);
+    public static final JoystickButton start = new JoystickButton(driver, Constants.IntakeConstants.intakePort);
+    public static final JoystickButton manualTurret = new JoystickButton(driver, Constants.TurretConstants.turretPort);
+    public final static JoystickButton shoot = new JoystickButton(driver, Constants.TurretConstants.shootPort);
+    public final static JoystickButton toggle = new JoystickButton(operator, Constants.StorageConstants.togglePort);
+    public final static JoystickButton zeroGyro = new JoystickButton(driver, Constants.resetGyroPort);
+    public final static JoystickButton slowMode = new JoystickButton(driver, Constants.slowModePort);
+    public final static JoystickButton hoodDown = new JoystickButton(operator, Constants.TurretConstants.hoodDownPort);
+    public final static JoystickButton hoodUp = new JoystickButton(operator, Constants.TurretConstants.hoodUpPort);
+    public final static JoystickButton scram = new JoystickButton(operator, Constants.TurretConstants.scramPort);
     public final static JoystickButton swivelUp = new JoystickButton(operator, Constants.TurretConstants.swivelUpPort);
     public final static JoystickButton swivelDown = new JoystickButton(operator, Constants.TurretConstants.swivelDownPort);
 
@@ -134,9 +134,9 @@ public class RobotContainer {
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> {
                 // raw desired velocities from joystick
-                double desiredX = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_Y), 0.2) * MaxSpeed; // forward
-                double desiredY = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_X), 0.2) * MaxSpeed; // left
-                double desiredOmega = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_TWIST), 0.2) * MaxAngularRate; // rotate
+                double desiredX = -applyDeadzone(driver.getRawAxis(Constants.AXIS_Y), 0.2) * MaxSpeed; // forward
+                double desiredY = -applyDeadzone(driver.getRawAxis(Constants.AXIS_X), 0.2) * MaxSpeed; // left
+                double desiredOmega = -applyDeadzone(driver.getRawAxis(Constants.AXIS_TWIST), 0.2) * MaxAngularRate; // rotate
 
                 // double desiredX = -applyDeadzone(driver.getRawAxis(Constants.AXIS_Y), 0.2) * MaxSpeed; // forward
                 // double desiredY = -applyDeadzone(driver.getRawAxis(Constants.AXIS_X), 0.2) * MaxSpeed; // left

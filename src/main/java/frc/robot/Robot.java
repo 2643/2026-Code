@@ -7,6 +7,7 @@ package frc.robot;
 import java.util.Optional;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,6 +24,7 @@ public class Robot extends TimedRobot {
   
   private Command m_autonomousCommand;
   public static boolean isRed;
+  public double minVoltage = 67;
 
   private final RobotContainer m_robotContainer;
 
@@ -32,9 +34,15 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
+    if (minVoltage > RobotController.getBatteryVoltage()){
+            minVoltage = RobotController.getBatteryVoltage();
+        }
+    SmartDashboard.putNumber("Min Voltage", minVoltage);
+        
     CommandScheduler.getInstance().run(); 
     SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
-  }
+    SmartDashboard.putNumber("Voltage", RobotController.getBatteryVoltage());
+  } 
 
   @Override
   public void robotInit() {

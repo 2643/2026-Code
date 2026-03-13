@@ -48,6 +48,7 @@ public class Hood extends SubsystemBase {
   public static double hoodTarget;
   public double angle = -1;
   private Timer timer = new Timer();
+  public boolean reset = false;
 
   public SparkMax hoodMotor = new SparkMax(Constants.TurretConstants.hoodID, MotorType.kBrushless);
   public RelativeEncoder encoder = hoodMotor.getEncoder();
@@ -178,7 +179,11 @@ public class Hood extends SubsystemBase {
     //   disable = true;
     // }
    if (RobotContainer.m_Swivel.getState() == States.INITIALIZED && timer.hasElapsed(3)){
-    // moveHood(SmartDashboard.getNumber("Target Hood Position", hoodTarget));
+    moveHood(SmartDashboard.getNumber("Target Hood Position", hoodTarget));
+    if (!reset){
+      reset = true;
+      moveHood(1);
+    }
     autoPitch();
   }
     

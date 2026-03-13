@@ -61,7 +61,7 @@ public class Constants {
 
     // The Supply current at which the wheels start to slip;
     // This needs to be tuned to your individual robot
-    private static final Current kSlipCurrent = Amps.of(25.0);
+    private static final Current kSlipCurrent = Amps.of(30.0);
 
     // Initial configs for the drive and steer motors and the azimuth encoder; these
     // cannot be null.
@@ -79,7 +79,7 @@ public class Constants {
                             // Swerve azimuth does not require much torque output, so we can set a
                             // relatively low
                             // Supply current limit to help avoid brownouts without impacting performance.
-                            .withSupplyCurrentLimit(Amps.of(40))
+                            .withSupplyCurrentLimit(Amps.of(60))
                             .withSupplyCurrentLimitEnable(true));
     private static final CANcoderConfiguration encoderInitialConfigs = new CANcoderConfiguration();
     // Configs for the Pigeon 2; leave this null to skip applying Pigeon 2 configs
@@ -91,7 +91,7 @@ public class Constants {
 
     // Theoretical free speed (m/s) at 12 V applied output;
     // This needs to be tuned to your individual robot
-    public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(3.14 / 2 / 8);
+    public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(3.14 / 8);
 
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
     // This may need to be tuned to your individual robot
