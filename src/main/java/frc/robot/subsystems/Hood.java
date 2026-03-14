@@ -32,6 +32,7 @@ import frc.robot.Constants;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.Storage.Phase;
 import frc.robot.subsystems.Swivel.States;
 import frc.robot.util.LimelightHelpers;
 
@@ -123,11 +124,15 @@ public class Hood extends SubsystemBase {
   }
   
   public void autoPitch() {
+    if(RobotContainer.m_Storage.getPhase() == Phase.ATTACK) {
     roundedArea = Math.log(1/area);
     angle = (slope*roundedArea)-offset;
     if (angle < Constants.TurretConstants.hoodSoftLimit1 && angle > Constants.TurretConstants.hoodSoftLimit2) {
       moveHood(angle);
     }
+  } else {
+    moveHood(2.7);
+  }
   }
 
 

@@ -27,9 +27,9 @@ public class ManualMoveSwivel extends Command {
   public void execute() {
     if(RobotContainer.m_Swivel.getState() == Swivel.States.INITIALIZED) {
     if(sign)
-      RobotContainer.m_Swivel.moveSwivel(RobotContainer.m_Swivel.getSwivelPos() + 0.1);
+      RobotContainer.m_Swivel.moveSwivel(RobotContainer.m_Swivel.getSwivelPos() + 0.2);
     else
-      RobotContainer.m_Swivel.moveSwivel(RobotContainer.m_Swivel.getSwivelPos() - 0.1);
+      RobotContainer.m_Swivel.moveSwivel(RobotContainer.m_Swivel.getSwivelPos() - 0.2);
     }
    }
 

@@ -105,7 +105,7 @@ public class RobotContainer {
             configureBindings();
 
             //put autochooser options here
-            autoChooser.addOption("S1 Shoot", new PathPlannerAuto("S1-O-Shoot"));
+            // autoChooser.addOption("S1 Shoot", new PathPlannerAuto("S1-O-Shoot"));
             autoChooser.addOption("S2 Shoot", new PathPlannerAuto("S2-MID-Shoot"));
             autoChooser.addOption("Straight Line", new PathPlannerAuto("Straight Line"));
             autoChooser.addOption("Test", new PathPlannerAuto("rot"));

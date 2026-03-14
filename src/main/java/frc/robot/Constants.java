@@ -399,7 +399,7 @@ public class Constants {
                 public final static int indexLimitPort = 0;
 
                 public final static double attackSpeed = -70;
-                public final static double defenseSpeed = -100;
+                public final static double defenseSpeed = -70;
                 public final static double indexSpeed = 0.55;
                
                 public final static double wheelFF = 0.12;
