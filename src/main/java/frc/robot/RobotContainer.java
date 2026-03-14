@@ -108,7 +108,7 @@ public class RobotContainer {
             autoChooser.addOption("S1 Shoot", new PathPlannerAuto("S1-O-Shoot"));
             autoChooser.addOption("S2 Shoot", new PathPlannerAuto("S2-MID-Shoot"));
             autoChooser.addOption("Straight Line", new PathPlannerAuto("Straight Line"));
-            autoChooser.addOption("Test", new PathPlannerAuto("Test"));
+            autoChooser.addOption("Test", new PathPlannerAuto("rot"));
             autoChooser.addOption("null", null);
         }
     

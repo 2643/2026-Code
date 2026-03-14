@@ -19,19 +19,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "S1-O"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ManualTurret"
+            "pathName": "S3-Back"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ManualTurret"
           }
         },
         {
@@ -49,12 +49,6 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "Intake"
           }
         },
@@ -62,6 +56,12 @@
           "type": "named",
           "data": {
             "name": "ManualTurret"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
           }
         }
       ]
