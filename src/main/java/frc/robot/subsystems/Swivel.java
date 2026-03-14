@@ -151,18 +151,26 @@ public class Swivel extends SubsystemBase {
 
       if (RobotContainer.m_Storage.getPhase() == Phase.DEFENSE) {
         if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-              if (isVisible == true && (seen.contains(1) || seen.contains(4) || seen.contains(5))) 
+              if (isVisible == true && (seen.contains(1) || seen.contains(4) || seen.contains(5) || seen.contains (23) || seen.contains(27))) 
                 moveSwivel(getSwivelPos()+getDist()+0.1);
-              else if (isVisible == true && (seen.contains(2)|| seen.contains(6))) 
+              else if (isVisible == true && (seen.contains(2)|| seen.contains(6) || seen.contains(24) || seen.contains(28))) 
                 moveSwivel(getSwivelPos()+getDist()-0.1);
         } else {
-          if (isVisible == true && (seen.contains(17) || seen.contains(20) || seen.contains(21))) 
+          if (isVisible == true && (seen.contains(17) || seen.contains(20) || seen.contains(21) || seen.contains(11) || seen.contains(7)))  
             moveSwivel(getSwivelPos()+getDist()+0.1);
-          else if (isVisible == true && (seen.contains(22)|| seen.contains(18))) 
+          else if (isVisible == true && (seen.contains(22)|| seen.contains(18) || seen.contains(12) || seen.contains(8))) 
             moveSwivel(getSwivelPos()+getDist()-0.1);
         }
       }
     }
+
+    for (int id : seen) {
+      tags.add((double)id);
+    } 
+
+    SmartDashboard.putNumberArray("Seen", tags.stream().mapToDouble(Double::doubleValue).toArray());
+
+
       seen.clear();
       tags.clear();
     }
@@ -258,16 +266,11 @@ public class Swivel extends SubsystemBase {
   //   }
 
     // Default fallback: manual turret position
-  //   moveSwivel(Constants.TurretConstants.manualTurret);
+  //   moveSwivel(Constants.TurretConstants.manualSwivel);
   // }
 
     @Override
   public void periodic() {
-
-    for (int id : seen) {
-      tags.add((double)id);
-    } 
-
 
     tx = LimelightHelpers.getTYNC(limelightName);  // Horizontal offset (same as yaw)
     isVisible = LimelightHelpers.getTV(limelightName);
@@ -280,7 +283,6 @@ public class Swivel extends SubsystemBase {
     SmartDashboard.putString("Current State", currentState.toString());
     SmartDashboard.putBoolean("Swivel Limit", getSwivelLimit());
     SmartDashboard.putString("Current Mode", getMode().toString());
-    SmartDashboard.putNumberArray("Seen", tags.stream().mapToDouble(Double::doubleValue).toArray());
 
     autoAlign();
     if(getState() == States.INITIALIZED) {
@@ -289,7 +291,7 @@ public class Swivel extends SubsystemBase {
     } else if (getSwivelPos() < Constants.TurretConstants.swivelSoftLimit2) {
       moveSwivel(Constants.TurretConstants.swivelSoftLimit2 + 0.1);
     } else if (getSwivelPos() >= Constants.TurretConstants.swivelHardLimit1 || getSwivelPos() <= Constants.TurretConstants.swivelHardLimit2) {
-      swivelMotor.disable();
+      // swivelMotor.disable();
     }
     }
   }

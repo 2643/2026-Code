@@ -17,6 +17,8 @@ public class ManualTurret extends Command {
   public ManualTurret() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.m_Swivel);
+    addRequirements(RobotContainer.m_Hood);
+
 
   }
 
@@ -36,8 +38,8 @@ public class ManualTurret extends Command {
       RobotContainer.m_Swivel.setMode(Mode.AUTOAIM);
     } else {
       RobotContainer.m_Swivel.setMode(Mode.MANUAL);
-      RobotContainer.m_Swivel.moveSwivel(Constants.TurretConstants.manualTurret);
-
+      RobotContainer.m_Swivel.moveSwivel(Constants.TurretConstants.manualSwivel);
+      RobotContainer.m_Hood.moveHood(Constants.TurretConstants.manualHood);
     }
   }
 

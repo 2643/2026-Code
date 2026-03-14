@@ -25,7 +25,7 @@ public class ManualMoveSwivel extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(RobotContainer.m_Swivel.getState() == Swivel.States.INITIALIZED || RobotContainer.m_Swivel.getMode() == Swivel.Mode.MANUAL) {
+    if(RobotContainer.m_Swivel.getState() == Swivel.States.INITIALIZED) {
     if(sign)
       RobotContainer.m_Swivel.moveSwivel(RobotContainer.m_Swivel.getSwivelPos() + 0.1);
     else

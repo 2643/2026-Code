@@ -64,8 +64,8 @@ public class RobotContainer {
     private final static Joystick progJoystick = new Joystick(Constants.progJoystickPort);
 
     public static final JoystickButton intake = new JoystickButton(driver, Constants.IntakeConstants.intakePort);
-    public static final JoystickButton manualTurret = new JoystickButton(driver, Constants.TurretConstants.turretPort);
-    public final static JoystickButton shoot = new JoystickButton(driver, Constants.TurretConstants.shootPort);
+    public static final JoystickButton manualTurret = new JoystickButton(operator, Constants.TurretConstants.turretPort);
+    public final static JoystickButton shoot = new JoystickButton(operator, Constants.TurretConstants.shootPort);
     public final static JoystickButton toggle = new JoystickButton(operator, Constants.StorageConstants.togglePort);
     public final static JoystickButton zeroGyro = new JoystickButton(driver, Constants.resetGyroPort);
     public final static JoystickButton slowMode = new JoystickButton(driver, Constants.slowModePort);
@@ -107,6 +107,8 @@ public class RobotContainer {
             //put autochooser options here
             autoChooser.addOption("S1 Shoot", new PathPlannerAuto("S1-O-Shoot"));
             autoChooser.addOption("S2 Shoot", new PathPlannerAuto("S2-MID-Shoot"));
+            autoChooser.addOption("Straight Line", new PathPlannerAuto("Straight Line"));
+            autoChooser.addOption("null", null);
         }
     
         private double applyDeadzone(double value, double deadzone) {

@@ -122,21 +122,8 @@ public class Hood extends SubsystemBase {
   }
   
   public void autoPitch() {
-
-    // old
-    // Enumeration<Integer> keys = Constants.TurretConstants.areaToAngle.keys();
-    // double ta = 1/Math.log(area);
-    //   while (keys.hasMoreElements()) {
-    //     int key = keys.nextElement(); 
-    //     Double angle = Constants.TurretConstants.areaToAngle.get(key);
-    //     if (angle == Math.round(ta)) {
-    //       m_controller.setSetpoint(angle, ControlType.kMAXMotionPositionControl);
-    //     }
-    //   }
-    
     roundedArea = Math.log(1/area);
     angle = (1.38693*roundedArea)-1.13255;
-    // Double angle = Constants.TurretConstants.areaToAngle.get(roundedArea);
     if (angle < Constants.TurretConstants.hoodSoftLimit1 && angle > Constants.TurretConstants.hoodSoftLimit2) {
       moveHood(angle);
     }
@@ -146,13 +133,7 @@ public class Hood extends SubsystemBase {
   public void setEncoder() {
     encoder.setPosition(0);
     moveHood(2.9);
-  // // moveHood(1.2);
-
     moveHood(Constants.TurretConstants.hoodSoftLimit1);
-      //  if (RobotContainer.m_Swivel.getState() == States.INITIALIZED && timer.hasElapsed(3))
-      //  {
-      //   moveHood(1);
-      // }
   }
 
 //hello sigmas, this is joshua, I am now in the code mwahhahahahh (signed 3/9/2026)
