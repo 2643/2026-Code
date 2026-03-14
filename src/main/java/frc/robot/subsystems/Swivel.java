@@ -142,7 +142,7 @@ public class Swivel extends SubsystemBase {
 
     if(currentState == States.INITIALIZED && currentMode == Mode.AUTOAIM) {
      if (RobotContainer.m_Storage.getPhase() == Phase.ATTACK) {
-        if (isVisible == true && (seen.contains(10) || seen.contains(26))) 
+        if (isVisible == true && (seen.contains(10) || seen.contains(26)|| seen.contains(11)|| seen.contains(8)|| seen.contains(24)|| seen.contains(27))) 
           moveSwivel(getSwivelPos()+getDist());
         else 
           moveSwivel(getSwivelPos());
