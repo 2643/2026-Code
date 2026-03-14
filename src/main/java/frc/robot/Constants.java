@@ -99,7 +99,7 @@ public class Constants {
 
     private static final double kDriveGearRatio = 6.746031746031747;
     private static final double kSteerGearRatio = 21.428571428571427;
-    private static final Distance kWheelRadius = Inches.of(CHOSEN_MODULE.wheelCircumference / 2);
+    private static final Distance kWheelRadius = Meters.of(CHOSEN_MODULE.wheelCircumference / 2);
 
     private static final boolean kInvertLeftSide = false;
     private static final boolean kInvertRightSide = true;
