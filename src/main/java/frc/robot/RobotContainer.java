@@ -46,7 +46,7 @@ public class RobotContainer {
     // slow mode
     private final double kSlowMultiplier = 0.4;
     private final double normalMaxSpeed = Constants.OperatorConstants.kSpeedAt12Volts.in(MetersPerSecond); // desired top speed
-    private final double normalMaxAngularRate = RotationsPerSecond.of(0.1).in(RadiansPerSecond); // max angular velocity
+    private final double normalMaxAngularRate = RotationsPerSecond.of(2).in(RadiansPerSecond); // max angular velocity
     private double MaxSpeed = normalMaxSpeed;
     private double MaxAngularRate = normalMaxAngularRate;
 
@@ -65,7 +65,7 @@ public class RobotContainer {
 
     public static final JoystickButton intake = new JoystickButton(driver, Constants.IntakeConstants.intakePort);
     public static final JoystickButton manualTurret = new JoystickButton(operator, Constants.TurretConstants.turretPort);
-    public final static JoystickButton shoot = new JoystickButton(operator, Constants.TurretConstants.shootPort);
+    public final static JoystickButton shoot = new JoystickButton(driver, Constants.TurretConstants.shootPort);
     public final static JoystickButton toggle = new JoystickButton(operator, Constants.StorageConstants.togglePort);
     public final static JoystickButton zeroGyro = new JoystickButton(driver, Constants.resetGyroPort);
     public final static JoystickButton slowMode = new JoystickButton(driver, Constants.slowModePort);

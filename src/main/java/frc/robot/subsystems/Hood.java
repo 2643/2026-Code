@@ -103,10 +103,9 @@ public class Hood extends SubsystemBase {
   // }
 
   public void moveHood(double position) {
-    if(!disable) {
+      System.out.println("Moving hood to position: " + position);
       hoodTarget = position;
       m_controller.setSetpoint(hoodTarget, ControlType.kMAXMotionPositionControl);
-    }
   }
   public double getHoodPos() {
     return encoder.getPosition();
@@ -131,6 +130,7 @@ public class Hood extends SubsystemBase {
 
 
   public void setEncoder() {
+    System.out.println("Encoder reset");
     encoder.setPosition(0);
     moveHood(2.9);
     moveHood(Constants.TurretConstants.hoodSoftLimit1);
@@ -151,18 +151,18 @@ public class Hood extends SubsystemBase {
     area = LimelightHelpers.getTA(limelightName);
     fiducialID = LimelightHelpers.getFiducialID(limelightName);
 
-    if(RobotContainer.m_Swivel.getState() == States.INITIALIZED) {
-     if (getHoodPos() > Constants.TurretConstants.hoodSoftLimit1) {
-      moveHood(Constants.TurretConstants.hoodSoftLimit1 - 0.1);
-    } else if (getHoodPos() < Constants.TurretConstants.hoodSoftLimit2) {
-      moveHood(Constants.TurretConstants.hoodSoftLimit2 + 0.1);
-    } else if (getHoodPos() >= Constants.TurretConstants.hoodHardLimit1 || getHoodPos() <= Constants.TurretConstants.hoodHardLimit2) {
-      // disable = true;
-    }
-    }
+    // if(RobotContainer.m_Swivel.getState() == States.INITIALIZED) {
+    //  if (getHoodPos() > Constants.TurretConstants.hoodSoftLimit1) {
+    //   moveHood(Constants.TurretConstants.hoodSoftLimit1 - 0.1);
+    // } else if (getHoodPos() < Constants.TurretConstants.hoodSoftLimit2) {
+    //   moveHood(Constants.TurretConstants.hoodSoftLimit2 + 0.1);
+    // } else if (getHoodPos() >= Constants.TurretConstants.hoodHardLimit1 || getHoodPos() <= Constants.TurretConstants.hoodHardLimit2) {
+    //   // disable = true;
+    // }
+    // }
     
    if (RobotContainer.m_Swivel.getState() == States.INITIALIZED && timer.hasElapsed(3)){
-    moveHood(SmartDashboard.getNumber("Target Hood Position", hoodTarget));
+    // moveHood(SmartDashboard.getNumber("Target Hood Position", hoodTarget));
     if (!reset){
       reset = true;
       moveHood(1);

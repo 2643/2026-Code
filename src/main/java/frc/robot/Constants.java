@@ -340,8 +340,8 @@ public class Constants {
                 public final static int turretPort = 4;
                 public final static int hoodDownPort = 5;
                 public final static int hoodUpPort = 6;
-                public final static int swivelUpPort = 7;
-                public final static int swivelDownPort = 8;
+                public final static int swivelUpPort = 8;
+                public final static int swivelDownPort = 7;
                 public final static int scramPort = 9;
 
                 public final static double swivelP = 20;
@@ -371,7 +371,7 @@ public class Constants {
                 public final static double hoodSoftLimit2 = 0.1;
 
                 public final static double manualSwivel = 2.92041015625;
-                public final static double manualHood = 1;
+                public final static double manualHood = 0.2;
 
                 public final static double hoodGearRatio = 72 / 289;
 
