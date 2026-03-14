@@ -7,7 +7,13 @@
         {
           "type": "named",
           "data": {
-            "name": "ResetTurret"
+            "name": "ResetSwivel"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ResetHood"
           }
         },
         {
