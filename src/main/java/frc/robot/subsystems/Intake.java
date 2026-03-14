@@ -31,10 +31,10 @@ public class Intake extends SubsystemBase {
 
   public boolean getSpeed() {
     if (speed == 0) { 
-      return true;
+      return false;
     }
     else {
-      return false;
+      return true;
     }
   }
 
@@ -42,6 +42,7 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("Target Intake Speed", speed);
     SmartDashboard.putNumber("Current Intake Speed", intakeMotor.getRotorVelocity().refresh().getValueAsDouble());
+    SmartDashboard.putBoolean("Intaking", getSpeed());
   }
 }
 

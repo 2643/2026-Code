@@ -65,7 +65,7 @@ public class RobotContainer {
 
     public static final JoystickButton intake = new JoystickButton(driver, Constants.IntakeConstants.intakePort);
     public static final JoystickButton manualTurret = new JoystickButton(operator, Constants.TurretConstants.turretPort);
-    public final static JoystickButton shoot = new JoystickButton(driver, Constants.TurretConstants.shootPort);
+    public final static JoystickButton shoot = new JoystickButton(operator, Constants.TurretConstants.shootPort);
     public final static JoystickButton toggle = new JoystickButton(operator, Constants.StorageConstants.togglePort);
     public final static JoystickButton zeroGyro = new JoystickButton(driver, Constants.resetGyroPort);
     public final static JoystickButton slowMode = new JoystickButton(driver, Constants.slowModePort);

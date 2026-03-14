@@ -49,6 +49,8 @@ public class Hood extends SubsystemBase {
   public double angle = -1;
   private Timer timer = new Timer();
   public boolean reset = false;
+  public double slope = 1.3869;
+  public double offset = 1.13255;
 
   public SparkMax hoodMotor = new SparkMax(Constants.TurretConstants.hoodID, MotorType.kBrushless);
   public RelativeEncoder encoder = hoodMotor.getEncoder();
@@ -122,7 +124,7 @@ public class Hood extends SubsystemBase {
   
   public void autoPitch() {
     roundedArea = Math.log(1/area);
-    angle = (1.38693*roundedArea)-1.13255;
+    angle = (slope*roundedArea)-offset;
     if (angle < Constants.TurretConstants.hoodSoftLimit1 && angle > Constants.TurretConstants.hoodSoftLimit2) {
       moveHood(angle);
     }
@@ -130,7 +132,6 @@ public class Hood extends SubsystemBase {
 
 
   public void setEncoder() {
-    System.out.println("Encoder reset");
     encoder.setPosition(0);
     moveHood(2.9);
     moveHood(Constants.TurretConstants.hoodSoftLimit1);
@@ -163,6 +164,8 @@ public class Hood extends SubsystemBase {
     
    if (RobotContainer.m_Swivel.getState() == States.INITIALIZED && timer.hasElapsed(3)){
     // moveHood(SmartDashboard.getNumber("Target Hood Position", hoodTarget));
+    slope = SmartDashboard.getNumber("Slope", 1.3869);
+    offset = SmartDashboard.getNumber("Offset", 1.13255);
     if (!reset){
       reset = true;
       moveHood(1);
@@ -177,5 +180,7 @@ public class Hood extends SubsystemBase {
     SmartDashboard.putNumber("Current Hood Position", getHoodPos());
     SmartDashboard.putNumber("Rounded Area", roundedArea);
     SmartDashboard.putNumber("Angle", angle);
+    SmartDashboard.putNumber("Offset", offset);
+    SmartDashboard.putNumber("Slope", slope);
   }
 }

@@ -32,6 +32,7 @@ public class Storage extends SubsystemBase {
   public double wheelSpeed;
   public double targetWheelSpeed;
   public double indexSpeed;
+  public boolean shoot = false;
 
 
   TalonFX flyWheel = new TalonFX(Constants.StorageConstants.wheelPort);
@@ -112,6 +113,11 @@ public void setPhase(Phase phase) {
 
 public void setIndexer(Indexer indexer) {
   currentIndexer = indexer;
+  if (indexer == Indexer.ON){
+    shoot = true;
+  } else{
+    shoot = false;
+  }
 }
 
 public Indexer getIndexer() {
@@ -141,7 +147,7 @@ public void resetFlyTimer(){
     SmartDashboard.putNumber("Current Wheel Speed", wheelSpeed);
     SmartDashboard.putNumber("Target Wheel Speed", targetWheelSpeed);
     SmartDashboard.putNumber("Current Indexer Speed", indexSpeed);
-
+    SmartDashboard.putBoolean("Shooting", shoot);
   }
 }
 

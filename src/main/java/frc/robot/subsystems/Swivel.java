@@ -280,6 +280,7 @@ public class Swivel extends SubsystemBase {
     SmartDashboard.putNumber("Target Swivel Position", swivelTarget);
     SmartDashboard.putNumber("dist", getDist());
     SmartDashboard.putNumber("Limelight TX", tx);
+    SmartDashboard.putBoolean("AprilTag", isVisible);
     SmartDashboard.putString("Current State", currentState.toString());
     SmartDashboard.putBoolean("Swivel Limit", getSwivelLimit());
     SmartDashboard.putString("Current Mode", getMode().toString());
