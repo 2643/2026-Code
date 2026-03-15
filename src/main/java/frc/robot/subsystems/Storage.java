@@ -102,13 +102,14 @@ public void moveWheel(double speed) {
 
 public void moveIndexer(double speed) {
   targetIndexSpeed = speed;
-   if (getWheel() == Wheel.ON)
+   if (getIndexer() == Indexer.ON)
   { 
-      flyWheel.setControl(vel.withVelocity(speed).withFeedForward(Constants.StorageConstants.wheelFF));
+      indexMotor1.setControl(new DutyCycleOut(speed));
+      
   }
   else
   {
-    flyWheel.setControl(new DutyCycleOut(0));
+    indexMotor1.setControl(new DutyCycleOut(0));
   }
 }
 

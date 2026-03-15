@@ -17,10 +17,12 @@ import frc.robot.subsystems.Storage.Phase;
 public class ToggleIndexer extends Command {
   boolean finish;
   Phase phase;
+  boolean sign;
 
-  public ToggleIndexer() {
+  public ToggleIndexer(boolean sign) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.m_Storage);
+    this.sign = sign;
   }
 
   // Called when the command is initially scheduled.
@@ -42,8 +44,11 @@ public class ToggleIndexer extends Command {
       case OFF -> RobotContainer.m_Storage.setIndexer(Indexer.ON);
     }
 
-    RobotContainer.m_Storage.moveIndexer(Constants.StorageConstants.indexSpeed);
-    
+    if(sign)
+      RobotContainer.m_Storage.moveIndexer(Constants.StorageConstants.indexSpeed);
+    else
+      RobotContainer.m_Storage.moveIndexer(-Constants.StorageConstants.indexSpeed);
+
   }
   // Returns true when the command should end.
   @Override

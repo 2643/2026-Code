@@ -69,6 +69,7 @@ public class RobotContainer {
     public static final JoystickButton manualTurret = new JoystickButton(operator, Constants.TurretConstants.turretPort);
     public final static JoystickButton wheel = new JoystickButton(operator, Constants.StorageConstants.wheelPort);
     public final static JoystickButton indexer = new JoystickButton(operator, Constants.StorageConstants.indexerPort);
+    public final static JoystickButton reverse = new JoystickButton(driver, 3);   
     public final static JoystickButton toggle = new JoystickButton(operator, Constants.StorageConstants.togglePort);
     public final static JoystickButton zeroGyro = new JoystickButton(driver, Constants.resetGyroPort);
     public final static JoystickButton slowMode = new JoystickButton(driver, Constants.slowModePort);
@@ -77,11 +78,12 @@ public class RobotContainer {
     public final static JoystickButton scram = new JoystickButton(operator, Constants.TurretConstants.scramPort);
     public final static JoystickButton swivelUp = new JoystickButton(operator, Constants.TurretConstants.swivelUpPort);
     public final static JoystickButton swivelDown = new JoystickButton(operator, Constants.TurretConstants.swivelDownPort);
-
+    public final static JoystickButton hootReinit = new JoystickButton(operator, Constants.resetGyroPort);
+    
 
     public final Swerve drivetrain = Constants.OperatorConstants.createDrivetrain();
     public final Vision m_Vision = new Vision();
-    public final static Intake m_Intake = new Intake();
+    public final static Intake m_Intake = new Intake(); 
     public static final Hood m_Hood = new Hood();
     public static final Storage m_Storage = new Storage();
     public static final Swivel m_Swivel = new Swivel();
@@ -96,23 +98,29 @@ public class RobotContainer {
 
     
         public RobotContainer() {
-            NamedCommands.registerCommand("Intake", new StartIntake());
+            NamedCommands.registerCommand("Intake", new StartIntake(true));
             NamedCommands.registerCommand("Shoot", new ToggleWheel(Phase.ATTACK));
             NamedCommands.registerCommand("ManualTurret", new ManualTurret());
             // NamedCommands.registerCommand("Reset", new ResetTurret());
             NamedCommands.registerCommand("ResetHood", new ResetHood());
             NamedCommands.registerCommand("ResetSwivel", new ResetSwivel());
+            NamedCommands.registerCommand("ToggleWheel", new ToggleWheel(m_Storage.getPhase()));
+            NamedCommands.registerCommand("ToggleIndexer", new ToggleIndexer(true));
+
 
 
 
             configureBindings();
 
             //put autochooser options here
-            // autoChooser.addOption("S1 Shoot", new PathPlannerAuto("S1-O-Shoot"));
+            autoChooser.addOption("S1 Shoot", new PathPlannerAuto("S1-O-Shoot"));
             autoChooser.addOption("S2 Shoot", new PathPlannerAuto("S2-MID-Shoot"));
             autoChooser.addOption("Straight Line", new PathPlannerAuto("Straight Line"));
-            autoChooser.addOption("Test", new PathPlannerAuto("rot"));
+            // autoChooser.addOption("Test", new PathPlannerAuto("rot"));
             autoChooser.addOption("null", null);
+            autoChooser.addOption("S1-back", new PathPlannerAuto("Shoot-S1"));
+            autoChooser.addOption("S2-back", new PathPlannerAuto("Shoot-S2"));
+            autoChooser.addOption("S3-back", new PathPlannerAuto("Shoot-S3"));
         }
     
         private double applyDeadzone(double value, double deadzone) {
@@ -121,27 +129,30 @@ public class RobotContainer {
     
         private void configureBindings() {
             toggle.onTrue(new Toggle());
-            intake.onTrue(new StartIntake());
+            intake.onTrue(new StartIntake(true));
             wheel.onTrue(new ToggleWheel(m_Storage.getPhase()));
-            indexer.onTrue(new ToggleIndexer());
+            indexer.onTrue(new ToggleIndexer(true));
+            reverse.onTrue(new ToggleIndexer(false));
+            reverse.onTrue(new StartIntake(false));
             manualTurret.onTrue(new ManualTurret());
             scram.onTrue(new Scram());
+            hootReinit.onTrue(new ResetHood());
 
             swivelUp.whileTrue(new ManualMoveSwivel(true));
             swivelDown.whileTrue(new ManualMoveSwivel(false));
 
-            hoodUp.whileTrue(new ManualMoveHood(true));
-            hoodDown.whileTrue(new ManualMoveHood(false));
+            // hoodUp.whileTrue(new ManualMoveHood(true));
+            // hoodDown.whileTrue(new ManualMoveHood(false));
 
-            // hoodDown.onTrue(new ManualHoodDown());
-            // hoodUp.onTrue(new ManualHoodUp());
+            hoodDown.onTrue(new ManualHoodDown());
+            hoodUp.onTrue(new ManualHoodUp());
 
 
 
             // autoAim.whileTrue(new AutoAim(drivetrain, m_Vision));
             // Note that X is defined as forward according to WPILib convention,
             // and Y is defined as to the left according to WPILib convention.
-        drivetrain.setDefaultCommand(
+        drivetrain.setDefaultCommand(  
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> {
                 // raw desired velocities from joystick

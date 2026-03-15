@@ -348,8 +348,8 @@ public class Constants {
                 public final static double swivelD = 0.01;
                 public final static double swivelAccel = 100;
                 public final static double swivelVel = 100;
-                public final static double swivelStatorLimit = 45;
-                public final static double swivelSupplyLimit = 30;
+                public final static double swivelStatorLimit = 30;
+                public final static double swivelSupplyLimit = 20;
 
                 public final static double hoodP = 1.5;
                 public final static double hoodI = 0.01;

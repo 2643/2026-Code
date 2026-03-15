@@ -6,6 +6,7 @@ package frc.robot.commands.Turret;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Swivel.States;
 
@@ -24,6 +25,7 @@ public class ResetHood extends Command {
   @Override
   public void initialize() {
     RobotContainer.m_Hood.setEncoder();
+    RobotContainer.m_Hood.resetTimer();
     RobotContainer.m_Hood.startTimer();
 
     finish = true;

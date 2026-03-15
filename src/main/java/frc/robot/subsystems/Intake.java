@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -14,14 +15,17 @@ public class Intake extends SubsystemBase {
   public double speed = 0;
 
   TalonFX intakeMotor = new TalonFX(Constants.IntakeConstants.intakeID);
-
+  TalonFXConfiguration configs = new TalonFXConfiguration();
   public Intake() {
+    configs.CurrentLimits.StatorCurrentLimit = 40;
+    configs.CurrentLimits.SupplyCurrentLimit = 30;
+
   }
 
-  public void moveIntake() {
+  public void moveIntake(double s) {
     if (speed == 0) { 
-      intakeMotor.setControl(new DutyCycleOut(Constants.IntakeConstants.intakeSpeed));
-      speed = Constants.IntakeConstants.intakeSpeed;
+      intakeMotor.setControl(new DutyCycleOut(s));
+      speed = s;
     }
     else {
       intakeMotor.setControl(new DutyCycleOut(0));

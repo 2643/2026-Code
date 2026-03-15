@@ -17,9 +17,15 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "S3-Back"
+            "pathName": "S2"
           }
         },
         {
@@ -37,13 +43,25 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "ToggleWheel"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 8.0
+            "waitTime": 2.8
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ToggleIndexer"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 5.0
           }
         },
         {
@@ -55,13 +73,19 @@
         {
           "type": "named",
           "data": {
+            "name": "ToggleWheel"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "ManualTurret"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "ToggleIndexer"
           }
         }
       ]

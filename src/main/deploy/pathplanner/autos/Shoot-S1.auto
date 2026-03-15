@@ -17,27 +17,21 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "S1-O"
+            "pathName": "S1"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Intake-Outpost"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Intaked-Shoot"
           }
         },
         {
@@ -73,7 +67,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ManualTurret"
+            "name": "Intake"
           }
         },
         {
@@ -85,13 +79,13 @@
         {
           "type": "named",
           "data": {
-            "name": "ToggleIndexer"
+            "name": "ManualTurret"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Intake"
+            "name": "ToggleIndexer"
           }
         }
       ]

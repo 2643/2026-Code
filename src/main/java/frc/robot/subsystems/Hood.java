@@ -137,6 +137,7 @@ public class Hood extends SubsystemBase {
 
 
   public void setEncoder() {
+    reset = false;
     encoder.setPosition(0);
     moveHood(2.9);
     moveHood(Constants.TurretConstants.hoodSoftLimit1);
@@ -149,6 +150,12 @@ public class Hood extends SubsystemBase {
 
   public void startTimer() {
       timer.start();
+  }
+  
+  public void resetTimer() {
+    timer.stop();
+    timer.reset();
+    
   }
 
   @Override
