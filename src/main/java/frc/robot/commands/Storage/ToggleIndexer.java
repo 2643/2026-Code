@@ -14,14 +14,13 @@ import frc.robot.subsystems.Storage.Phase;
 
  
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class Shoot extends Command {
+public class ToggleIndexer extends Command {
   boolean finish;
   Phase phase;
 
-  public Shoot(Phase phase) {
+  public ToggleIndexer() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.m_Storage);
-    this.phase = phase;
   }
 
   // Called when the command is initially scheduled.
@@ -43,11 +42,7 @@ public class Shoot extends Command {
       case OFF -> RobotContainer.m_Storage.setIndexer(Indexer.ON);
     }
 
-    switch (phase) {
-      case ATTACK -> RobotContainer.m_Storage.moveMotor(Constants.StorageConstants.attackSpeed);
-      case DEFENSE -> RobotContainer.m_Storage.moveMotor(Constants.StorageConstants.defenseSpeed);
-      default -> throw new AssertionError(phase.name());
-    }
+    RobotContainer.m_Storage.moveIndexer(Constants.StorageConstants.indexSpeed);
     
   }
   // Returns true when the command should end.

@@ -23,19 +23,26 @@ public class Storage extends SubsystemBase {
     ATTACK,
     DEFENSE,
   }
+
   public enum Indexer {
     ON,
     OFF,
   }
 
-  // public boolean detected = false;
+  public enum Wheel {
+    ON,
+    OFF,
+  }
+
   public double wheelSpeed;
   public double targetWheelSpeed;
+  public double targetIndexSpeed;
   public double indexSpeed;
   public boolean shoot = false;
+  public boolean spin = false;
 
 
-  TalonFX flyWheel = new TalonFX(Constants.StorageConstants.wheelPort);
+  TalonFX flyWheel = new TalonFX(Constants.StorageConstants.wheelID);
   TalonFX indexMotor1 = new TalonFX(Constants.StorageConstants.indexMotorID);
   TalonFX indexMotor2 = new TalonFX(Constants.StorageConstants.indexMotor2ID);
 
@@ -46,6 +53,7 @@ public class Storage extends SubsystemBase {
   
   Phase currentPhase = Phase.ATTACK;
   Indexer currentIndexer = Indexer.OFF;
+  Wheel currentWheel = Wheel.OFF;
 
   public final VelocityVoltage vel = new VelocityVoltage(0).withSlot(0);
   
@@ -57,6 +65,8 @@ public class Storage extends SubsystemBase {
     configs.Slot0.kI = Constants.StorageConstants.wheelI;
     configs.Slot0.kD = Constants.StorageConstants.wheelD;
     
+    configs.CurrentLimits.StatorCurrentLimit = Constants.StorageConstants.wheelStatorLimit;
+    configs.CurrentLimits.SupplyCurrentLimit = Constants.StorageConstants.wheelSupplyLimit;
 
     flyWheel.getConfigurator().apply(configs);
     indexMotor2.setControl(new Follower(indexMotor1.getDeviceID(), MotorAlignment));
@@ -78,23 +88,22 @@ public class Storage extends SubsystemBase {
     }
   }
   
-public void moveMotor(double speed) {
+public void moveWheel(double speed) {
   targetWheelSpeed = speed;
-   if (getIndexer() == Indexer.ON)
+   if (getWheel() == Wheel.ON)
   { 
-    // flyWheel.setControl(new DutyCycleOut(speed));
-    // currentSpeed = speed;
-    // flyTimer.start();
-    //   if (flyTimer.hasElapsed(5)) {
-    //     flyWheel.setControl(new DutyCycleOut(speed-0.1));
-    //   } if (flyTimer.hasElapsed(7)) {
-    //     flyWheel.setControl(new DutyCycleOut(speed-0.15));
-    //   } if (flyTimer.hasElapsed(9)) {
-    //     flyWheel.setControl(new DutyCycleOut(speed));
-    //   } if (flyTimer.hasElapsed(11)) {
-    //     flyWheel.setControl(new DutyCycleOut(speed+0.1));
-        // resetFlyTimer();
-      // } 
+      flyWheel.setControl(vel.withVelocity(speed).withFeedForward(Constants.StorageConstants.wheelFF));
+  }
+  else
+  {
+    flyWheel.setControl(new DutyCycleOut(0));
+  }
+}
+
+public void moveIndexer(double speed) {
+  targetIndexSpeed = speed;
+   if (getWheel() == Wheel.ON)
+  { 
       flyWheel.setControl(vel.withVelocity(speed).withFeedForward(Constants.StorageConstants.wheelFF));
   }
   else
@@ -109,6 +118,19 @@ public Phase getPhase() {
 
 public void setPhase(Phase phase) {
   currentPhase = phase;
+}
+
+public Wheel getWheel() {
+  return currentWheel;
+}
+
+public void setWheel(Wheel wheel) {
+  currentWheel = wheel;
+  if (wheel == Wheel.ON){
+    spin = true;
+  } else{
+    spin = false;
+  }
 }
 
 public void setIndexer(Indexer indexer) {
@@ -147,6 +169,8 @@ public void resetFlyTimer(){
     SmartDashboard.putNumber("Current Wheel Speed", wheelSpeed);
     SmartDashboard.putNumber("Target Wheel Speed", targetWheelSpeed);
     SmartDashboard.putNumber("Current Indexer Speed", indexSpeed);
+    SmartDashboard.putNumber("Target Indexer Speed", targetIndexSpeed);
+    SmartDashboard.putBoolean("Wheel", spin);
     SmartDashboard.putBoolean("Shooting", shoot);
   }
 }

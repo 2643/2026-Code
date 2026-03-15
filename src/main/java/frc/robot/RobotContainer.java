@@ -25,6 +25,7 @@ import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
 import frc.robot.commands.Turret.ManualHoodDown;
 import frc.robot.commands.Turret.ManualHoodUp;
+import frc.robot.commands.Turret.ManualMoveHood;
 import frc.robot.commands.Turret.ManualMoveSwivel;
 import frc.robot.commands.Turret.ManualTurret;
 import frc.robot.commands.Turret.ResetHood;
@@ -32,8 +33,9 @@ import frc.robot.commands.Turret.ResetSwivel;
 import frc.robot.commands.Turret.Scram;
 import frc.robot.commands.Intake.StartIntake;
 import frc.robot.commands.ParallelCommands.ResetTurret;
-import frc.robot.commands.Storage.Shoot;
+import frc.robot.commands.Storage.ToggleWheel;
 import frc.robot.commands.Storage.Toggle;
+import frc.robot.commands.Storage.ToggleIndexer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Swivel;
 import frc.robot.subsystems.Storage;
@@ -65,7 +67,8 @@ public class RobotContainer {
 
     public static final JoystickButton intake = new JoystickButton(driver, Constants.IntakeConstants.intakePort);
     public static final JoystickButton manualTurret = new JoystickButton(operator, Constants.TurretConstants.turretPort);
-    public final static JoystickButton shoot = new JoystickButton(operator, Constants.TurretConstants.shootPort);
+    public final static JoystickButton wheel = new JoystickButton(operator, Constants.StorageConstants.wheelPort);
+    public final static JoystickButton indexer = new JoystickButton(operator, Constants.StorageConstants.indexerPort);
     public final static JoystickButton toggle = new JoystickButton(operator, Constants.StorageConstants.togglePort);
     public final static JoystickButton zeroGyro = new JoystickButton(driver, Constants.resetGyroPort);
     public final static JoystickButton slowMode = new JoystickButton(driver, Constants.slowModePort);
@@ -94,7 +97,7 @@ public class RobotContainer {
     
         public RobotContainer() {
             NamedCommands.registerCommand("Intake", new StartIntake());
-            NamedCommands.registerCommand("Shoot", new Shoot(Phase.ATTACK));
+            NamedCommands.registerCommand("Shoot", new ToggleWheel(Phase.ATTACK));
             NamedCommands.registerCommand("ManualTurret", new ManualTurret());
             // NamedCommands.registerCommand("Reset", new ResetTurret());
             NamedCommands.registerCommand("ResetHood", new ResetHood());
@@ -119,14 +122,19 @@ public class RobotContainer {
         private void configureBindings() {
             toggle.onTrue(new Toggle());
             intake.onTrue(new StartIntake());
-            shoot.onTrue(new Shoot(m_Storage.getPhase()));
-            hoodDown.onTrue(new ManualHoodDown());
-            hoodUp.onTrue(new ManualHoodUp());
+            wheel.onTrue(new ToggleWheel(m_Storage.getPhase()));
+            indexer.onTrue(new ToggleIndexer());
             manualTurret.onTrue(new ManualTurret());
             scram.onTrue(new Scram());
 
             swivelUp.whileTrue(new ManualMoveSwivel(true));
             swivelDown.whileTrue(new ManualMoveSwivel(false));
+
+            hoodUp.whileTrue(new ManualMoveHood(true));
+            hoodDown.whileTrue(new ManualMoveHood(false));
+
+            // hoodDown.onTrue(new ManualHoodDown());
+            // hoodUp.onTrue(new ManualHoodUp());
 
 
 

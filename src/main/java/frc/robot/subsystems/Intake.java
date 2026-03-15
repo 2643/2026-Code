@@ -18,7 +18,7 @@ public class Intake extends SubsystemBase {
   public Intake() {
   }
 
-  public void moveMotor() {
+  public void moveIntake() {
     if (speed == 0) { 
       intakeMotor.setControl(new DutyCycleOut(Constants.IntakeConstants.intakeSpeed));
       speed = Constants.IntakeConstants.intakeSpeed;

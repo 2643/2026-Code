@@ -336,7 +336,6 @@ public class Constants {
                 public final static int hoodID = 16;
                 public final static int swivelID = 0;
 
-                public final static int shootPort = 1;
                 public final static int turretPort = 4;
                 public final static int hoodDownPort = 5;
                 public final static int hoodUpPort = 6;
@@ -347,10 +346,10 @@ public class Constants {
                 public final static double swivelP = 20;
                 public final static double swivelI = 0.01;
                 public final static double swivelD = 0.01;
-                public final static double swivelAccel = 60;
-                public final static double swivelVel = 60;
-                public final static double swivelStatorLimit = 40;
-                public final static double swivelSupplyLimit = 40;
+                public final static double swivelAccel = 100;
+                public final static double swivelVel = 100;
+                public final static double swivelStatorLimit = 45;
+                public final static double swivelSupplyLimit = 30;
 
                 public final static double hoodP = 1.5;
                 public final static double hoodI = 0.01;
@@ -392,8 +391,10 @@ public class Constants {
 
         public final class StorageConstants {
                 public final static int togglePort = 3;
-                
-                public final static int wheelPort = 15;
+                public final static int wheelPort = 1;
+                public final static int indexerPort = 2;
+
+                public final static int wheelID = 15;
                 public final static int indexMotorID = 17;
                 public final static int indexMotor2ID = 19;
                 public final static int indexLimitPort = 0;
@@ -406,5 +407,7 @@ public class Constants {
                 public final static double wheelP = 0.5;
                 public final static double wheelI = 0;
                 public final static double wheelD = 0;
+                 public final static double wheelStatorLimit = 80;
+                public final static double wheelSupplyLimit = 45;
         }
 }

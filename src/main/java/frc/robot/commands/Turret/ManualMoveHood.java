@@ -2,40 +2,47 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Intake;
+package frc.robot.commands.Turret;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.subsystems.Swivel;
 
- 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class StartIntake extends Command {
-  boolean finish;
-  /** Creates a new start_intake. */
-  public StartIntake() {
+public class ManualMoveHood extends Command {
+  boolean sign;
+  /** Creates a new ManualMoveSwivel. */
+  public ManualMoveHood(boolean sign) {
+    addRequirements(RobotContainer.m_Hood);
+    this.sign = sign;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(RobotContainer.m_Intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    RobotContainer.m_Intake.moveIntake();
-    finish = true;
-  }
+  public void initialize() {}
+
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    if(RobotContainer.m_Swivel.getState() == Swivel.States.INITIALIZED) {
+    if(sign)
+      RobotContainer.m_Hood.moveHood(RobotContainer.m_Hood.getHoodPos() + 0.5);
+    else
+      RobotContainer.m_Hood.moveHood(RobotContainer.m_Hood.getHoodPos() - 0.5);
+    }
+   }
+
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    SmartDashboard.putBoolean("Intake", RobotContainer.m_Intake.getSpeed());
+    RobotContainer.m_Hood.moveHood(RobotContainer.m_Swivel.getSwivelPos());
   }
+
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return finish;
+    return false;
   }
 }
