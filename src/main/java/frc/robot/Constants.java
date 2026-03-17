@@ -325,9 +325,38 @@ public class Constants {
         public static final int slowModePort = 6;
 
         public final class IntakeConstants {
+                // Square = 1
+                // X=2
+                // Circle = 3
+                // Triangle = 4
+                // LB = 5
+                // RB = 6
+                // ZL = 7
+                // ZR = 8
+                // Left niche = 9
+                // Right niche = 10
+                // L3 = 11
+                // R3 = 12
+                // Big button = 14
+
                 public final static int intakeID = 18;
                 public final static double intakeSpeed = -0.6;
                 public final static int intakePort = 2;
+        }
+        public final class controller {
+                public final static int square = 1;
+                public final static int x = 2;
+                public final static int circle = 3;
+                public final static int triangle = 4;
+                public final static int LB = 5;
+                public final static int RB = 6;
+                public final static int ZL = 7;
+                public final static int ZR = 8;
+                public final static int leftNiche = 9;
+                public final static int rightNiche = 10;
+                public final static int L3 = 11;
+                public final static int R3 = 12;
+                public final static int bigButton = 14;
         }
         public final class TurretConstants {    
                 public final static int swivelLimitPort = 2;
