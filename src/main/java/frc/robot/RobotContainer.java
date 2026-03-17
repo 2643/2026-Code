@@ -22,6 +22,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.subsystems.Swerve;
+import frc.robot.util.Limelight4;
+import java.util.Optional;
+import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.subsystems.Vision;
 import frc.robot.commands.Turret.ManualHoodDown;
 import frc.robot.commands.Turret.ManualHoodUp;
@@ -82,6 +85,7 @@ public class RobotContainer {
     
 
     public final Swerve drivetrain = Constants.OperatorConstants.createDrivetrain();
+    private final Limelight4 m_limelight = new Limelight4("limelight");
     public final Vision m_Vision = new Vision();
     public final static Intake m_Intake = new Intake(); 
     public static final Hood m_Hood = new Hood();
@@ -122,6 +126,18 @@ public class RobotContainer {
             autoChooser.addOption("S2-back", new PathPlannerAuto("Shoot-S2"));
             autoChooser.addOption("S3-back", new PathPlannerAuto("Shoot-S3"));
         }
+
+    /**
+     * Returns the last (x,y) from the Limelight if available (meters).
+     */
+    public Optional<double[]> getLimelightLastXY() {
+        return m_limelight.getLastXY();
+    }
+
+    /** Returns the last Limelight Pose2d if available. */
+    public Optional<Pose2d> getLimelightLastPose() {
+        return m_limelight.getLastPose();
+    }
     
         private double applyDeadzone(double value, double deadzone) {
             return Math.abs(value) > deadzone ? value : 0.0;
@@ -213,6 +229,8 @@ public class RobotContainer {
             }));
     
             drivetrain.registerTelemetry(logger::telemeterize);
+            // start Limelight updates (pushes initial pose immediately and then periodically)
+            m_limelight.startUpdating(drivetrain, 0.2);
         }
     
     
