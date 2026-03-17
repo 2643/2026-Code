@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
@@ -83,9 +84,22 @@ public class RobotContainer {
     public final static JoystickButton swivelDown = new JoystickButton(operator, Constants.TurretConstants.swivelDownPort);
     public final static JoystickButton hootReinit = new JoystickButton(operator, Constants.resetGyroPort);
     
+    public static final JoystickButton PROGintake = new JoystickButton(progJoystick, Constants.IntakeConstants.intakePort);
+    public static final JoystickButton PROGmanualTurret = new JoystickButton(progJoystick, Constants.TurretConstants.turretPort);
+    public final static JoystickButton PROGwheel = new JoystickButton(progJoystick, Constants.StorageConstants.wheelPort);
+    public final static JoystickButton PROGindexer = new JoystickButton(progJoystick, Constants.StorageConstants.indexerPort);
+    public final static JoystickButton PROGreverse = new JoystickButton(progJoystick, 3);   
+    public final static JoystickButton PROGtoggle = new JoystickButton(progJoystick, Constants.StorageConstants.togglePort);
+    public final static JoystickButton PROGzeroGyro = new JoystickButton(progJoystick, Constants.resetGyroPort);
+    public final static JoystickButton PROGslowMode = new JoystickButton(progJoystick, Constants.slowModePort);
+    public final static JoystickButton PROGswivelUp = new JoystickButton(progJoystick, Constants.TurretConstants.swivelUpPort);
+    public final static JoystickButton PROGswivelDown = new JoystickButton(progJoystick, Constants.TurretConstants.swivelDownPort);
+    public final static JoystickButton PROGhootReinit = new JoystickButton(progJoystick, Constants.resetGyroPort);
+    
 
     public final Swerve drivetrain = Constants.OperatorConstants.createDrivetrain();
-    private final Limelight4 m_limelight = new Limelight4("limelight");
+    // Use the actual Limelight network table name on your robot
+    private final Limelight4 m_limelight = new Limelight4("limelight-allen");
     public final Vision m_Vision = new Vision();
     public final static Intake m_Intake = new Intake(); 
     public static final Hood m_Hood = new Hood();
@@ -125,6 +139,18 @@ public class RobotContainer {
             autoChooser.addOption("S1-back", new PathPlannerAuto("Shoot-S1"));
             autoChooser.addOption("S2-back", new PathPlannerAuto("Shoot-S2"));
             autoChooser.addOption("S3-back", new PathPlannerAuto("Shoot-S3"));
+            // Configure Limelight field preset to the 2026 rebuilt field by default.
+            // This remaps incoming Limelight poses into the 2026 field coordinates.
+            // If you need to tweak offsets, call m_limelight.setFieldTransform(xMeters, yMeters, rotDegrees).
+            try {
+                m_limelight.selectFieldPreset("2026-rebuilt");
+                // Some Limelight configs have Y inverted relative to WPILib's
+                // convention (X forward, Y left). If the pose moves opposite the
+                // robot motion (e.g. moving right makes pose move left), flip Y.
+                m_limelight.setFieldAxisFlip(false, true);
+            } catch (Throwable t) {
+                // ignore
+            }
         }
 
     /**
@@ -175,7 +201,10 @@ public class RobotContainer {
                 double desiredX = -applyDeadzone(driver.getRawAxis(Constants.AXIS_Y), 0.2) * MaxSpeed; // forward
                 double desiredY = -applyDeadzone(driver.getRawAxis(Constants.AXIS_X), 0.2) * MaxSpeed; // left
                 double desiredOmega = -applyDeadzone(driver.getRawAxis(Constants.AXIS_TWIST), 0.2) * MaxAngularRate; // rotate
-
+                SmartDashboard.putNumber("x", desiredX);
+                SmartDashboard.putNumber("y", desiredY);
+                SmartDashboard.putNumber("omega", desiredOmega);
+                
                 // double desiredX = -applyDeadzone(driver.getRawAxis(Constants.AXIS_Y), 0.2) * MaxSpeed; // forward
                 // double desiredY = -applyDeadzone(driver.getRawAxis(Constants.AXIS_X), 0.2) * MaxSpeed; // left
                 // double desiredOmega = -applyDeadzone(driver.getRawAxis(Constants.AXIS_TWIST), 0.2) * MaxAngularRate; // rotate
