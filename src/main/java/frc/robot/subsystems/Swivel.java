@@ -44,7 +44,7 @@ public class Swivel extends SubsystemBase {
   public static double swivelTarget;
   public double dist;
   public double tx;
-  private final String limelightName = "limelight-bhavik";
+  private final String limelightName = "limelight-allen";
   private final String limelightURL = "http://10.26.43.201:5801/";
   public boolean isVisible;
   public double yaw;
