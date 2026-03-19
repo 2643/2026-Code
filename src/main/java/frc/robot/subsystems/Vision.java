@@ -35,7 +35,7 @@ public class Vision extends SubsystemBase {
   private final String limelightName2 = "limelight-bhavik";
   private final String limelightURL2 = "http://10.26.43.201:5801/";
 
-  public final PhotonCamera camera = new PhotonCamera("placeholder");
+  // public final PhotonCamera camera = new PhotonCamera("placeholder");
  
   /**NOTES:
    * In the future prolly make a state machine that has the different states of each different scoring method

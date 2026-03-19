@@ -73,7 +73,33 @@ public class RobotContainer {
     public final static JoystickButton reverse = new JoystickButton(driver, 3);   
     public final static JoystickButton hootReinit = new JoystickButton(operator, Constants.resetGyroPort);
     
+    public static final JoystickButton intake = new JoystickButton(driver, Constants.controller.x);
+    public static final JoystickButton manualTurret = new JoystickButton(operator, Constants.controller.triangle);
+    public final static JoystickButton toggle = new JoystickButton(operator, Constants.controller.circle);
+    public final static JoystickButton zeroGyro = new JoystickButton(driver, Constants.controller.rightNiche);
+    public final static JoystickButton slowMode = new JoystickButton(driver, Constants.controller.RB);
+    public final static JoystickButton hoodDown = new JoystickButton(operator, Constants.controller.LB);
+    public final static JoystickButton hoodUp = new JoystickButton(operator, Constants.controller.RB);
+    public final static JoystickButton scram = new JoystickButton(operator, Constants.controller.leftNiche);
+    public final static JoystickButton swivelUp = new JoystickButton(operator, Constants.controller.ZL);
+    public final static JoystickButton swivelDown = new JoystickButton(operator, Constants.controller.ZR);
 
+    public static final JoystickButton PROGintake = new JoystickButton(progJoystick, Constants.controller.x);
+    public static final JoystickButton PROGmanualTurret = new JoystickButton(progJoystick, Constants.controller.triangle);
+    // public final static JoystickButton PROGtoggle = new JoystickButton(progJoystick, Constants.controller.circle);
+    public final static JoystickButton PROGzeroGyro = new JoystickButton(progJoystick, Constants.controller.rightNiche);
+    public final static JoystickButton PROGslowMode = new JoystickButton(progJoystick, Constants.controller.RB);
+    // public final static JoystickButton PROGhoodDown = new JoystickButton(progJoystick, Constants.controller.LB);
+    // public final static JoystickButton PROGhoodUp = new JoystickButton(progJoystick, Constants.controller.RB);
+    // public final static JoystickButton PROGscram = new JoystickButton(progJoystick, Constants.controller.leftNiche);
+    public final static JoystickButton PROGswivelUp = new JoystickButton(progJoystick, Constants.controller.ZL);
+    public final static JoystickButton PROGswivelDown = new JoystickButton(progJoystick, Constants.controller.ZR);
+    public final static JoystickButton PROGwheel = new JoystickButton(progJoystick, Constants.controller.LB);
+    public final static JoystickButton PROGindexer = new JoystickButton(progJoystick, Constants.controller.square);
+    public final static JoystickButton PROGreverse = new JoystickButton(progJoystick, Constants.controller.circle);   
+    public final static JoystickButton PROGhootReinit = new JoystickButton(progJoystick, Constants.controller.leftNiche);
+    
+    
     public final Swerve drivetrain = Constants.OperatorConstants.createDrivetrain();
     // Use the actual Limelight network table name on your robot
     private final Limelight4 m_limelight = new Limelight4("limelight-allen");
@@ -121,10 +147,8 @@ public class RobotContainer {
             // If you need to tweak offsets, call m_limelight.setFieldTransform(xMeters, yMeters, rotDegrees).
             try {
                 m_limelight.selectFieldPreset("2026-rebuilt");
-                // Some Limelight configs have Y inverted relative to WPILib's
-                // convention (X forward, Y left). If the pose moves opposite the
-                // robot motion (e.g. moving right makes pose move left), flip Y.
-                m_limelight.setFieldAxisFlip(false, true);
+                // Do NOT flip Y - the raw Limelight coordinates are correct for WPILib
+                m_limelight.setFieldAxisFlip(false, false);
             } catch (Throwable t) {
                 // ignore
             }
@@ -190,6 +214,10 @@ public class RobotContainer {
                 double desiredX = -applyDeadzone(driver.getRawAxis(Constants.AXIS_Y), 0.2) * MaxSpeed; // forward
                 double desiredY = -applyDeadzone(driver.getRawAxis(Constants.AXIS_X), 0.2) * MaxSpeed; // left
                 double desiredOmega = -applyDeadzone(driver.getRawAxis(Constants.AXIS_TWIST), 0.2) * MaxAngularRate; // rotate
+
+                double PROGdesiredX = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_Y), 0.2) * MaxSpeed; // forward
+                double PROGdesiredY = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_X), 0.2) * MaxSpeed; // left
+                double PROGdesiredOmega = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_TWIST), 0.2) * MaxAngularRate; // rotate
 
                 // double desiredX = -applyDeadzone(driver.getRawAxis(Constants.AXIS_Y), 0.2) * MaxSpeed; // forward
                 // double desiredY = -applyDeadzone(driver.getRawAxis(Constants.AXIS_X), 0.2) * MaxSpeed; // left

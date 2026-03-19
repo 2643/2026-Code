@@ -96,8 +96,8 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     } else  {
       if(RobotContainer.m_Swivel.getState() == States.INITIALIZING) {
-        CommandScheduler.getInstance().schedule(new ResetSwivel());
         CommandScheduler.getInstance().schedule(new ResetHood());
+        CommandScheduler.getInstance().schedule(new ResetSwivel());
         // CommandScheduler.getInstance().schedule(new ResetTurret());
       }
     }
