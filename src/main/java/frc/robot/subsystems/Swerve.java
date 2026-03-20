@@ -29,6 +29,8 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.OperatorConstants.TunerSwerveDrivetrain;
 import frc.robot.RobotContainer;
+import frc.robot.util.TurretUtil;
+import frc.robot.util.TurretUtil.TargetType;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -309,9 +311,13 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         // + vision fusion and is what you should use for robot logic.
         try {
             var pose = this.getState().Pose;
-            SmartDashboard.putNumber("RobotPose/X", pose.getX());
-            SmartDashboard.putNumber("RobotPose/Y", pose.getY());
-            SmartDashboard.putNumber("RobotPose/HeadingDeg", pose.getRotation().getDegrees());
+            double distToHub = TurretUtil.getDistance(pose, TargetType.HUB);
+            double distToLeftPass = TurretUtil.getDistance(pose, TargetType.LEFT_PASS);
+            double distToRightPass = TurretUtil.getDistance(pose, TargetType.RIGHT_PASS);
+        
+        SmartDashboard.putNumber("Distance/Hub", distToHub);
+        SmartDashboard.putNumber("Distance/LeftPass", distToLeftPass);
+        SmartDashboard.putNumber("Distance/RightPass", distToRightPass);
         } catch (Throwable t) {
             // ignore dashboard issues
         }

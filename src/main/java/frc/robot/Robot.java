@@ -17,6 +17,7 @@ import frc.robot.subsystems.Swivel.States;
 import frc.robot.RobotContainer;
 import frc.robot.commands.Turret.ResetSwivel;
 import frc.robot.commands.ParallelCommands.ResetTurret;
+import frc.robot.commands.Turret.AutoAimHub;
 import frc.robot.commands.Turret.ResetHood;
 
 
@@ -46,6 +47,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
+    // CommandScheduler.getInstance().schedule(new AutoAimHub()); uncomment when works
      Optional<Alliance> ally = DriverStation.getAlliance();
       if (ally.isPresent()) {
         if (ally.get() == Alliance.Red) {

@@ -116,37 +116,6 @@ public class Vision extends SubsystemBase {
   SmartDashboard.putNumber("Target Area (bhavik)", ll2Area);
   }
 
-  public void autoAlign() { //test auto align (doesn't work)
-    boolean targetVisible = false;
-    double targetYaw = 0.0;
-    double targetRange = 0.0;
-
-    var results = camera.getAllUnreadResults();
-
-    if (!results.isEmpty()) {
-      var result = results.get(results.size() - 1);
-      if (result.hasTargets()) {
-        for (var target : result.getTargets()) {
-          if (target.getFiducialId() == 7) {
-            // Found Tag 7, record its information
-            targetYaw = target.getYaw();
-            targetRange = PhotonUtils.calculateDistanceToTargetMeters(
-                0.5, // camera height (meters)
-                1.435, // target height (meters)
-                Units.degreesToRadians(-30.0), // camera pitch
-                Units.degreesToRadians(target.getPitch()));
-            targetVisible = true;
-            break; // stop after finding the tag
-          }
-        }
-      }
-    }
-
-    // Publish the detected tag info to the subsystem fields for use elsewhere
-    this.isVisible = targetVisible;
-    this.yaw = targetYaw;
-    this.range = targetRange;
-  }
 
   @Override
   public void periodic() {

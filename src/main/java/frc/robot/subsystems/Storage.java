@@ -173,6 +173,8 @@ public void resetFlyTimer(){
     SmartDashboard.putNumber("Target Indexer Speed", targetIndexSpeed);
     SmartDashboard.putBoolean("Wheel", spin);
     SmartDashboard.putBoolean("Shooting", shoot);
+
+    moveWheel(SmartDashboard.getNumber("Wheel Speed", 0));
   }
 }
 
