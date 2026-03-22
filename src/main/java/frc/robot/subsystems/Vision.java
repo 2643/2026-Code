@@ -172,9 +172,17 @@ public class Vision extends SubsystemBase {
     
     // Validity checks before fusing
     if (llMeasurement == null) return;
+    if (!llMeasurement.isMegaTag2) return;  // Ensure we're using MegaTag2
     if (llMeasurement.tagCount < 1) return;  // Need at least 1 tag
     if (llMeasurement.avgTagArea < 0.05) return;  // Minimum tag area threshold
     if (llMeasurement.avgTagDist > 5.0) return;  // Max distance 5 meters
+    
+    // Check individual tag ambiguities (high ambiguity = bad measurement)
+    if (llMeasurement.rawFiducials != null && llMeasurement.rawFiducials.length > 0) {
+      for (var fiducial : llMeasurement.rawFiducials) {
+        if (fiducial.ambiguity > 0.3) return;  // Reject if any tag has high ambiguity
+      }
+    }
     
     // Fuse into Kalman filter
     drivetrain.addVisionMeasurement(

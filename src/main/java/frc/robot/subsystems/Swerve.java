@@ -225,9 +225,9 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
                                     .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())),
                     new PPHolonomicDriveController(
                             // PID constants for translation
-                            new PIDConstants(4, 0, 0),
+                            new PIDConstants(10, 0, 0),
                             // PID constants for rotation
-                            new PIDConstants(5, 0, 0)),
+                            new PIDConstants(7, 0, 0)),
                     config,
                     // Assume the path needs to be flipped for Red vs Blue, this is normally the
                     // case
@@ -302,6 +302,18 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
                                 : kBlueAlliancePerspectiveRotation);
                 m_hasAppliedOperatorPerspective = true;
             });
+        }
+
+        // Publish the fused estimator pose (x, y, heading) to SmartDashboard so Shuffleboard
+        // can show the robot's estimated position. This is the value that includes odometry
+        // + vision fusion and is what you should use for robot logic.
+        try {
+            var pose = this.getState().Pose;
+            SmartDashboard.putNumber("RobotPose/X", pose.getX());
+            SmartDashboard.putNumber("RobotPose/Y", pose.getY());
+            SmartDashboard.putNumber("RobotPose/HeadingDeg", pose.getRotation().getDegrees());
+        } catch (Throwable t) {
+            // ignore dashboard issues
         }
 
     }
