@@ -17,6 +17,7 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.units.measure.*;
 
 import frc.robot.subsystems.Swerve;
@@ -220,9 +221,25 @@ public class Constants {
      * Creates a CommandSwerveDrivetrain instance.
      * This should only be called once in your robot program,.
      */
+    public static final double kOdometryUpdateFrequency = 250;
+    
+    // Odometry standard deviations: [x, y, theta]
+    // How much to trust wheel encoders (smaller = more trust in wheels)
+    public static final Matrix<N3, N1> kOdometryStdDeviation = 
+        VecBuilder.fill(0.05, 0.05, 0.02);
+    
+    // Vision standard deviations: [x, y, theta]  
+    // How much to trust Limelight (larger = less trust in vision initially)
+    public static final Matrix<N3, N1> kVisionStdDeviation = 
+        VecBuilder.fill(0.7, 0.7, 0.5);
+    
     public static Swerve createDrivetrain() {
         return new Swerve(
-                DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight);
+                DrivetrainConstants, 
+                kOdometryUpdateFrequency,
+                kOdometryStdDeviation, 
+                kVisionStdDeviation,
+                FrontLeft, FrontRight, BackLeft, BackRight);
     }
 
     /**

@@ -15,6 +15,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.LimelightHelpers;
+import frc.robot.subsystems.Swerve;
 
 public class Vision extends SubsystemBase {
   public boolean isVisible;
@@ -22,6 +23,8 @@ public class Vision extends SubsystemBase {
   public double range;
   public double area;
   public double fiducialID;
+  
+  private final Swerve drivetrain;
     
   // private final String limelightName = "limelight";
 
@@ -45,7 +48,8 @@ public class Vision extends SubsystemBase {
 
 
   /** Creates a new Vision. */
-  public Vision() {
+  public Vision(Swerve drivetrain) {
+    this.drivetrain = drivetrain;
   LimelightHelpers.setLEDMode_PipelineControl(primaryLimelight);
     // Start automatic MJPEG captures for both Limelight HTTP streams so dashboards
     // (Shuffleboard/SmartDashboard/CameraServer/Elastic) can view them.
@@ -151,6 +155,32 @@ public class Vision extends SubsystemBase {
   @Override
   public void periodic() {
   updateData();
-    // This method will be called once per scheduler run
+    
+    // Fuse vision measurements into odometry Kalman filter
+    fuseLimelightPoses();
+  }
+  
+  private void fuseLimelightPoses() {
+    // Try to fuse both Limelights
+    fuseSingleLimelight(limelightName1);
+    fuseSingleLimelight(limelightName2);
+  }
+  
+  private void fuseSingleLimelight(String limelightName) {
+    // Get MegaTag2 pose estimate from Limelight
+    var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
+    
+    // Validity checks before fusing
+    if (llMeasurement == null) return;
+    if (llMeasurement.tagCount < 1) return;  // Need at least 1 tag
+    if (llMeasurement.avgTagArea < 0.05) return;  // Minimum tag area threshold
+    if (llMeasurement.avgTagDist > 5.0) return;  // Max distance 5 meters
+    
+    // Fuse into Kalman filter
+    drivetrain.addVisionMeasurement(
+        llMeasurement.pose,
+        llMeasurement.timestampSeconds);
+    
+    SmartDashboard.putString(limelightName + " Fused", "YES");
   }
 }

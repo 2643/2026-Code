@@ -82,7 +82,7 @@ public class RobotContainer {
     
 
     public final Swerve drivetrain = Constants.OperatorConstants.createDrivetrain();
-    public final Vision m_Vision = new Vision();
+    public final Vision m_Vision = new Vision(drivetrain);
     public final static Intake m_Intake = new Intake(); 
     public static final Hood m_Hood = new Hood();
     public static final Storage m_Storage = new Storage();
@@ -99,7 +99,7 @@ public class RobotContainer {
     
         public RobotContainer() {
             NamedCommands.registerCommand("Intake", new StartIntake(true));
-            NamedCommands.registerCommand("Shoot", new ToggleWheel(Phase.ATTACK));
+            NamedCommands.registerCommand("Shoot", new Toggle(Phase.ATTACK));
             NamedCommands.registerCommand("ManualTurret", new ManualTurret());
             // NamedCommands.registerCommand("Reset", new ResetTurret());
             NamedCommands.registerCommand("ResetHood", new ResetHood());
@@ -128,7 +128,7 @@ public class RobotContainer {
         }
     
         private void configureBindings() {
-            toggle.onTrue(new Toggle());
+            toggle.onTrue(new Toggle(m_Storage.getPhase()));
             intake.onTrue(new StartIntake(true));
             wheel.onTrue(new ToggleWheel(m_Storage.getPhase()));
             indexer.onTrue(new ToggleIndexer(true));

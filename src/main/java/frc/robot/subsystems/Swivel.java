@@ -137,7 +137,7 @@ public class Swivel extends SubsystemBase {
 
 
 
-  
+  /*
    public void autoAlign(){
     var fiducials = LimelightHelpers.getRawFiducials(limelightName);
     for (var f : fiducials) {
@@ -167,23 +167,11 @@ public class Swivel extends SubsystemBase {
         }
       }
     }
+ */
 
-    for (int id : seen) {
-      tags.add((double)id);
-    } 
-
-    SmartDashboard.putNumberArray("Seen", tags.stream().mapToDouble(Double::doubleValue).toArray());
-
-
-      seen.clear();
-      tags.clear();
-    }
-   
-
-  // public void autoAlign(){
-  //   if (currentMode != Mode.AUTOAIM) {
-  //     return;
-  //   }
+  public void autoAlign(){
+    // TODO: Implement autoAlign logic
+  }
 
   //   // Read raw fiducials from Limelight (gives id and txnc)
   //   var fiducials = LimelightHelpers.getRawFiducials(limelightName);

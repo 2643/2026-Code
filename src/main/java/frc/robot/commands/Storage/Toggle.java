@@ -11,8 +11,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class Toggle extends Command {
   boolean finish = false;
-  /** Creates a new Toggle. */
-  public Toggle() {
+  /** Creates a new Toggle. 
+ * @param attack */
+  public Toggle(Phase attack) {
     addRequirements(RobotContainer.m_Storage);
 
     // Use addRequirements() here to declare subsystem dependencies.
