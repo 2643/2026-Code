@@ -106,7 +106,6 @@ public class Hood extends SubsystemBase {
   // }
 
   public void moveHood(double position) {
-      System.out.println("Moving hood to position: " + position);
       hoodTarget = position;
       m_controller.setSetpoint(hoodTarget, ControlType.kMAXMotionPositionControl);
   }

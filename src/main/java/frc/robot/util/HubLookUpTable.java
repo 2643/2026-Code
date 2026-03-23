@@ -38,14 +38,14 @@ public class HubLookUpTable {
         // Distance (m), Shooter Speed (RPS), Trajectory Angle (°), Time of Flight (s)
         // KrakenX60 shooting 226g ball - optimized for constant RPS ~75
         // Trajectory angles: 90° = straight up, 45° = maximum distance
-        addEntry(1.1134,  -50, 79.0, 1.32);  // Close shot - nearly straight up
-        addEntry(1.55,  -50, 75.0, 1.28);
-        addEntry(2.0,  -50, 70.0, 1.2);
-        addEntry(2.5,  -50, 65.0, 1.27);
-        addEntry(-3.0, -50, 60, 1.29);
-        addEntry(3.5,  -50, 56.0, 1.2);
-        addEntry(4.05,  -50, 54.0, 1.28);
-        addEntry(4.55,  -50, 48.0, 1.4);
+        addEntry(1.1134,  -50, 2, 1.32);  // Close shot - nearly straight up
+        addEntry(1.55,  -50, 2, 1.28);
+        addEntry(2.0,  -50, 2, 1.2);
+        addEntry(2.5,  -50, 2, 1.27);
+        addEntry(-3.0, -50, 2, 1.29);
+        addEntry(3.5,  -50, 2, 1.2);
+        addEntry(4.05,  -50, 2, 1.28);
+        addEntry(4.55,  -50, 2, 1.4);
         // Max distance - lowest angle
     }
     

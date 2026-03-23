@@ -38,6 +38,8 @@ public class Telemetry {
         for (int i = 0; i < 4; ++i) {
             SmartDashboard.putData("Module " + i, m_moduleMechanisms[i]);
         }
+        SmartDashboard.putData("Field", m_field);    // optional extra key
+        SmartDashboard.putString("Field/LayoutHint", "2026-Rebuilt");
     }
 
     /* What to publish over networktables for telemetry */
@@ -46,7 +48,7 @@ public class Telemetry {
     /* Robot swerve drive state */
     private final NetworkTable driveStateTable = inst.getTable("DriveState");
     private final StructPublisher<Pose2d> drivePose = driveStateTable.getStructTopic("Pose", Pose2d.struct).publish();
-    private final StructPublisher<ChassisSpeeds> driveSpeeds = driveStateTable
+    private final StructPublisher<ChassisSpeeds> driveSpeeds     = driveStateTable
             .getStructTopic("Speeds", ChassisSpeeds.struct).publish();
     private final StructArrayPublisher<SwerveModuleState> driveModuleStates = driveStateTable
             .getStructArrayTopic("ModuleStates", SwerveModuleState.struct).publish();
@@ -100,6 +102,10 @@ public class Telemetry {
     public void telemeterize(SwerveDriveState state) {
         m_field.setRobotPose(state.Pose);
         SmartDashboard.putData("Field", m_field);
+
+        SmartDashboard.putNumber("Telemetry/PoseX", state.Pose.getX());
+        SmartDashboard.putNumber("Telemetry/PoseY", state.Pose.getY());
+        SmartDashboard.putNumber("Telemetry/PoseDeg", state.Pose.getRotation().getDegrees());
 
         /* Telemeterize the swerve drive state */
         drivePose.set(state.Pose);

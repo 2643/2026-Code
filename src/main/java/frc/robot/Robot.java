@@ -19,6 +19,11 @@ import frc.robot.commands.Turret.ResetSwivel;
 import frc.robot.commands.ParallelCommands.ResetTurret;
 import frc.robot.commands.Turret.AutoAimHub;
 import frc.robot.commands.Turret.ResetHood;
+import edu.wpi.first.math.util.Units;
+import frc.robot.util.LimelightHelpers;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 
 
 public class Robot extends TimedRobot {
@@ -26,6 +31,12 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   public static boolean isRed;
   public double minVoltage = 67;
+  private final boolean kUseLimelight = true;
+  private static final String kLimelightName = "limelight-allen";
+    private static final String kTurretLimelightName = "limelight-bhavik";
+
+  private static boolean kForceApplyVisionForTest = true; // disable force mode; use fused vision instead
+  private boolean m_seededFromVision = false;
 
   private final RobotContainer m_robotContainer;
 
@@ -34,20 +45,8 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void robotPeriodic() {
-    if (minVoltage > RobotController.getBatteryVoltage()){
-            minVoltage = RobotController.getBatteryVoltage();
-        }
-    SmartDashboard.putNumber("Min Voltage", minVoltage);
-        
-    CommandScheduler.getInstance().run(); 
-    SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
-    SmartDashboard.putNumber("Voltage", RobotController.getBatteryVoltage());
-  } 
-
-  @Override
   public void robotInit() {
-    // CommandScheduler.getInstance().schedule(new AutoAimHub()); uncomment when works
+      SmartDashboard.putNumber("Swivel Gear Ratio", Constants.TurretConstants.swivelGearRatio);
      Optional<Alliance> ally = DriverStation.getAlliance();
       if (ally.isPresent()) {
         if (ally.get() == Alliance.Red) {
@@ -61,16 +60,83 @@ public class Robot extends TimedRobot {
       SmartDashboard.putString("Station Number", DriverStation.getLocation().toString());
       SmartDashboard.putNumber("Match Number", DriverStation.getMatchNumber());
       SmartDashboard.putString("Game Specific Message", DriverStation.getGameSpecificMessage());
+      SmartDashboard.putString("Field/LayoutHint", "2026-Rebuilt");
   }
 
   @Override
-  public void disabledInit() {}
+  public void robotPeriodic() {
+    if (minVoltage > RobotController.getBatteryVoltage()){
+            minVoltage = RobotController.getBatteryVoltage();
+        }
+    SmartDashboard.putNumber("Min Voltage", minVoltage);
+        
+    CommandScheduler.getInstance().run();
 
-  @Override
-  public void disabledPeriodic() {}
+    if (kUseLimelight) {
+      var driveState = m_robotContainer.drivetrain.getState();
+      double headingDeg = driveState.Pose.getRotation().getDegrees();
+      Rotation2d idkp2 = driveState.Pose.getRotation();
+      double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
 
-  @Override
-  public void disabledExit() {}
+      LimelightHelpers.SetRobotOrientation(kLimelightName, headingDeg, 0, 0, 0, 0, 0);
+      var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(kLimelightName);
+      var TurretllMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(kTurretLimelightName);
+      Pose2d idk = new Pose2d();
+      if (llMeasurement !=null){
+      idk = new Pose2d(llMeasurement.pose.getTranslation(), idkp2);
+      }
+      boolean hasMeasurement = llMeasurement != null && llMeasurement.pose != null;
+      boolean hasTags = hasMeasurement && llMeasurement.tagCount > 0;
+      boolean tv = LimelightHelpers.getTV(kLimelightName);
+      boolean turnRateOk = Math.abs(omegaRps) < 99999.0;
+      boolean validForVision = tv && hasTags && turnRateOk;
+
+      boolean hasMeasurementTurret = TurretllMeasurement != null && TurretllMeasurement.pose != null;
+
+      SmartDashboard.putBoolean("LL/HasMeasurement", hasMeasurement);
+      SmartDashboard.putBoolean("LL/TV", tv);
+      SmartDashboard.putBoolean("LL/HasTags", hasTags);
+      SmartDashboard.putBoolean("LL/TurnRateOk", turnRateOk);
+      SmartDashboard.putBoolean("LL/ValidForVision", validForVision);
+      kForceApplyVisionForTest = SmartDashboard.getBoolean("LL/resetWithPose", kForceApplyVisionForTest);
+
+
+      if (hasMeasurement) {
+        SmartDashboard.putNumber("LL/PoseX", llMeasurement.pose.getX());
+        SmartDashboard.putNumber("LL/PoseY", llMeasurement.pose.getY());
+        SmartDashboard.putNumber("LL/TagCount", llMeasurement.tagCount);
+        SmartDashboard.putNumber("LL/AvgTagArea", llMeasurement.avgTagArea);
+        SmartDashboard.putNumber("LL/Timestamp", llMeasurement.timestampSeconds);
+      }
+
+      if (hasMeasurementTurret) {
+        SmartDashboard.putNumber("LLTurret/PoseX", TurretllMeasurement.pose.getX());
+        SmartDashboard.putNumber("LLTurret/PoseY", TurretllMeasurement.pose.getY());
+        SmartDashboard.putNumber("LLTurret/TagCount", TurretllMeasurement.tagCount);
+        SmartDashboard.putNumber("LLTurret/AvgTagArea", TurretllMeasurement.avgTagArea);
+        SmartDashboard.putNumber("LLTurret/Timestamp", TurretllMeasurement.timestampSeconds);
+      }
+
+      if (!m_seededFromVision && validForVision) {
+        m_robotContainer.drivetrain.resetPose(llMeasurement.pose);
+        m_seededFromVision = true;
+        SmartDashboard.putBoolean("LL/SeededPose", true);
+      }
+
+      if (!(kForceApplyVisionForTest) && validForVision) {
+        m_robotContainer.drivetrain.addVisionMeasurement(
+          llMeasurement.pose,
+          llMeasurement.timestampSeconds,
+          VecBuilder.fill(0.7, 0.7, 9999999)
+        );
+      } 
+      else if (kForceApplyVisionForTest && validForVision) {
+        if (llMeasurement !=null){
+        m_robotContainer.drivetrain.resetPose(idk); //arf arf arf!!!
+        }
+      }
+    }
+  } 
 
   @Override
   public void autonomousInit() {
@@ -100,6 +166,8 @@ public class Robot extends TimedRobot {
       if(RobotContainer.m_Swivel.getState() == States.INITIALIZING) {
         CommandScheduler.getInstance().schedule(new ResetHood());
         CommandScheduler.getInstance().schedule(new ResetSwivel());
+        CommandScheduler.getInstance().schedule(new AutoAimHub());
+
         // CommandScheduler.getInstance().schedule(new ResetTurret());
       }
     }
@@ -110,7 +178,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    
+    Constants.TurretConstants.swivelGearRatio = SmartDashboard.getNumber("Swivel Gear Ratio", Constants.TurretConstants.swivelGearRatio);
 
   }
 

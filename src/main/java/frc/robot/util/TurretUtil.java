@@ -167,7 +167,10 @@ public class TurretUtil {
      */
     public static ShotSolution computeShotSolution(Pose2d robotPose, TargetType target) {
         double dist = getDistance(robotPose, target);
-        double turretAngle = getTurretAngleDegrees(robotPose, target);
+        double turretAngle = -(getTurretAngleDegrees(robotPose, target) +90);
+        if (turretAngle < -180){
+            turretAngle+=360;
+        }
 
         var params = getTableParams(dist, target);
 
@@ -248,7 +251,7 @@ public class TurretUtil {
         double dy = goalTranslation.getY() - virtualY;
         double leadFieldAngle = Math.atan2(dy, dx);
         double turretAngle = normalizeDegrees(
-                Math.toDegrees(leadFieldAngle - robotPose.getRotation().getRadians()));
+                Math.toDegrees(leadFieldAngle - robotPose.getRotation().getRadians())) * Constants.TurretConstants.swivelGearRatio;
 
         boolean valid = isWithinShootingRange(finalDist) && isTurretAngleReachable(turretAngle);
 
@@ -280,6 +283,7 @@ public class TurretUtil {
 
     /** True if the turret can physically reach the requested angle. */
     public static boolean isTurretAngleReachable(double angleDegrees) {
+        angleDegrees = angleDegrees  * Constants.TurretConstants.swivelGearRatio;
         return angleDegrees >= Constants.TurretConstants.swivelHardLimit2
                 && angleDegrees <= Constants.TurretConstants.swivelHardLimit1;
     }

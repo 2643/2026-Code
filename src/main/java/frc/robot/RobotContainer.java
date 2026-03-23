@@ -25,11 +25,11 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.commands.Intake.StartIntake;
 import frc.robot.commands.Storage.Toggle;
-import frc.robot.util.Limelight4;
 import java.util.Optional;
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.commands.Storage.ToggleIndexer;
 import frc.robot.commands.Storage.ToggleWheel;
+import frc.robot.commands.Turret.AutoAimHub;
 import frc.robot.commands.Turret.ManualHoodDown;
 import frc.robot.commands.Turret.ManualHoodUp;
 import frc.robot.commands.Turret.ManualMoveSwivel;
@@ -101,8 +101,6 @@ public class RobotContainer {
     
     
     public final static Swerve drivetrain = Constants.OperatorConstants.createDrivetrain();
-    // Use the actual Limelight network table name on your robot
-    private final Limelight4 m_limelight = new Limelight4("limelight-allen");
     public final Vision m_Vision = new Vision();
     public final static Intake m_Intake = new Intake(); 
     public static final Hood m_Hood = new Hood();
@@ -146,9 +144,7 @@ public class RobotContainer {
             // This remaps incoming Limelight poses into the 2026 field coordinates.
             // If you need to tweak offsets, call m_limelight.setFieldTransform(xMeters, yMeters, rotDegrees).
             try {
-                m_limelight.selectFieldPreset("2026-rebuilt");
-                // Do NOT flip Y - the raw Limelight coordinates are correct for WPILib
-                m_limelight.setFieldAxisFlip(false, false);
+                SmartDashboard.putString("Limelight/Mode", "RobotPeriodic-MegaTag2");
             } catch (Throwable t) {
                 // ignore
             }
@@ -158,12 +154,12 @@ public class RobotContainer {
      * Returns the last (x,y) from the Limelight if available (meters).
      */
     public Optional<double[]> getLimelightLastXY() {
-        return m_limelight.getLastXY();
+        return Optional.empty();
     }
 
     /** Returns the last Limelight Pose2d if available. */
     public Optional<Pose2d> getLimelightLastPose() {
-        return m_limelight.getLastPose();
+        return Optional.empty();
     }
     
         private double applyDeadzone(double value, double deadzone) {
@@ -193,6 +189,7 @@ public class RobotContainer {
             PROGreverse.onTrue(new ToggleIndexer(false));
             PROGreverse.onTrue(new StartIntake(false));
             PROGmanualTurret.onTrue(new ManualTurret());
+            PROGmanualTurret.onTrue(new AutoAimHub());
             PROGhootReinit.onTrue(new ResetHood());
             PROGswivelUp.whileTrue(new ManualMoveSwivel(true));
             PROGswivelDown.whileTrue(new ManualMoveSwivel(false));
@@ -289,8 +286,8 @@ public class RobotContainer {
             }));
     
             drivetrain.registerTelemetry(logger::telemeterize);
-            // start Limelight updates (pushes initial pose immediately and then periodically)
-            m_limelight.startUpdating(drivetrain, 0.2);
+            // remove old vision updater:
+            // m_limelight.startUpdating(drivetrain, 0.2);
         }
     
     

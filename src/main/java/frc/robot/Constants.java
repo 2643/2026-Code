@@ -370,15 +370,16 @@ public class Constants {
                 public final static int bigButton = 14;
         }
         public final class TurretConstants {    
-                public final static int swivelLimitPort = 2;
+                public final static int swivelLimitPort = 1;
                 public final static int hoodID = 16;
                 public final static int swivelID = 0;
+                public static double swivelGearRatio = ((0.02));
 
                 public final static double swivelP = 20;
                 public final static double swivelI = 0.01;
                 public final static double swivelD = 0.01;
-                public final static double swivelAccel = 100;
-                public final static double swivelVel = 100;
+                public final static double swivelAccel = 50;
+                public final static double swivelVel = 50;
                 public final static double swivelStatorLimit = 30;
                 public final static double swivelSupplyLimit = 20;
 
@@ -388,7 +389,7 @@ public class Constants {
                 public final static double hoodAccel = 100;
                 public final static double hoodVel = 100;
 
-                public final static double swivelHardLimit2 = -2.83;
+                public final static double swivelHardLimit2 = -2.33;
                 public final static double swivelHardLimit1 = 5.57;
 
                 public final static double hoodHardLimit1 = 2.7;
@@ -419,8 +420,8 @@ public class Constants {
                         areaToAngle.put(9, 90.0);
                 }
 
-                public static final double kTurretOffsetX  = -0.2; // X offset (forward +X, backward -X) from robot center to turret (meters) 
-                public static final double kTurretOffsetY = -0.2; // Y offset (left +Y, right -Y) from robot center to turret (meters)
+                public static final double kTurretOffsetX  = -0.133; // X offset (forward +X, backward -X) from robot center to turret (meters) 
+                public static final double kTurretOffsetY = 0.0; // Y offset (left +Y, right -Y) from robot center to turret (meters)
                 public static final double kTurretOffsetZ = 0.3; // Z offset (up +Z, down -Z) from robot center to turret (meters)
 
                 public static final double kMinAngleDegrees = -200.0;
@@ -579,7 +580,8 @@ public class Constants {
     public static Pose2d getRightOpp() {
         return flipIfRed(rightOppBlue);
     }
+    }
 }
-}
+
 
 
