@@ -5,17 +5,19 @@
 package frc.robot.commands.Intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.commands.Turret.AutoAim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
  
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class StartIntake extends Command {
+public class ToggleIntake extends Command {
   boolean finish;
   boolean sign;
   /** Creates a new start_intake. */
-  public StartIntake(boolean sign) {
+  public ToggleIntake(boolean sign) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.m_Intake);
     this.sign = sign;

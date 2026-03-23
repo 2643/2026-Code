@@ -5,8 +5,10 @@
 package frc.robot.commands.Storage;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.commands.Turret.AutoAim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Storage.Indexer;
 import frc.robot.subsystems.Storage.Phase;
@@ -48,6 +50,8 @@ public class ToggleIndexer extends Command {
       RobotContainer.m_Storage.moveIndexer(Constants.StorageConstants.indexSpeed);
     else
       RobotContainer.m_Storage.moveIndexer(-Constants.StorageConstants.indexSpeed);
+    
+    CommandScheduler.getInstance().schedule(new AutoAim());
 
   }
   // Returns true when the command should end.

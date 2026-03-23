@@ -5,6 +5,7 @@
 package frc.robot.commands.Turret;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Swivel.Mode;
 import frc.robot.Constants;
@@ -35,6 +36,7 @@ public class ManualTurret extends Command {
   @Override
   public void end(boolean interrupted) {
     if(RobotContainer.m_Swivel.getMode() == Mode.MANUAL) {
+      CommandScheduler.getInstance().schedule(new AutoAim());
       RobotContainer.m_Swivel.setMode(Mode.AUTOAIM);
     } else {
       RobotContainer.m_Swivel.setMode(Mode.MANUAL);

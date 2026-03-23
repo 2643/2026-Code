@@ -17,7 +17,7 @@ import frc.robot.subsystems.Swivel.States;
 import frc.robot.RobotContainer;
 import frc.robot.commands.Turret.ResetSwivel;
 import frc.robot.commands.ParallelCommands.ResetTurret;
-import frc.robot.commands.Turret.AutoAimHub;
+import frc.robot.commands.Turret.AutoAim;
 import frc.robot.commands.Turret.ResetHood;
 import edu.wpi.first.math.util.Units;
 import frc.robot.util.LimelightHelpers;
@@ -162,13 +162,11 @@ public class Robot extends TimedRobot {
     
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
+      // CommandScheduler.getInstance().schedule(new AutoAim());
     } else  {
       if(RobotContainer.m_Swivel.getState() == States.INITIALIZING) {
         CommandScheduler.getInstance().schedule(new ResetHood());
         CommandScheduler.getInstance().schedule(new ResetSwivel());
-        CommandScheduler.getInstance().schedule(new AutoAimHub());
-
-        // CommandScheduler.getInstance().schedule(new ResetTurret());
       }
     }
   }

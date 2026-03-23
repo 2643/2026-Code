@@ -23,13 +23,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.Constants.ControllerConstants;
-import frc.robot.commands.Intake.StartIntake;
+import frc.robot.commands.Intake.ToggleIntake;
 import frc.robot.commands.Storage.Toggle;
 import java.util.Optional;
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.commands.Storage.ToggleIndexer;
 import frc.robot.commands.Storage.ToggleWheel;
-import frc.robot.commands.Turret.AutoAimHub;
+import frc.robot.commands.Turret.AutoAim;
 import frc.robot.commands.Turret.ManualHoodDown;
 import frc.robot.commands.Turret.ManualHoodUp;
 import frc.robot.commands.Turret.ManualMoveSwivel;
@@ -70,8 +70,8 @@ public class RobotContainer {
 
     public final static JoystickButton wheel = new JoystickButton(operator, Constants.ControllerConstants.square);
     public final static JoystickButton indexer = new JoystickButton(operator, Constants.ControllerConstants.x);
-    public final static JoystickButton reverse = new JoystickButton(driver, 3);   
-    public final static JoystickButton hootReinit = new JoystickButton(operator, Constants.resetGyroPort);
+    public final static JoystickButton reverse = new JoystickButton(driver, Constants.ControllerConstants.circle);   
+    public final static JoystickButton hootReinit = new JoystickButton(operator, Constants.ControllerConstants.rightNiche);
     
     public static final JoystickButton intake = new JoystickButton(driver, Constants.ControllerConstants.x);
     public static final JoystickButton manualTurret = new JoystickButton(operator, Constants.ControllerConstants.triangle);
@@ -117,10 +117,10 @@ public class RobotContainer {
 
     
         public RobotContainer() {
-            NamedCommands.registerCommand("Intake", new StartIntake(true));
+            NamedCommands.registerCommand("Intake", new ToggleIntake(true));
             NamedCommands.registerCommand("Shoot", new ToggleWheel(Phase.ATTACK));
             NamedCommands.registerCommand("ManualTurret", new ManualTurret());
-            // NamedCommands.registerCommand("Reset", new ResetTurret());
+            NamedCommands.registerCommand("AutoAim", new AutoAim());
             NamedCommands.registerCommand("ResetHood", new ResetHood());
             NamedCommands.registerCommand("ResetSwivel", new ResetSwivel());
             NamedCommands.registerCommand("ToggleWheel", new ToggleWheel(m_Storage.getPhase()));
@@ -132,14 +132,14 @@ public class RobotContainer {
             configureBindings();
 
             //put autochooser options here
-            autoChooser.addOption("S1 Shoot", new PathPlannerAuto("S1-O-Shoot"));
-            autoChooser.addOption("S2 Shoot", new PathPlannerAuto("S2-MID-Shoot"));
+            autoChooser.addOption("S1 O Shoot", new PathPlannerAuto("S1-O-Shoot"));
+            autoChooser.addOption("S3 Mid Shoot", new PathPlannerAuto("S3-MID-Shoot"));
             autoChooser.addOption("Straight Line", new PathPlannerAuto("Straight Line"));
             // autoChooser.addOption("Test", new PathPlannerAuto("rot"));
             autoChooser.addOption("null", null);
-            autoChooser.addOption("S1-back", new PathPlannerAuto("Shoot-S1"));
-            autoChooser.addOption("S2-back", new PathPlannerAuto("Shoot-S2"));
-            autoChooser.addOption("S3-back", new PathPlannerAuto("Shoot-S3"));
+            autoChooser.addOption("S1 Shoot", new PathPlannerAuto("Shoot-S1"));
+            autoChooser.addOption("S2 Shoot", new PathPlannerAuto("Shoot-S2"));
+            autoChooser.addOption("S3 Shoot", new PathPlannerAuto("Shoot-S3"));
             // Configure Limelight field preset to the 2026 rebuilt field by default.
             // This remaps incoming Limelight poses into the 2026 field coordinates.
             // If you need to tweak offsets, call m_limelight.setFieldTransform(xMeters, yMeters, rotDegrees).
@@ -168,11 +168,11 @@ public class RobotContainer {
     
         private void configureBindings() {
             toggle.onTrue(new Toggle());
-            intake.onTrue(new StartIntake(true));
+            intake.onTrue(new ToggleIntake(true));
             wheel.onTrue(new ToggleWheel(m_Storage.getPhase()));
             indexer.onTrue(new ToggleIndexer(true));
             reverse.onTrue(new ToggleIndexer(false));
-            reverse.onTrue(new StartIntake(false));
+            reverse.onTrue(new ToggleIntake(false));
             manualTurret.onTrue(new ManualTurret());
             scram.onTrue(new Scram());
             hootReinit.onTrue(new ResetHood());
@@ -183,13 +183,13 @@ public class RobotContainer {
             
            
            
-            PROGintake.onTrue(new StartIntake(true));
+            PROGintake.onTrue(new ToggleIntake(true));
             PROGwheel.onTrue(new ToggleWheel(m_Storage.getPhase()));
             PROGindexer.onTrue(new ToggleIndexer(true));
             PROGreverse.onTrue(new ToggleIndexer(false));
-            PROGreverse.onTrue(new StartIntake(false));
+            PROGreverse.onTrue(new ToggleIntake(false));
             PROGmanualTurret.onTrue(new ManualTurret());
-            PROGmanualTurret.onTrue(new AutoAimHub());
+            PROGmanualTurret.onTrue(new AutoAim());
             PROGhootReinit.onTrue(new ResetHood());
             PROGswivelUp.whileTrue(new ManualMoveSwivel(true));
             PROGswivelDown.whileTrue(new ManualMoveSwivel(false));

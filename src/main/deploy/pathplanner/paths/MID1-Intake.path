@@ -3,37 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.477329545454545,
-        "y": 0.6440568181818185
+        "x": 7.759014084507042,
+        "y": 6.866713615023475
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.2810227272727275,
-        "y": 0.6543636363636367
+        "x": 7.7992646542196145,
+        "y": 5.868053490605453
       },
       "isLocked": false,
-      "linkedName": "SHAKE2"
+      "linkedName": "MID1-Intake"
     },
     {
       "anchor": {
-        "x": 7.764965909090909,
-        "y": 1.1181704545454545
+        "x": 7.759014084507042,
+        "y": 5.908615023474178
       },
       "prevControl": {
-        "x": 5.854636039779362,
-        "y": 0.6605674264557788
+        "x": 7.759014084507042,
+        "y": 6.678123165043167
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "MID"
+      "linkedName": "MID1-End"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.45290581162324667,
-      "rotationDegrees": 0.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -47,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": -90.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }

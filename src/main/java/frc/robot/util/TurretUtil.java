@@ -10,7 +10,10 @@ import frc.robot.Constants;
  * Utility class for turret targeting calculations.
  * All distances and angles are computed from the turret position, not the robot center.
  */
+
+
 public class TurretUtil {
+    
 
     // =========================
     // TARGET TYPES
@@ -171,6 +174,7 @@ public class TurretUtil {
         if (turretAngle < -180){
             turretAngle+=360;
         }
+        turretAngle = turretAngle * Constants.TurretConstants.hoodGearRatio;
 
         var params = getTableParams(dist, target);
 
@@ -284,8 +288,7 @@ public class TurretUtil {
     /** True if the turret can physically reach the requested angle. */
     public static boolean isTurretAngleReachable(double angleDegrees) {
         angleDegrees = angleDegrees  * Constants.TurretConstants.swivelGearRatio;
-        return angleDegrees >= Constants.TurretConstants.swivelHardLimit2
-                && angleDegrees <= Constants.TurretConstants.swivelHardLimit1;
+        return angleDegrees >= Constants.TurretConstants.swivelHardLimit2 && angleDegrees <= Constants.TurretConstants.swivelHardLimit1;
     }
 
     // =========================

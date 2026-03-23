@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "S2-Shake"
+            "pathName": "S3-Shake"
           }
         },
         {
@@ -25,7 +25,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Shake2-Mid"
+            "pathName": "Shake-S3-MID"
           }
         },
         {
@@ -37,7 +37,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "MID-Intake"
+            "pathName": "MID3-Intake"
           }
         },
         {

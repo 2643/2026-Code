@@ -30,7 +30,7 @@ public class ResetSwivel extends Command {
   @Override
   public void execute() {
     if(RobotContainer.m_Swivel.getSwivelLimit()) {
-      RobotContainer.m_Swivel.moveSwivel(RobotContainer.m_Swivel.getSwivelPos() + 0.05);
+      RobotContainer.m_Swivel.moveSwivel(RobotContainer.m_Swivel.getSwivelPos() + 0.025);
       finish = false;
     }
     else {

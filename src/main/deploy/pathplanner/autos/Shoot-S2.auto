@@ -25,7 +25,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "S2"
+            "pathName": "S2-Back"
           }
         },
         {
@@ -79,13 +79,13 @@
         {
           "type": "named",
           "data": {
-            "name": "ManualTurret"
+            "name": "ToggleIndexer"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ToggleIndexer"
+            "name": "ManualTurret"
           }
         }
       ]
