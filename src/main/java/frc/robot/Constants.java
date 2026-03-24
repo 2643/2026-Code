@@ -405,6 +405,7 @@ public class Constants {
                 public final static double manualHood = 0.2;
 
                 public final static double hoodGearRatio = 0.032;// 72 / 289;
+                public static double swivelOffset = 0;
 
                 public final static Dictionary<Integer, Double> areaToAngle = new Hashtable<Integer, Double>();
                 public TurretConstants() {
@@ -439,8 +440,8 @@ public class Constants {
                 public final static int indexMotor2ID = 19;
                 public final static int indexLimitPort = 0;
 
-                public final static double attackSpeed = -70;
-                public final static double defenseSpeed = -70;
+                public final static double attackSpeed = -60;
+                public final static double defenseSpeed = -60;
                 public final static double indexSpeed = 0.55;
                
                 public final static double wheelFF = 0.12;

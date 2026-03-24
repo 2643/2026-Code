@@ -13,10 +13,11 @@ import frc.robot.subsystems.Swivel.States;
 public class AutoAim extends Command {
   private boolean isValid = false;
   private double turretAngle;
-  public double offset = 0;
+  
   private TargetType currentTarget = TargetType.HUB;
 
   public AutoAim() {
+    SmartDashboard.putNumber("Turret Offset", Constants.TurretConstants.swivelOffset);
     addRequirements(RobotContainer.m_Swivel);
     addRequirements(RobotContainer.m_Hood);
     addRequirements(RobotContainer.m_Storage);
@@ -49,8 +50,8 @@ public class AutoAim extends Command {
     TurretUtil.ShotSolution solution = TurretUtil.computeShotSolution(robotPose, currentTarget);
 
     isValid = solution.isValid;
-    SmartDashboard.putNumber("Turret Offset", offset);
-    offset = SmartDashboard.getNumber("Turret Offset", offset);
+    Constants.TurretConstants.swivelOffset = SmartDashboard.getNumber("Turret Offset", Constants.TurretConstants.swivelOffset);
+
     System.out.println("AutoAimHub valid=" + isValid + " turretDeg=" + (solution.turretAngleDegrees) + " dist=" + solution.distanceMeters);
     SmartDashboard.putNumber("Turret Angle", solution.turretAngleDegrees);
     SmartDashboard.putNumber("Turret Dist", solution.distanceMeters);
@@ -61,7 +62,7 @@ public class AutoAim extends Command {
     //   turretAngle = Constants.TurretConstants.swivelSoftLimit2;
     // if(turretAngle >= Constants.TurretConstants.swivelHardLimit1)
     //   turretAngle = Constants.TurretConstants.swivelSoftLimit1;
-    turretAngle += offset;
+    turretAngle += Constants.TurretConstants.swivelOffset;
     RobotContainer.m_Swivel.moveSwivel(turretAngle);
     RobotContainer.m_Hood.moveHood(solution.trajectoryAngleDegrees);
 

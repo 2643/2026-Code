@@ -70,6 +70,8 @@ public class Storage extends SubsystemBase {
 
     flyWheel.getConfigurator().apply(configs);
     indexMotor2.setControl(new Follower(indexMotor1.getDeviceID(), MotorAlignment));
+    SmartDashboard.putNumber("Target Wheel Speed", targetWheelSpeed);
+
   }
 
   public double getFlywheelSpeed(){
@@ -168,13 +170,12 @@ public void resetFlyTimer(){
     SmartDashboard.putString("Phase", currentPhase.toString());
     SmartDashboard.putString("On Off", currentIndexer.toString());
     SmartDashboard.putNumber("Current Wheel Speed", wheelSpeed);
-    SmartDashboard.putNumber("Target Wheel Speed", targetWheelSpeed);
     SmartDashboard.putNumber("Current Indexer Speed", indexSpeed);
     SmartDashboard.putNumber("Target Indexer Speed", targetIndexSpeed);
     SmartDashboard.putBoolean("Wheel", spin);
     SmartDashboard.putBoolean("Shooting", shoot);
-
-    moveWheel(SmartDashboard.getNumber("Wheel Speed", targetWheelSpeed));
+    targetWheelSpeed = SmartDashboard.getNumber("Wheel Speed", targetWheelSpeed);
+    moveWheel(targetWheelSpeed);
   }
 }
 

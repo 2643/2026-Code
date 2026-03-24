@@ -81,6 +81,7 @@ public class Robot extends TimedRobot {
       LimelightHelpers.SetRobotOrientation(kLimelightName, headingDeg, 0, 0, 0, 0, 0);
       var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(kLimelightName);
       var TurretllMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(kTurretLimelightName);
+      double id = LimelightHelpers.getFiducialID(kLimelightName);
       Pose2d idk = new Pose2d();
       if (llMeasurement !=null){
       idk = new Pose2d(llMeasurement.pose.getTranslation(), idkp2);
@@ -91,13 +92,14 @@ public class Robot extends TimedRobot {
       boolean turnRateOk = Math.abs(omegaRps) < 99999.0;
       boolean validForVision = tv && hasTags && turnRateOk;
 
-      boolean hasMeasurementTurret = TurretllMeasurement != null && TurretllMeasurement.pose != null;
+      boolean hasMeasurementTurret = TurretllMeasurement != null && TurretllMeasurement.pose != null && id == 10;
 
       SmartDashboard.putBoolean("LL/HasMeasurement", hasMeasurement);
       SmartDashboard.putBoolean("LL/TV", tv);
       SmartDashboard.putBoolean("LL/HasTags", hasTags);
       SmartDashboard.putBoolean("LL/TurnRateOk", turnRateOk);
       SmartDashboard.putBoolean("LL/ValidForVision", validForVision);
+      SmartDashboard.putNumber("LL/ID", id);
       kForceApplyVisionForTest = SmartDashboard.getBoolean("LL/resetWithPose", kForceApplyVisionForTest);
 
 

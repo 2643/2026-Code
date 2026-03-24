@@ -40,16 +40,16 @@ public class PassLookUpTable {
         // Distance (m), Shooter Speed (RPS), Trajectory Angle (°), Time of Flight (s)
         // KrakenX60 shooting 226g ball - optimized for constant RPS ~75
         // Trajectory angles: 90° = straight up, 45° = maximum distance
-         addEntry(1.1134,  -50, Constants.TurretConstants.manualHood, 1.32);  // Close shot - nearly straight up
-        addEntry(1.55,  -50, Constants.TurretConstants.manualHood, 1.28);
-        addEntry(2.0,  -50, Constants.TurretConstants.manualHood, 1.2);
-        addEntry(2.5,  -50, Constants.TurretConstants.manualHood, 1.27);
+         addEntry(1.1134,  -70, Constants.TurretConstants.manualHood, 1.32);  // Close shot - nearly straight up
+        addEntry(1.55,  -70, Constants.TurretConstants.manualHood, 1.28);
+        addEntry(2.0,  -70, Constants.TurretConstants.manualHood, 1.2);
+        addEntry(2.5,  -70, Constants.TurretConstants.manualHood, 1.27);
         addEntry(-3.0, -50, Constants.TurretConstants.manualHood, 1.29);
-        addEntry(3.5,  -50, Constants.TurretConstants.manualHood, 1.2);
-        addEntry(4.05,  -50, Constants.TurretConstants.manualHood, 1.28);
-        addEntry(4.55,  -50, Constants.TurretConstants.manualHood, 1.4);
-        addEntry(5.0,  -50, Constants.TurretConstants.manualHood, 1.4);
-        addEntry(10, -50, Constants.TurretConstants.manualHood, 2.4);
+        addEntry(3.5,  -70, Constants.TurretConstants.manualHood, 1.2);
+        addEntry(4.05,  -70, Constants.TurretConstants.manualHood, 1.28);
+        addEntry(4.55,  -70, Constants.TurretConstants.manualHood, 1.4);
+        addEntry(5.0,  -70, Constants.TurretConstants.manualHood, 1.4);
+        addEntry(10, -70, Constants.TurretConstants.manualHood, 2.4);
     }
     
     /** Add an entry to the lookup table */
