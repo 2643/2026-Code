@@ -384,7 +384,7 @@ public class Constants {
                 public final static double swivelSupplyLimit = 20;
 
                 public static double antiRotationOffset = 0;
-                public static double antiMultiplier = 0.2;
+                public static double antiMultiplier = -0.05;
 
                 public final static double hoodP = 1.5;
                 public final static double hoodI = 0.01;
@@ -454,7 +454,7 @@ public class Constants {
 
                 public final static double attackSpeed = -60;
                 public final static double defenseSpeed = -60;
-                public final static double indexSpeed = 0.7;
+                public final static double indexSpeed = 0.6;
                
                 public final static double wheelFF = 0.12;
                 public final static double wheelP = 0.5;

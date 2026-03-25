@@ -49,7 +49,7 @@ import frc.robot.subsystems.Vision;
 
 public class RobotContainer {
     // slow mode
-    private final double kSlowMultiplier = 0.4;
+    private final double kSlowMultiplier = 0.3;
     private final double normalMaxSpeed = Constants.OperatorConstants.kSpeedAt12Volts.in(MetersPerSecond); // desired top speed
     private final double normalMaxAngularRate = RotationsPerSecond.of(2).in(RadiansPerSecond); // max angular velocity
     private double MaxSpeed = normalMaxSpeed;
@@ -176,8 +176,8 @@ public class RobotContainer {
             manualTurret.onTrue(new ManualTurret());
             scram.onTrue(new Scram());
             hootReinit.onTrue(new ResetHood());
-            swivelUp.whileTrue(new ManualMoveSwivel(true));
-            swivelDown.whileTrue(new ManualMoveSwivel(false));
+            swivelUp.whileTrue(new ManualMoveSwivel(false));
+            swivelDown.whileTrue(new ManualMoveSwivel(true));
             hoodDown.onTrue(new ManualHoodDown());
             hoodUp.onTrue(new ManualHoodUp());
             
@@ -223,13 +223,15 @@ public class RobotContainer {
                 // Apply trapezoidal limiter (fast ramp)
                 // double[] smoothed = m_trapezoidLimiter.calculate(desiredX, desiredY, desiredOmega);
                 if (PROGdesiredX != 0 || PROGdesiredY != 0 || PROGdesiredOmega != 0) {
-                    Constants.TurretConstants.antiRotationOffset = -0.2 * PROGdesiredOmega;
+                    Constants.TurretConstants.antiRotationOffset = Constants.TurretConstants.antiMultiplier * PROGdesiredOmega;
+                    SmartDashboard.putNumber("antiRotation", Constants.TurretConstants.antiRotationOffset);
                     return drive
                     .withVelocityX(PROGdesiredX)
                     .withVelocityY(PROGdesiredY)
                     .withRotationalRate(PROGdesiredOmega);
                 } else {
-                    Constants.TurretConstants.antiRotationOffset = -0.2 * desiredOmega;
+                    Constants.TurretConstants.antiRotationOffset = Constants.TurretConstants.antiMultiplier * desiredOmega;
+                    SmartDashboard.putNumber("antiRotation", Constants.TurretConstants.antiRotationOffset);
                     return drive
                     .withVelocityX(desiredX)
                     .withVelocityY(desiredY)

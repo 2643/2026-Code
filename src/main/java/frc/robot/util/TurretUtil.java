@@ -234,7 +234,7 @@ public class TurretUtil {
         double virtualY = turretNow.getY();
         HubLookUpTable.ShootingParameters params = null;
 
-        // for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 5; i++) {
             // Predict turret position when ball arrives
             virtualX = turretNow.getX() + robotVelX * tof;
             virtualY = turretNow.getY() + robotVelY * tof;
@@ -247,7 +247,7 @@ public class TurretUtil {
 
             // Refine time-of-flight for next iteration
             tof = params.timeOfFlight;
-        // }
+        }
 
         // Final virtual distance (from the last iteration's virtual position)
         double finalDist = new Translation2d(virtualX, virtualY).getDistance(goalTranslation);

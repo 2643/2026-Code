@@ -98,6 +98,7 @@ public void moveWheel(double speed) {
   }
   else
   {
+    targetWheelSpeed = 0;
     flyWheel.setControl(new DutyCycleOut(0));
   }
 }
@@ -166,6 +167,9 @@ public void resetFlyTimer(){
     wheelSpeed = flyWheel.getRotorVelocity().refresh().getValueAsDouble();
     indexSpeed = indexMotor1.getRotorVelocity().refresh().getValueAsDouble();
 
+    // targetWheelSpeed = SmartDashboard.getNumber("Target Wheel Speed", targetWheelSpeed);
+        // moveWheel(SmartDashboard.getNumber("Target Wheel Speed", targetWheelSpeed));
+
     SmartDashboard.putBoolean("Storage Limit Switch", indexLimit.get());
     SmartDashboard.putString("Phase", currentPhase.toString());
     SmartDashboard.putString("On Off", currentIndexer.toString());
@@ -175,8 +179,7 @@ public void resetFlyTimer(){
     SmartDashboard.putBoolean("Wheel", spin);
     SmartDashboard.putBoolean("Shooting", shoot);
     SmartDashboard.putNumber("Target Wheel Speed", targetWheelSpeed);
-    // targetWheelSpeed = SmartDashboard.getNumber("Target Wheel Speed", targetWheelSpeed);
-    moveWheel(SmartDashboard.getNumber("Target Wheel Speed", targetWheelSpeed));
+    
   }
 }
 
