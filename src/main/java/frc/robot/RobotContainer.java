@@ -223,11 +223,13 @@ public class RobotContainer {
                 // Apply trapezoidal limiter (fast ramp)
                 // double[] smoothed = m_trapezoidLimiter.calculate(desiredX, desiredY, desiredOmega);
                 if (PROGdesiredX != 0 || PROGdesiredY != 0 || PROGdesiredOmega != 0) {
+                    Constants.TurretConstants.antiRotationOffset = -0.2 * PROGdesiredOmega;
                     return drive
                     .withVelocityX(PROGdesiredX)
                     .withVelocityY(PROGdesiredY)
                     .withRotationalRate(PROGdesiredOmega);
                 } else {
+                    Constants.TurretConstants.antiRotationOffset = -0.2 * desiredOmega;
                     return drive
                     .withVelocityX(desiredX)
                     .withVelocityY(desiredY)

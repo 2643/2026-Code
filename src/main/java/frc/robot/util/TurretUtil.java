@@ -123,6 +123,9 @@ public class TurretUtil {
         Translation2d goal = getTargetPose(target).getTranslation();
         double dx = goal.getX() - turret.getX();
         double dy = goal.getY() - turret.getY();
+        Constants.TurretConstants.realdx = dx;
+        Constants.TurretConstants.realdy = dy;
+
         return Math.atan2(dy, dx);
     }
 
@@ -174,7 +177,7 @@ public class TurretUtil {
         if (turretAngle < -180){
             turretAngle+=360;
         }
-        turretAngle = turretAngle * Constants.TurretConstants.hoodGearRatio;
+        turretAngle = turretAngle * Constants.TurretConstants.swivelGearRatio;
 
         var params = getTableParams(dist, target);
 
@@ -231,7 +234,7 @@ public class TurretUtil {
         double virtualY = turretNow.getY();
         HubLookUpTable.ShootingParameters params = null;
 
-        for (int i = 0; i < 5; i++) {
+        // for (int i = 0; i < 5; i++) {
             // Predict turret position when ball arrives
             virtualX = turretNow.getX() + robotVelX * tof;
             virtualY = turretNow.getY() + robotVelY * tof;
@@ -244,7 +247,7 @@ public class TurretUtil {
 
             // Refine time-of-flight for next iteration
             tof = params.timeOfFlight;
-        }
+        // }
 
         // Final virtual distance (from the last iteration's virtual position)
         double finalDist = new Translation2d(virtualX, virtualY).getDistance(goalTranslation);
@@ -254,10 +257,24 @@ public class TurretUtil {
         double dx = goalTranslation.getX() - virtualX;
         double dy = goalTranslation.getY() - virtualY;
         double leadFieldAngle = Math.atan2(dy, dx);
-        double turretAngle = normalizeDegrees(
-                Math.toDegrees(leadFieldAngle - robotPose.getRotation().getRadians())) * Constants.TurretConstants.swivelGearRatio;
+        double turretAngle = -(normalizeDegrees(Math.toDegrees(leadFieldAngle - robotPose.getRotation().getRadians())) + 90);
+
+        Constants.TurretConstants.dx = dx;
+        Constants.TurretConstants.dy = dy;
+        Constants.TurretConstants.virtualX = virtualX;
+        Constants.TurretConstants.virtualY = virtualY;
+
+
+
+
 
         boolean valid = isWithinShootingRange(finalDist) && isTurretAngleReachable(turretAngle);
+
+        if (turretAngle < -180){
+            turretAngle+=360;
+        }
+
+        turretAngle = turretAngle * Constants.TurretConstants.swivelGearRatio;
 
         Pose2d actualTargetPose = getTargetPose(target);
         Pose2d virtualTargetPose = new Pose2d(

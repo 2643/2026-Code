@@ -61,7 +61,6 @@ public class Storage extends SubsystemBase {
   TalonFXConfiguration configs = new TalonFXConfiguration();
 
   public Storage() {
-    SmartDashboard.putNumber("Target Wheel Speed", targetWheelSpeed);
 
     configs.Slot0.kP = Constants.StorageConstants.wheelP;
     configs.Slot0.kI = Constants.StorageConstants.wheelI;
@@ -175,8 +174,9 @@ public void resetFlyTimer(){
     SmartDashboard.putNumber("Target Indexer Speed", targetIndexSpeed);
     SmartDashboard.putBoolean("Wheel", spin);
     SmartDashboard.putBoolean("Shooting", shoot);
-    targetWheelSpeed = SmartDashboard.getNumber("Target Wheel Speed", targetWheelSpeed);
-    moveWheel(targetWheelSpeed);
+    SmartDashboard.putNumber("Target Wheel Speed", targetWheelSpeed);
+    // targetWheelSpeed = SmartDashboard.getNumber("Target Wheel Speed", targetWheelSpeed);
+    moveWheel(SmartDashboard.getNumber("Target Wheel Speed", targetWheelSpeed));
   }
 }
 

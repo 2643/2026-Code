@@ -47,13 +47,24 @@ public class AutoAim extends Command {
     }
 
     var robotPose = RobotContainer.drivetrain.getState().Pose;
-    TurretUtil.ShotSolution solution = TurretUtil.computeShotSolution(robotPose, currentTarget);
+    double robotVelX = RobotContainer.drivetrain.getState().Speeds.vxMetersPerSecond;
+    double robotVelY = RobotContainer.drivetrain.getState().Speeds.vyMetersPerSecond;
+    // TurretUtil.ShotSolution solution = TurretUtil.computeShotSolution(robotPose, currentTarget);
+    TurretUtil.ShotSolution solution = TurretUtil.computeLeadShotSolution(robotPose, robotVelX, robotVelY, currentTarget);
 
     isValid = solution.isValid;
     Constants.TurretConstants.swivelOffset = SmartDashboard.getNumber("Turret Offset", Constants.TurretConstants.swivelOffset);
 
-    System.out.println("AutoAimHub valid=" + isValid + " turretDeg=" + (solution.turretAngleDegrees) + " dist=" + solution.distanceMeters);
-    SmartDashboard.putNumber("Turret Angle", solution.turretAngleDegrees);
+    // System.out.println("AutoAimHub valid=" + isValid + " turretDeg=" + (solution.turretAngleDegrees) + " dist=" + solution.distanceMeters);
+    // SmartDashboard.putNumber("Turret Angle", solution.turretAngleDegrees);
+    // SmartDashboard.putNumber("Shoot Turret Angle", movesolution.turretAngleDegrees);
+
+    // SmartDashboard.putNumber("robotVelX",  robotVelX);
+    // SmartDashboard.putNumber("robotVelY",  robotVelY);
+
+    // SmartDashboard.putNumber("Right Angle", solution.turretAngleDegrees/Constants.TurretConstants.swivelGearRatio);
+    // SmartDashboard.putNumber("Move Angle", movesolution.turretAngleDegrees/Constants.TurretConstants.swivelGearRatio);
+
     SmartDashboard.putNumber("Turret Dist", solution.distanceMeters);
     SmartDashboard.putBoolean("isValid", isValid);
     turretAngle = solution.turretAngleDegrees;
@@ -62,7 +73,7 @@ public class AutoAim extends Command {
     //   turretAngle = Constants.TurretConstants.swivelSoftLimit2;
     // if(turretAngle >= Constants.TurretConstants.swivelHardLimit1)
     //   turretAngle = Constants.TurretConstants.swivelSoftLimit1;
-    turretAngle += Constants.TurretConstants.swivelOffset;
+    // turretAngle += Constants.TurretConstants.antiRotationOffset;
     RobotContainer.m_Swivel.moveSwivel(turretAngle);
     RobotContainer.m_Hood.moveHood(solution.trajectoryAngleDegrees);
 

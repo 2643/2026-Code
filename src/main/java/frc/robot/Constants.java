@@ -373,7 +373,7 @@ public class Constants {
                 public final static int swivelLimitPort = 1;
                 public final static int hoodID = 16;
                 public final static int swivelID = 0;
-                public static double swivelGearRatio = ((0.02));
+                public static double swivelGearRatio = ((0.032));
 
                 public final static double swivelP = 20;
                 public final static double swivelI = 0.01;
@@ -382,6 +382,9 @@ public class Constants {
                 public final static double swivelVel = 50;
                 public final static double swivelStatorLimit = 30;
                 public final static double swivelSupplyLimit = 20;
+
+                public static double antiRotationOffset = 0;
+                public static double antiMultiplier = 0.2;
 
                 public final static double hoodP = 1.5;
                 public final static double hoodI = 0.01;
@@ -404,8 +407,17 @@ public class Constants {
                 public final static double manualSwivel = 2.92041015625;
                 public final static double manualHood = 0.2;
 
-                public final static double hoodGearRatio = 0.032;// 72 / 289;
+                public final static double hoodGearRatio = 72 / 289;
                 public static double swivelOffset = 0;
+
+                public static double virtualX = 0;
+                public static double virtualY = 0;
+                public static double dx = 0;
+                public static double dy = 0;
+                public static double realdx = 0;
+                public static double realdy = 0;
+
+
 
                 public final static Dictionary<Integer, Double> areaToAngle = new Hashtable<Integer, Double>();
                 public TurretConstants() {
@@ -442,7 +454,7 @@ public class Constants {
 
                 public final static double attackSpeed = -60;
                 public final static double defenseSpeed = -60;
-                public final static double indexSpeed = 0.55;
+                public final static double indexSpeed = 0.7;
                
                 public final static double wheelFF = 0.12;
                 public final static double wheelP = 0.5;

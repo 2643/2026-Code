@@ -65,6 +65,15 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
+    SmartDashboard.putNumber("Anti Rotation Multiplier", Constants.TurretConstants.antiMultiplier);
+    SmartDashboard.putNumber("Virtual X", Constants.TurretConstants.virtualX);
+    SmartDashboard.putNumber("Virtual Y", Constants.TurretConstants.virtualY);
+    SmartDashboard.putNumber("Shoot dx", Constants.TurretConstants.dx);
+    SmartDashboard.putNumber("Shoot dy", Constants.TurretConstants.dy);
+    SmartDashboard.putNumber("real dx", Constants.TurretConstants.realdx);
+    SmartDashboard.putNumber("real dy", Constants.TurretConstants.realdy);
+
+    Constants.TurretConstants.antiMultiplier = SmartDashboard.getNumber("antiMultiplier", 0.2);
     if (minVoltage > RobotController.getBatteryVoltage()){
             minVoltage = RobotController.getBatteryVoltage();
         }
