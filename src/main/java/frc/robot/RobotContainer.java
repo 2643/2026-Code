@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import frc.robot.Constants.ControllerConstants;
+// import frc.robot.Constants.ControllerConstants; (unused)
 import frc.robot.commands.Intake.ToggleIntake;
 import frc.robot.commands.Storage.Toggle;
 import java.util.Optional;
@@ -53,6 +53,12 @@ public class RobotContainer {
     private final double normalMaxAngularRate = RotationsPerSecond.of(2).in(RadiansPerSecond); // max angular velocity
     private double MaxSpeed = normalMaxSpeed;
     private double MaxAngularRate = normalMaxAngularRate;
+    // Trapezoidal limiter to smooth joystick requests
+    private final frc.robot.util.TrapezoidLimiter m_trapezoidLimiter = new frc.robot.util.TrapezoidLimiter(3.0, 3.0, 6.0);
+    // Shuffleboard tunables
+    private final edu.wpi.first.networktables.GenericEntry m_rateXEntry;
+    private final edu.wpi.first.networktables.GenericEntry m_rateYEntry;
+    private final edu.wpi.first.networktables.GenericEntry m_rateOmegaEntry;
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -138,6 +144,11 @@ public class RobotContainer {
             } catch (Throwable t) {
                 // ignore
             }
+            // Create Shuffleboard tunables for the trapezoid limiter (Driver tab)
+            var tab = Shuffleboard.getTab("Driver");
+            m_rateXEntry = tab.add("Limiter Rate X (m/s/s)", 2.0).withPosition(4, 2).withSize(2, 1).getEntry();
+            m_rateYEntry = tab.add("Limiter Rate Y (m/s/s)", 2.0).withPosition(6, 2).withSize(2, 1).getEntry();
+            m_rateOmegaEntry = tab.add("Limiter Rate Omega (rad/s/s)", 4.0).withPosition(8, 2).withSize(2, 1).getEntry();
         }
 
     /**
@@ -200,8 +211,17 @@ public class RobotContainer {
                 // double desiredY = -applyDeadzone(driver.getRawAxis(Constants.AXIS_X), 0.2) * MaxSpeed; // left
                 // double desiredOmega = -applyDeadzone(driver.getRawAxis(Constants.AXIS_TWIST), 0.2) * MaxAngularRate; // rotate
 
-                // Apply trapezoidal limiter (fast ramp)
-                // double[] smoothed = m_trapezoidLimiter.calculate(desiredX, desiredY, desiredOmega);
+                // Read Shuffleboard tunables and apply them to the limiter
+                try {
+                    double rx = m_rateXEntry.getDouble(3.0);
+                    double ry = m_rateYEntry.getDouble(3.0);
+                    double ro = m_rateOmegaEntry.getDouble(6.0);
+                    m_trapezoidLimiter.setRates(rx, ry, ro);
+                } catch (Throwable t) {
+                    // ignore and use current rates
+                }
+                // Apply trapezoidal limiter (slightly steep ramp)
+                double[] smoothed = m_trapezoidLimiter.calculate(desiredX, desiredY, desiredOmega);
                 if (PROGdesiredX != 0 || PROGdesiredY != 0 || PROGdesiredOmega != 0) {
                     Constants.TurretConstants.antiRotationOffset = Constants.TurretConstants.antiMultiplier * PROGdesiredOmega;
                     SmartDashboard.putNumber("antiRotation", Constants.TurretConstants.antiRotationOffset);
@@ -213,9 +233,9 @@ public class RobotContainer {
                     Constants.TurretConstants.antiRotationOffset = Constants.TurretConstants.antiMultiplier * desiredOmega;
                     SmartDashboard.putNumber("antiRotation", Constants.TurretConstants.antiRotationOffset);
                     return drive
-                    .withVelocityX(desiredX)
-                    .withVelocityY(desiredY)
-                    .withRotationalRate(desiredOmega);}
+                    .withVelocityX(smoothed[0])
+                    .withVelocityY(smoothed[1])
+                    .withRotationalRate(smoothed[2]);}
             }));
     
             // Idle while the robot is disabled. This ensures the configured

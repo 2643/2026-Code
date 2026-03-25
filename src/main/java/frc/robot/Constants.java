@@ -374,12 +374,12 @@ public class Constants {
                 public final static double swivelP = 20;
                 public final static double swivelI = 0.01;
                 public final static double swivelD = 0.01;
-                public final static double swivelAccel = 50; //ai says to reduce the accel even more like down to 20-30 to maybe improve shoot on move 
+                public final static double swivelAccel = 20; //ai says to reduce the accel even more like down to 20-30 to maybe improve shoot on move 
                 public final static double swivelVel = 50;
                 public final static double swivelStatorLimit = 30;
                 public final static double swivelSupplyLimit = 20;
 
-                public static double antiRotationOffset = 0;
+                public static double antiRotationOffset = 0.0;
                 public static double antiMultiplier = -0.05;
 
                 public final static double hoodP = 1.5;

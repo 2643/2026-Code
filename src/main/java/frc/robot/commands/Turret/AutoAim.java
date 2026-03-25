@@ -77,7 +77,7 @@ public class AutoAim extends Command {
     // if(turretAngle >= Constants.TurretConstants.swivelHardLimit1)
     //   turretAngle = Constants.TurretConstants.swivelSoftLimit1;
 
-    // turretAngle += Constants.TurretConstants.antiRotationOffset;
+    turretAngle += Constants.TurretConstants.antiRotationOffset;
     RobotContainer.m_Swivel.moveSwivel(turretAngle);
     RobotContainer.m_Hood.moveHood(solution.trajectoryAngleDegrees);
 
