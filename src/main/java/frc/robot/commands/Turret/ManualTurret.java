@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Swivel.Mode;
 import frc.robot.Constants;
-import frc.robot.Constants.TurretConstants;
+
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ManualTurret extends Command {
@@ -36,13 +36,13 @@ public class ManualTurret extends Command {
   @Override
   public void end(boolean interrupted) {
     if(RobotContainer.m_Swivel.getMode() == Mode.MANUAL) {
-      CommandScheduler.getInstance().schedule(new AutoAim());
       RobotContainer.m_Swivel.setMode(Mode.AUTOAIM);
     } else {
       RobotContainer.m_Swivel.setMode(Mode.MANUAL);
       RobotContainer.m_Swivel.moveSwivel(Constants.TurretConstants.manualSwivel);
       RobotContainer.m_Hood.moveHood(Constants.TurretConstants.manualHood);
     }
+    CommandScheduler.getInstance().schedule(new AutoAim());
   }
 
   // Returns true when the command should end.

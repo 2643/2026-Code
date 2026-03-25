@@ -49,20 +49,20 @@ public class HubLookUpTable {
         addEntry(3.2, -60, 0.8, 1.267);
 
         // AI GENERATED DATA - NOT TESTED
-      addEntry(2, -55, 0.301, 1.12);
-addEntry(2.25, -55, 0.401, 1.15);
-addEntry(2.5, -55, 0.502, 1.181);
-addEntry(2.75, -60, 0.603, 1.212);
-addEntry(3, -60, 0.704, 1.243);
-addEntry(3.25, -60, 0.804, 1.274);
-addEntry(3.5, -60, 0.905, 1.304);
-addEntry(3.75, -60, 1.006, 1.335);
-addEntry(4, -65, 1.107, 1.366);
-addEntry(4.25, -65, 1.208, 1.397);
-addEntry(4.5, -65, 1.308, 1.428);
-addEntry(4.75, -65, 1.409, 1.458);
-addEntry(5, -65, 1.51, 1.489);
-//end of AI GENERATED DATA
+        addEntry(2, -55, 0.301, 1.12);
+        addEntry(2.25, -55, 0.401, 1.15);
+        addEntry(2.5, -55, 0.502, 1.181);
+        addEntry(2.75, -60, 0.603, 1.212);
+        addEntry(3, -60, 0.704, 1.243);
+        addEntry(3.25, -60, 0.804, 1.274);
+        addEntry(3.5, -60, 0.905, 1.304);
+        addEntry(3.75, -60, 1.006, 1.335);
+        addEntry(4, -65, 1.107, 1.366);
+        addEntry(4.25, -65, 1.208, 1.397);
+        addEntry(4.5, -65, 1.308, 1.428);
+        addEntry(4.75, -65, 1.409, 1.458);
+        addEntry(5, -65, 1.51, 1.489);
+        //end of AI GENERATED DATA
         
         // Max distance - lowest angle
     }

@@ -2,10 +2,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.Hashtable;
-
-import javax.security.auth.login.FailedLoginException;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.*;
@@ -373,12 +370,11 @@ public class Constants {
                 public final static int swivelLimitPort = 1;
                 public final static int hoodID = 16;
                 public final static int swivelID = 0;
-                public static double swivelGearRatio = ((0.032));
 
                 public final static double swivelP = 20;
                 public final static double swivelI = 0.01;
                 public final static double swivelD = 0.01;
-                public final static double swivelAccel = 50;
+                public final static double swivelAccel = 50; //ai says to reduce the accel even more like down to 20-30 to maybe improve shoot on move 
                 public final static double swivelVel = 50;
                 public final static double swivelStatorLimit = 30;
                 public final static double swivelSupplyLimit = 20;
@@ -408,6 +404,8 @@ public class Constants {
                 public final static double manualHood = 0.2;
 
                 public final static double hoodGearRatio = 72 / 289;
+                public static double swivelGearRatio = ((0.032));
+
                 public static double swivelOffset = 0;
 
                 public static double virtualX = 0;

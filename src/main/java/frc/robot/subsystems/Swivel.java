@@ -4,15 +4,12 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix6.hardware.TalonFX;
-
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -20,11 +17,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Storage.Phase;
 import frc.robot.util.LimelightHelpers;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 
 public class Swivel extends SubsystemBase {
 
@@ -125,22 +118,13 @@ public class Swivel extends SubsystemBase {
     public double getDist() {
     if (tx > 0) {
       dist = Math.log(tx)/600*5/2*6/1.25;
-      // if (dist >= 0.2) {
-      //   dist = 0.2;
-      // }
     }
     else if (tx < 0) {
       dist = -(Math.log(-tx)/600/2*5*6/1.25);
-      // if (dist <= -0.2) {
-      //   dist = -0.2;
-      // }
     }
     return dist;
   }
 
-
-
-  
    public void autoAlign(){
     var fiducials = LimelightHelpers.getRawFiducials(limelightName);
     for (var f : fiducials) {
@@ -182,104 +166,10 @@ public class Swivel extends SubsystemBase {
       tags.clear();
     }
    
-
-  // public void autoAlign(){
-  //   if (currentMode != Mode.AUTOAIM) {
-  //     return;
-  //   }
-
-  //   // Read raw fiducials from Limelight (gives id and txnc)
-  //   var fiducials = LimelightHelpers.getRawFiducials(limelightName);
-  //   int n = fiducials.length;
-
-  //   // Determine current alliance and phase (attack/defense)
-  //   var alliance = DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue);
-  //   var phase = RobotContainer.m_Storage.getPhase();
-
-  //   // Helper method defined at class scope: txToOffset
-
-  //   if (isVisible && currentState == States.INITIALIZED) {
-  //     if (n >= 2) {
-  //       // Map ids -> tx
-  //       Map<Integer, Double> map = new HashMap<>();
-  //       for (var f : fiducials) {
-  //         map.put(f.id, f.txnc);
-  //       }
-
-  //       // choose candidate pairs depending on phase+alliance
-  //       int[][] pairs;
-  //       if (phase == frc.robot.subsystems.Storage.Phase.DEFENSE) {
-  //         if (alliance == DriverStation.Alliance.Red) {
-  //           pairs = new int[][]{{6,4},{4,1}};
-  //         } else {
-  //           pairs = new int[][]{{17,20},{20,22}};
-  //         }
-  //       } else { // ATTACK
-  //         if (alliance == DriverStation.Alliance.Red) {
-  //           pairs = new int[][]{{8,10},{10,11}};
-  //         } else {
-  //           pairs = new int[][]{{27,26},{26,24}};
-  //         }
-  //       }
-
-  //       // Search for a matching pair we can aim between
-  //       for (var pair : pairs) {
-  //         if (map.containsKey(pair[0]) && map.containsKey(pair[1])) {
-  //           double txA = map.get(pair[0]);
-  //           double txB = map.get(pair[1]);
-  //           double meanTx = (txA + txB) / 2.0;
-  //           double offset = txToOffset(meanTx);
-  //           moveSwivel(getSwivelPos() + offset);
-  //           return;
-  //         }
-  //       }
-
-  //       // No targeted pair found: fallback to average of all detections
-  //       double sum = 0;
-  //       for (var f : fiducials) sum += f.txnc;
-  //       double avg = sum / n;
-  //       moveSwivel(getSwivelPos() + txToOffset(avg));
-  //       return;
-  //     } else if (n == 1) {
-  //       var f = fiducials[0];
-  //       double baseOffset = txToOffset(f.txnc);
-  //       if (phase == frc.robot.subsystems.Storage.Phase.ATTACK) {
-  //         // In attack phase, simply aim at the detected tag
-  //         moveSwivel(getSwivelPos() + baseOffset);
-  //         return;
-  //       } else {
-  //         // Defense: apply small adjustments based on tag ID
-  //         double tweak = 0.05; // rotation tweak; tune on robot
-  //         int id = f.id;
-  //         if (id == 17 || id == 1) {
-  //           // shoot a little to the right
-  //           moveSwivel(getSwivelPos() + baseOffset + Math.abs(tweak));
-  //           return;
-  //         } else if (id == 20 || id == 4) {
-  //           // shoot a little to whatever side you're on (use sign of tx)
-  //           moveSwivel(getSwivelPos() + baseOffset + Math.signum(f.txnc) * tweak);
-  //           return;
-  //         } else if (id == 22 || id == 6) {
-  //           // shoot a little to the left
-  //           moveSwivel(getSwivelPos() + baseOffset - Math.abs(tweak));
-  //           return;
-  //         } else {
-  //           // Unknown tag: just aim at it
-  //           moveSwivel(getSwivelPos() + baseOffset);
-  //           return;
-  //         }
-  //       }
-  //     }
-  //   }
-
-    // Default fallback: manual turret position
-  //   moveSwivel(Constants.TurretConstants.manualSwivel);
-  // }
-
     @Override
   public void periodic() {
 
-    tx = LimelightHelpers.getTYNC(limelightName);  // Horizontal offset (same as yaw)
+    tx = LimelightHelpers.getTYNC(limelightName);  
     isVisible = LimelightHelpers.getTV(limelightName);
     area = LimelightHelpers.getTA(limelightName);
     fiducialID = LimelightHelpers.getFiducialID(limelightName);

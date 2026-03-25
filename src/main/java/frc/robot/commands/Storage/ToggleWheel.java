@@ -9,8 +9,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.commands.Turret.AutoAim;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.Storage.Indexer;
 import frc.robot.subsystems.Storage.Phase;
 import frc.robot.subsystems.Storage.Wheel;
 
@@ -51,7 +49,7 @@ public class ToggleWheel extends Command {
       case DEFENSE -> RobotContainer.m_Storage.moveWheel(Constants.StorageConstants.defenseSpeed);
       default -> throw new AssertionError(phase.name());
     }
-    CommandScheduler.getInstance().schedule(new AutoAim());
+    // CommandScheduler.getInstance().schedule(new AutoAim());
   }
   // Returns true when the command should end.
   @Override

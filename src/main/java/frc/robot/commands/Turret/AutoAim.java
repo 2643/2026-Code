@@ -2,6 +2,7 @@ package frc.robot.commands.Turret;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.util.TurretUtil;
@@ -68,6 +69,8 @@ public class AutoAim extends Command {
     SmartDashboard.putNumber("Turret Dist", solution.distanceMeters);
     SmartDashboard.putBoolean("isValid", isValid);
     turretAngle = solution.turretAngleDegrees;
+
+    // replace this with charlie hard limit mid thing
     // if (isValid) {
     // if(turretAngle <= Constants.TurretConstants.swivelHardLimit2)
     //   turretAngle = Constants.TurretConstants.swivelSoftLimit2;
@@ -86,7 +89,11 @@ public class AutoAim extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    System.out.println("AutoAimHub end interrupted=" + interrupted);
+    System.out.println("AutoAim ended, interrupted=" + interrupted);
+    // Reschedule only if interrupted (by another command), not if naturally ending
+    if (interrupted) {
+      CommandScheduler.getInstance().schedule(new AutoAim());
+    }
   }
 
   @Override

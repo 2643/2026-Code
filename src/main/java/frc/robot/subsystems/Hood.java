@@ -4,18 +4,11 @@
 
 package frc.robot.subsystems;
 
-import java.util.Enumeration;
-import java.util.concurrent.atomic.AtomicBoolean;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.MAXMotionConfig;
-import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
@@ -23,14 +16,10 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.FeedbackSensor;
-import com.revrobotics.spark.config.MAXMotionConfig;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Storage.Phase;
 import frc.robot.subsystems.Swivel.States;
@@ -91,20 +80,6 @@ public class Hood extends SubsystemBase {
   }
   
   
-  // public double fullReverseRotation() {
-  //   if (tx > 0) {
-  //     percentOutputValue = -(Math.log(tx)/600*5);
-  //   }
-  //   else if (tx < 0) {
-  //     percentOutputValue = Math.log(-tx)/600*5;
-  //   }
-  //   return percentOutputValue;
-  // }
-  //  public void moveSwivel(double position) {
-  //   swivelTarget = position;
-  //   swivelMotor.setControl(new MotionMagicVoltage(swivelTarget));
-  // }
-
   public void moveHood(double position) {
       hoodTarget = position;
       m_controller.setSetpoint(hoodTarget, ControlType.kMAXMotionPositionControl);
@@ -181,7 +156,6 @@ public class Hood extends SubsystemBase {
       reset = true;
       moveHood(1);
     }
-    // autoPitch();
   }
     
     SmartDashboard.putNumber("Target Hood Position", hoodTarget);

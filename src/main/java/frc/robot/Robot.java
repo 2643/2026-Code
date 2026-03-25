@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Swivel.States;
 import frc.robot.RobotContainer;
 import frc.robot.commands.Turret.ResetSwivel;
-import frc.robot.commands.ParallelCommands.ResetTurret;
 import frc.robot.commands.Turret.AutoAim;
 import frc.robot.commands.Turret.ResetHood;
 import edu.wpi.first.math.util.Units;
@@ -61,6 +60,7 @@ public class Robot extends TimedRobot {
       SmartDashboard.putNumber("Match Number", DriverStation.getMatchNumber());
       SmartDashboard.putString("Game Specific Message", DriverStation.getGameSpecificMessage());
       SmartDashboard.putString("Field/LayoutHint", "2026-Rebuilt");
+      CommandScheduler.getInstance().schedule(new AutoAim());
   }
 
   @Override

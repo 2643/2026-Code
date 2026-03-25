@@ -48,7 +48,6 @@ import frc.robot.subsystems.Vision;
 
 
 public class RobotContainer {
-    // slow mode
     private final double kSlowMultiplier = 0.3;
     private final double normalMaxSpeed = Constants.OperatorConstants.kSpeedAt12Volts.in(MetersPerSecond); // desired top speed
     private final double normalMaxAngularRate = RotationsPerSecond.of(2).in(RadiansPerSecond); // max angular velocity
@@ -111,31 +110,22 @@ public class RobotContainer {
         ComplexWidget ShuffleBoardAutonomousRoutines = Shuffleboard.getTab("Driver")
                 .add("Autonomous Routines Selector", autoChooser).withWidget(BuiltInWidgets.kComboBoxChooser).withSize(2, 2)
                 .withPosition(0, 2);
-
-        // Trapezoidal limiter (fast ramp). Tune values as needed.
-        // private final TrapezoidLimiter m_trapezoidLimiter = new TrapezoidLimiter(10.0, 20.0);
-
     
         public RobotContainer() {
             NamedCommands.registerCommand("Intake", new ToggleIntake(true));
             NamedCommands.registerCommand("Shoot", new ToggleWheel(Phase.ATTACK));
             NamedCommands.registerCommand("ManualTurret", new ManualTurret());
             NamedCommands.registerCommand("AutoAim", new AutoAim());
+            NamedCommands.registerCommand("Zero Gyro", drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
             NamedCommands.registerCommand("ResetHood", new ResetHood());
             NamedCommands.registerCommand("ResetSwivel", new ResetSwivel());
             NamedCommands.registerCommand("ToggleWheel", new ToggleWheel(m_Storage.getPhase()));
             NamedCommands.registerCommand("ToggleIndexer", new ToggleIndexer(true));
-
-
-
-
             configureBindings();
 
-            //put autochooser options here
             autoChooser.addOption("S1 O Shoot", new PathPlannerAuto("S1-O-Shoot"));
             autoChooser.addOption("S3 Mid Shoot", new PathPlannerAuto("S3-MID-Shoot"));
             autoChooser.addOption("Straight Line", new PathPlannerAuto("Straight Line"));
-            // autoChooser.addOption("Test", new PathPlannerAuto("rot"));
             autoChooser.addOption("null", null);
             autoChooser.addOption("S1 Shoot", new PathPlannerAuto("Shoot-S1"));
             autoChooser.addOption("S2 Shoot", new PathPlannerAuto("Shoot-S2"));
@@ -176,8 +166,8 @@ public class RobotContainer {
             manualTurret.onTrue(new ManualTurret());
             scram.onTrue(new Scram());
             hootReinit.onTrue(new ResetHood());
-            swivelUp.whileTrue(new ManualMoveSwivel(false));
-            swivelDown.whileTrue(new ManualMoveSwivel(true));
+            swivelUp.whileTrue(new ManualMoveSwivel(true));
+            swivelDown.whileTrue(new ManualMoveSwivel(false));
             hoodDown.onTrue(new ManualHoodDown());
             hoodUp.onTrue(new ManualHoodUp());
             
@@ -189,32 +179,22 @@ public class RobotContainer {
             PROGreverse.onTrue(new ToggleIndexer(false));
             PROGreverse.onTrue(new ToggleIntake(false));
             PROGmanualTurret.onTrue(new ManualTurret());
-            PROGmanualTurret.onTrue(new AutoAim());
+            // PROGmanualTurret.onTrue(new AutoAim());
             PROGhootReinit.onTrue(new ResetHood());
             PROGswivelUp.whileTrue(new ManualMoveSwivel(true));
             PROGswivelDown.whileTrue(new ManualMoveSwivel(false));
-
-            // hoodUp.whileTrue(new ManualMoveHood(true));
-            // hoodDown.whileTrue(new ManualMoveHood(false));
-
             
-
-
-
-            // autoAim.whileTrue(new AutoAim(drivetrain, m_Vision));
-            // Note that X is defined as forward according to WPILib convention,
-            // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(  
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> {
                 // raw desired velocities from joystick
-                double desiredX = -applyDeadzone(driver.getRawAxis(Constants.AXIS_Y), 0.2) * MaxSpeed; // forward
-                double desiredY = -applyDeadzone(driver.getRawAxis(Constants.AXIS_X), 0.2) * MaxSpeed; // left
-                double desiredOmega = -applyDeadzone(driver.getRawAxis(Constants.AXIS_TWIST), 0.2) * MaxAngularRate; // rotate
+                double desiredX = -applyDeadzone(driver.getRawAxis(Constants.AXIS_Y), 0.1) * MaxSpeed; // forward
+                double desiredY = -applyDeadzone(driver.getRawAxis(Constants.AXIS_X), 0.1) * MaxSpeed; // left
+                double desiredOmega = -applyDeadzone(driver.getRawAxis(Constants.AXIS_TWIST), 0.1) * MaxAngularRate; // rotate
 
-                double PROGdesiredX = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_Y), 0.2) * MaxSpeed; // forward
-                double PROGdesiredY = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_X), 0.2) * MaxSpeed; // left
-                double PROGdesiredOmega = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_TWIST), 0.2) * MaxAngularRate; // rotate
+                double PROGdesiredX = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_Y), 0.1) * MaxSpeed; // forward
+                double PROGdesiredY = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_X), 0.1) * MaxSpeed; // left
+                double PROGdesiredOmega = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_TWIST), 0.1) * MaxAngularRate; // rotate
 
                 // double desiredX = -applyDeadzone(driver.getRawAxis(Constants.AXIS_Y), 0.2) * MaxSpeed; // forward
                 // double desiredY = -applyDeadzone(driver.getRawAxis(Constants.AXIS_X), 0.2) * MaxSpeed; // left
@@ -244,30 +224,8 @@ public class RobotContainer {
             RobotModeTriggers.disabled().whileTrue(
                     drivetrain.applyRequest(() -> idle).ignoringDisable(true));
           
-
-            //swerve code that came with the template
-            // buttonA.whileTrue(drivetrain.applyRequest(() -> brake));
-            // buttonB.whileTrue(drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(
-                    // -applyDeadzone(joystick.getRawAxis(AXIS_Y), 0.2),
-                    // -applyDeadzone(joystick.getRawAxis(AXIS_X), 0.2)))));
-    
-            // Run SysId routines when holding back/start and X/Y.
-            // Note that each routine should be run exactly once in a single log.
-            // buttonBack.and(new JoystickButton(joystick, 4)) // Button 4 for "Y"
-            //         .whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-            // buttonBack.and(new JoystickButton(joystick, 3)) // Button 3 for "X"
-            //         .whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-            // buttonStart.and(new JoystickButton(joystick, 4)) // Button 4 for "Y"
-            //         .whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-            // buttonStart.and(new JoystickButton(joystick, 3)) // Button 3 for "X"
-            //         .whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-    
-            // reset the field-centric heading on left bumper press
-            // buttonLeftBumper.onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-            // zero gyro on button 10
             zeroGyro.onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-            // slow mode (hold button 6 to reduce speeds)
             slowMode.onTrue(drivetrain.runOnce(() -> {
                 MaxSpeed = normalMaxSpeed * kSlowMultiplier;
                 MaxAngularRate = normalMaxAngularRate * kSlowMultiplier;
@@ -290,8 +248,6 @@ public class RobotContainer {
             }));
     
             drivetrain.registerTelemetry(logger::telemeterize);
-            // remove old vision updater:
-            // m_limelight.startUpdating(drivetrain, 0.2);
         }
     
     

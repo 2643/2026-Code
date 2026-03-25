@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.commands.Turret.AutoAim;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
  
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -41,7 +40,7 @@ public class ToggleIntake extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    SmartDashboard.putBoolean("Intake", RobotContainer.m_Intake.getSpeed());
+    CommandScheduler.getInstance().schedule(new AutoAim());
   }
   // Returns true when the command should end.
   @Override
