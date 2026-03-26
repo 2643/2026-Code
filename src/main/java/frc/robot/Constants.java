@@ -67,7 +67,7 @@ public class Constants {
 
     // The Supply current at which the wheels start to slip;
     // This needs to be tuned to your individual robot
-    private static final Current kSlipCurrent = Amps.of(30.0);
+    private static final Current kSlipCurrent = Amps.of(20.0);
 
     // Initial configs for the drive and steer motors and the azimuth encoder; these
     // cannot be null.
@@ -77,7 +77,7 @@ public class Constants {
             .withCurrentLimits(
                     new CurrentLimitsConfigs()
                             // Prevent excessive drive Supply current and help avoid brownouts.
-                            .withSupplyCurrentLimit(Amps.of(40))
+                            .withSupplyCurrentLimit(Amps.of(30))
                             .withSupplyCurrentLimitEnable(true));
     private static final TalonFXConfiguration steerInitialConfigs = new TalonFXConfiguration()
             .withCurrentLimits(
@@ -85,7 +85,7 @@ public class Constants {
                             // Swerve azimuth does not require much torque output, so we can set a
                             // relatively low
                             // Supply current limit to help avoid brownouts without impacting performance.
-                            .withSupplyCurrentLimit(Amps.of(60))
+                            .withSupplyCurrentLimit(Amps.of(30))
                             .withSupplyCurrentLimitEnable(true));
     private static final CANcoderConfiguration encoderInitialConfigs = new CANcoderConfiguration();
     // Configs for the Pigeon 2; leave this null to skip applying Pigeon 2 configs
@@ -350,6 +350,7 @@ public class Constants {
                 public final static int intakeID = 18;
                 public final static double intakeSpeed = -0.6;
                 public final static int intakePort = 2;
+                public final static double IntakeCurrentlimit = 20;
         }
         public final class ControllerConstants {
                 public final static int square = 1;

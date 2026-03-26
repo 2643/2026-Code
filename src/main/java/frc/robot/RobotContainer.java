@@ -136,6 +136,8 @@ public class RobotContainer {
             autoChooser.addOption("S1 Shoot", new PathPlannerAuto("Shoot-S1"));
             autoChooser.addOption("S2 Shoot", new PathPlannerAuto("Shoot-S2"));
             autoChooser.addOption("S3 Shoot", new PathPlannerAuto("Shoot-S3"));
+            autoChooser.addOption("testing2", new PathPlannerAuto("testing2"));
+
             // Configure Limelight field preset to the 2026 rebuilt field by default.
             // This remaps incoming Limelight poses into the 2026 field coordinates.
             // If you need to tweak offsets, call m_limelight.setFieldTransform(xMeters, yMeters, rotDegrees).

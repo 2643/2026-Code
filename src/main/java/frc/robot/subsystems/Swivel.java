@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -15,6 +16,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.RobotContainer;
+import frc.robot.commands.Turret.AutoAim;
 import frc.robot.subsystems.Storage.Phase;
 import frc.robot.util.LimelightHelpers;
 import java.util.ArrayList;
@@ -132,27 +134,29 @@ public class Swivel extends SubsystemBase {
     }
 
     if(currentState == States.INITIALIZED && currentMode == Mode.AUTOAIM) {
-     if (RobotContainer.m_Storage.getPhase() == Phase.ATTACK) {
-        if (isVisible == true && (seen.contains(10) || seen.contains(26)|| seen.contains(11)|| seen.contains(8)|| seen.contains(24)|| seen.contains(27))) 
-          moveSwivel(getSwivelPos()+getDist());
-        else 
-          moveSwivel(getSwivelPos());
-      }
+    //  if (RobotContainer.m_Storage.getPhase() == Phase.ATTACK) {
+    //     if (isVisible == true && (seen.contains(10) || seen.contains(26)|| seen.contains(11)|| seen.contains(8)|| seen.contains(24)|| seen.contains(27))) 
+    //       moveSwivel(getSwivelPos()+getDist());
+    //     else 
+    //       moveSwivel(getSwivelPos());
+    //   }
       
 
-      if (RobotContainer.m_Storage.getPhase() == Phase.DEFENSE) {
-        if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-              if (isVisible == true && (seen.contains(1) || seen.contains(4) || seen.contains(5) || seen.contains (23) || seen.contains(27))) 
-                moveSwivel(getSwivelPos()+getDist()+0.1);
-              else if (isVisible == true && (seen.contains(2)|| seen.contains(6) || seen.contains(24) || seen.contains(28))) 
-                moveSwivel(getSwivelPos()+getDist()-0.1);
-        } else {
-          if (isVisible == true && (seen.contains(17) || seen.contains(20) || seen.contains(21) || seen.contains(11) || seen.contains(7)))  
-            moveSwivel(getSwivelPos()+getDist()+0.1);
-          else if (isVisible == true && (seen.contains(22)|| seen.contains(18) || seen.contains(12) || seen.contains(8))) 
-            moveSwivel(getSwivelPos()+getDist()-0.1);
-        }
-      }
+    //   if (RobotContainer.m_Storage.getPhase() == Phase.DEFENSE) {
+    //     if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+    //           if (isVisible == true && (seen.contains(1) || seen.contains(4) || seen.contains(5) || seen.contains (23) || seen.contains(27))) 
+    //             moveSwivel(getSwivelPos()+getDist()+0.1);
+    //           else if (isVisible == true && (seen.contains(2)|| seen.contains(6) || seen.contains(24) || seen.contains(28))) 
+    //             moveSwivel(getSwivelPos()+getDist()-0.1);
+    //     } else {
+    //       if (isVisible == true && (seen.contains(17) || seen.contains(20) || seen.contains(21) || seen.contains(11) || seen.contains(7)))  
+    //         moveSwivel(getSwivelPos()+getDist()+0.1);
+    //       else if (isVisible == true && (seen.contains(22)|| seen.contains(18) || seen.contains(12) || seen.contains(8))) 
+    //         moveSwivel(getSwivelPos()+getDist()-0.1);
+    //     }
+    //   }
+        CommandScheduler.getInstance().schedule(new AutoAim());
+
     }
 
     for (int id : seen) {

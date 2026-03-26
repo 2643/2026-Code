@@ -40,7 +40,7 @@ public class ToggleIntake extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    CommandScheduler.getInstance().schedule(new AutoAim());
+    // CommandScheduler.getInstance().schedule(new AutoAim());
   }
   // Returns true when the command should end.
   @Override

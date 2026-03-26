@@ -1,0 +1,49 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "ResetHood"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ResetSwivel"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "S3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ManualTurret"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ToggleIndexer"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

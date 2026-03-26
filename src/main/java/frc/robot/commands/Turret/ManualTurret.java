@@ -42,7 +42,6 @@ public class ManualTurret extends Command {
       RobotContainer.m_Swivel.moveSwivel(Constants.TurretConstants.manualSwivel);
       RobotContainer.m_Hood.moveHood(Constants.TurretConstants.manualHood);
     }
-    CommandScheduler.getInstance().schedule(new AutoAim());
   }
 
   // Returns true when the command should end.

@@ -17,8 +17,8 @@ public class Intake extends SubsystemBase {
   TalonFX intakeMotor = new TalonFX(Constants.IntakeConstants.intakeID);
   TalonFXConfiguration configs = new TalonFXConfiguration();
   public Intake() {
-    configs.CurrentLimits.StatorCurrentLimit = 40;
-    configs.CurrentLimits.SupplyCurrentLimit = 30;
+    configs.CurrentLimits.StatorCurrentLimit = Constants.IntakeConstants.IntakeCurrentlimit;
+    configs.CurrentLimits.SupplyCurrentLimit = Constants.IntakeConstants.IntakeCurrentlimit;
 
   }
 
