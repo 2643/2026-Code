@@ -59,6 +59,7 @@ public class Storage extends SubsystemBase {
   
   public MotorAlignmentValue MotorAlignment = MotorAlignmentValue.Aligned; // Aligned or Opposed
   TalonFXConfiguration configs = new TalonFXConfiguration();
+  TalonFXConfiguration indexerConfigs = new TalonFXConfiguration();
 
   public Storage() {
 
@@ -68,6 +69,12 @@ public class Storage extends SubsystemBase {
     
     configs.CurrentLimits.StatorCurrentLimit = Constants.StorageConstants.wheelStatorLimit;
     configs.CurrentLimits.SupplyCurrentLimit = Constants.StorageConstants.wheelSupplyLimit;
+
+    indexerConfigs.CurrentLimits.StatorCurrentLimit = Constants.StorageConstants.indexerStatorLimit;
+    indexerConfigs.CurrentLimits.SupplyCurrentLimit = Constants.StorageConstants.indexerSupplyLimit;
+    
+    indexMotor1.getConfigurator().apply(indexerConfigs);
+    indexMotor2.getConfigurator().apply(indexerConfigs);
 
     flyWheel.getConfigurator().apply(configs);
     indexMotor2.setControl(new Follower(indexMotor1.getDeviceID(), MotorAlignment));

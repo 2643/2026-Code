@@ -48,7 +48,7 @@ import frc.robot.subsystems.Vision;
 
 
 public class RobotContainer {
-    private final double kSlowMultiplier = 0.28967;
+    private final double kSlowMultiplier = 0.15;
     private final double normalMaxSpeed = Constants.OperatorConstants.kSpeedAt12Volts.in(MetersPerSecond); // desired top speed
     private final double normalMaxAngularRate = RotationsPerSecond.of(2).in(RadiansPerSecond); // max angular velocity
     private double MaxSpeed = normalMaxSpeed;
@@ -62,7 +62,7 @@ public class RobotContainer {
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.3).withRotationalDeadband(MaxAngularRate * 0.3)
+            .withDeadband(MaxSpeed * (kSlowMultiplier -0.1)).withRotationalDeadband(MaxAngularRate * (kSlowMultiplier -0.1))
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
 //     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
 //     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();

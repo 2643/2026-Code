@@ -149,7 +149,7 @@ public class Hood extends SubsystemBase {
     // }
     
    if (RobotContainer.m_Swivel.getState() == States.INITIALIZED && timer.hasElapsed(3)){
-    moveHood(SmartDashboard.getNumber("Target Hood Position", hoodTarget));
+    // moveHood(SmartDashboard.getNumber("Target Hood Position", hoodTarget));
     slope = SmartDashboard.getNumber("Slope", 1.3869);
     offset = SmartDashboard.getNumber("Offset", 1.13255);
     if (!reset){
