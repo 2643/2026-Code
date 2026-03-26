@@ -328,6 +328,8 @@ public class Constants {
         public static final int operatorPort = 1;
         public static final int driverPort = 0;
         public static final int progJoystickPort = 2;
+        public static final int progOpJoystickPort = 3;
+
 
         public static final int resetGyroPort = 10; 
         public static final int slowModePort = 6;

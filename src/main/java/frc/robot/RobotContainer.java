@@ -72,6 +72,7 @@ public class RobotContainer {
     private final static Joystick driver = new Joystick(Constants.driverPort);
     private final static Joystick operator = new Joystick(Constants.operatorPort);
     private final static Joystick progJoystick = new Joystick(Constants.progJoystickPort);
+    private final static Joystick progOpJoystick = new Joystick(Constants.progOpJoystickPort);
 
     public final static JoystickButton wheel = new JoystickButton(operator, Constants.ControllerConstants.square);
     public final static JoystickButton indexer = new JoystickButton(operator, Constants.ControllerConstants.x);
@@ -101,9 +102,12 @@ public class RobotContainer {
     public final static JoystickButton PROGswivelDown = new JoystickButton(progJoystick, Constants.ControllerConstants.ZR);
     public final static JoystickButton PROGwheel = new JoystickButton(progJoystick, Constants.ControllerConstants.LB);
     public final static JoystickButton PROGindexer = new JoystickButton(progJoystick, Constants.ControllerConstants.square);
-    public final static JoystickButton PROGreverse = new JoystickButton(progJoystick, Constants.ControllerConstants.circle);   
+    public final static JoystickButton PROGreverseindexer = new JoystickButton(progJoystick, Constants.ControllerConstants.circle);   
     public final static JoystickButton PROGhootReinit = new JoystickButton(progJoystick, Constants.ControllerConstants.leftNiche);
-    
+
+    public final static JoystickButton PROGreverseintake = new JoystickButton(progOpJoystick, Constants.ControllerConstants.square);   
+    public final static JoystickButton PROGtoggle = new JoystickButton(operator, Constants.ControllerConstants.circle);
+
     
     public final static Swerve drivetrain = Constants.OperatorConstants.createDrivetrain();
     public final Vision m_Vision = new Vision();
@@ -189,13 +193,18 @@ public class RobotContainer {
             PROGintake.onTrue(new ToggleIntake(true));
             PROGwheel.onTrue(new ToggleWheel(m_Storage.getPhase()));
             PROGindexer.onTrue(new ToggleIndexer(true));
-            PROGreverse.onTrue(new ToggleIndexer(false));
-            PROGreverse.onTrue(new ToggleIntake(false));
+            PROGreverseindexer.onTrue(new ToggleIndexer(false));
             PROGmanualTurret.onTrue(new ManualTurret());
             // PROGmanualTurret.onTrue(new AutoAim());
             PROGhootReinit.onTrue(new ResetHood());
             PROGswivelUp.whileTrue(new ManualMoveSwivel(true));
             PROGswivelDown.whileTrue(new ManualMoveSwivel(false));
+
+            PROGreverseintake.onTrue(new ToggleIntake(false));
+            PROGreverseintake.onTrue(new ToggleIndexer(false));
+            PROGtoggle.onTrue(new Toggle());
+
+
             
         drivetrain.setDefaultCommand(  
             // Drivetrain will execute this command periodically
