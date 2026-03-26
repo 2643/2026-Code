@@ -14,6 +14,7 @@ import frc.robot.subsystems.Swivel.States;
 public class AutoAim extends Command {
   private boolean isValid = false;
   private double turretAngle;
+
   
   private TargetType currentTarget = TargetType.HUB;
 
@@ -27,6 +28,7 @@ public class AutoAim extends Command {
   @Override
   public void initialize() {
     System.out.println("AutoAimHub init");
+    Constants.TurretConstants.running = true;
   }
 
   @Override
@@ -57,7 +59,7 @@ public class AutoAim extends Command {
     Constants.TurretConstants.swivelOffset = SmartDashboard.getNumber("Turret Offset", Constants.TurretConstants.swivelOffset);
 
     // System.out.println("AutoAimHub valid=" + isValid + " turretDeg=" + (solution.turretAngleDegrees) + " dist=" + solution.distanceMeters);
-    // SmartDashboard.putNumber("Turret Angle", solution.turretAngleDegrees);
+    SmartDashboard.putNumber("Turret Angle", solution.turretAngleDegrees);
     // SmartDashboard.putNumber("Shoot Turret Angle", movesolution.turretAngleDegrees);
 
     // SmartDashboard.putNumber("robotVelX",  robotVelX);
@@ -91,9 +93,11 @@ public class AutoAim extends Command {
   public void end(boolean interrupted) {
     System.out.println("AutoAim ended, interrupted=" + interrupted);
     // Reschedule only if interrupted (by another command), not if naturally ending
-    if (interrupted) {
-      CommandScheduler.getInstance().schedule(new AutoAim());
-    }
+    // if (interrupted) {
+    //   CommandScheduler.getInstance().schedule(new AutoAim());
+    // }
+    Constants.TurretConstants.running = false;
+
   }
 
   @Override

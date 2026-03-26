@@ -77,6 +77,12 @@ public class Swivel extends SubsystemBase {
     if (target < Constants.TurretConstants.swivelHardLimit1 && target > Constants.TurretConstants.swivelHardLimit2){
           swivelTarget = target;
           swivelMotor.setControl(new MotionMagicVoltage(target));
+    } else if (target > Constants.TurretConstants.swivelDeadMid){
+          swivelTarget = Constants.TurretConstants.swivelHardLimit2;
+          swivelMotor.setControl(new MotionMagicVoltage(Constants.TurretConstants.swivelHardLimit2));
+    } else if (target < Constants.TurretConstants.swivelDeadMid){
+          swivelTarget = Constants.TurretConstants.swivelHardLimit1;
+          swivelMotor.setControl(new MotionMagicVoltage(Constants.TurretConstants.swivelHardLimit1));
     }
   }
 
@@ -133,7 +139,7 @@ public class Swivel extends SubsystemBase {
         seen.add(f.id);
     }
 
-    if(currentState == States.INITIALIZED && currentMode == Mode.AUTOAIM) {
+    if(currentState == States.INITIALIZED && currentMode == Mode.AUTOAIM && !Constants.TurretConstants.running) {
     //  if (RobotContainer.m_Storage.getPhase() == Phase.ATTACK) {
     //     if (isVisible == true && (seen.contains(10) || seen.contains(26)|| seen.contains(11)|| seen.contains(8)|| seen.contains(24)|| seen.contains(27))) 
     //       moveSwivel(getSwivelPos()+getDist());

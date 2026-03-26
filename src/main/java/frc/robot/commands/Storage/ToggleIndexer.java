@@ -16,7 +16,7 @@ import frc.robot.subsystems.Storage.Phase;
  
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ToggleIndexer extends Command {
-  boolean finish;
+  boolean finish = true;
   Phase phase;
   boolean sign;
 
@@ -35,7 +35,7 @@ public class ToggleIndexer extends Command {
   @Override
   public void execute() {}
 
-  // Called once the command ends or is interrupted.
+  // Called once the comm\=d ends or is interrupted.
   @Override
 
   public void end(boolean interrupted) {
@@ -50,6 +50,7 @@ public class ToggleIndexer extends Command {
     else
       RobotContainer.m_Storage.moveIndexer(-Constants.StorageConstants.indexSpeed);
     
+      System.out.println("indexer command end");
     // CommandScheduler.getInstance().schedule(new AutoAim());
   }
   // Returns true when the command should end.

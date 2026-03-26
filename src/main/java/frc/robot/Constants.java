@@ -391,6 +391,7 @@ public class Constants {
 
                 public final static double swivelHardLimit2 = -2.5;
                 public final static double swivelHardLimit1 = 6.02;
+                public final static double swivelDeadMid = (swivelHardLimit2 - 5.8) / 2;
 
                 public final static double hoodHardLimit1 = 2.7;
                 public final static double hoodHardLimit2 = 0;
@@ -443,6 +444,7 @@ public class Constants {
                 public static final double kMinShootingDistance = 0.5;
           
                 public static final double kMaxShootingDistance = 10.0;
+                public static boolean running = false;
         }
 
         public final class StorageConstants {
