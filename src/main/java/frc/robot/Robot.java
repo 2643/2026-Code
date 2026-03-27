@@ -83,7 +83,7 @@ public class Robot extends TimedRobot {
 
     if (kUseLimelight) {
       var driveState = m_robotContainer.drivetrain.getState();
-      double headingDeg = driveState.Pose.getRotation().getDegrees();
+      double headingDeg = -driveState.Pose.getRotation().getDegrees();
       Rotation2d idkp2 = driveState.Pose.getRotation();
       double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
 
@@ -93,7 +93,7 @@ public class Robot extends TimedRobot {
       double id = LimelightHelpers.getFiducialID(kLimelightName);
       Pose2d idk = new Pose2d();
       if (llMeasurement !=null){
-      idk = new Pose2d(llMeasurement.pose.getTranslation(), idkp2);
+      idk = new Pose2d(llMeasurement.pose.getTranslation(), Rotation2d.fromDegrees(headingDeg));
       }
       boolean hasMeasurement = llMeasurement != null && llMeasurement.pose != null;
       boolean hasTags = hasMeasurement && llMeasurement.tagCount > 0;
