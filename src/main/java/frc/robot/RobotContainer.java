@@ -142,6 +142,8 @@ public class RobotContainer {
             autoChooser.addOption("Trench Right", new PathPlannerAuto("TrenchMidShoot-Right"));
             autoChooser.addOption("Trench Left", new PathPlannerAuto("TrenchMidShoot-Left"));
             autoChooser.addOption("Trench Test", new PathPlannerAuto("Test Trench"));
+            autoChooser.addOption("Outpost Test", new PathPlannerAuto("Outpost Test"));
+
 
             autoChooser.addOption("Straight Line", new PathPlannerAuto("Straight Line"));
             autoChooser.addOption("null", null);
