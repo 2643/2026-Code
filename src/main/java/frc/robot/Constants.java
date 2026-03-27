@@ -464,8 +464,8 @@ public class Constants {
                  public final static double wheelStatorLimit = 80;
                 public final static double wheelSupplyLimit = 45;
                 ;
-                 public final static double indexerStatorLimit = 30;
-                public final static double indexerSupplyLimit = 30;
+                 public final static double indexerStatorLimit = 50;
+                public final static double indexerSupplyLimit = 50;
         }
 
         public class FieldConstants {

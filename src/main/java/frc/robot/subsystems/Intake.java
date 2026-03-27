@@ -20,6 +20,12 @@ public class Intake extends SubsystemBase {
     configs.CurrentLimits.StatorCurrentLimit = Constants.IntakeConstants.IntakeCurrentlimit;
     configs.CurrentLimits.SupplyCurrentLimit = Constants.IntakeConstants.IntakeCurrentlimit;
 
+    configs.CurrentLimits.StatorCurrentLimitEnable = true;
+    configs.CurrentLimits.SupplyCurrentLimitEnable = true;
+
+    intakeMotor.getConfigurator().apply(configs);
+
+
   }
 
   public void moveIntake(double s) {
