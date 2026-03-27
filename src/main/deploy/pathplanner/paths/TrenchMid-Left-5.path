@@ -3,34 +3,54 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.4498813760379603,
-        "y": 0.6942704626334513
+        "x": 7.5,
+        "y": 5.992
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.253881376037961,
-        "y": 0.6942704626334513
+        "x": 7.744058391628812,
+        "y": 6.109798563130276
       },
       "isLocked": false,
-      "linkedName": "START3"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.764965909090909,
-        "y": 1.1181704545454545
+        "x": 4.661161971830986,
+        "y": 7.377699530516432
       },
       "prevControl": {
-        "x": 5.854636039779362,
-        "y": 0.6605674264557788
+        "x": 7.77294371391999,
+        "y": 7.3408431931840115
+      },
+      "nextControl": {
+        "x": 3.362406103286386,
+        "y": 7.393082159624413
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.474,
+        "y": 7.522
+      },
+      "prevControl": {
+        "x": 0.10911568254140763,
+        "y": 7.459986069151091
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "MID3-Intake"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.45,
+      "waypointRelativePos": 0.7,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 1.3,
       "rotationDegrees": 0.0
     }
   ],
@@ -47,13 +67,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": -90.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }

@@ -5,51 +5,45 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "ResetSwivel"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ResetHood"
+            "waitTime": 2.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "S2-CENTER"
+            "pathName": "TrenchMid-Left-1"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Shoot"
+            "pathName": "TrenchMid-Left-2"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "ManualTurret"
+            "pathName": "TrenchMid-Left-3"
           }
         },
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 5.0
+            "pathName": "TrenchMid-Left-4"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Shoot"
+            "pathName": "TrenchMid-Left-5"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "ManualTurret"
+            "pathName": "TrenchMid-Left-6"
           }
         }
       ]

@@ -57,10 +57,7 @@ public class AutoAim extends Command {
 
     isValid = solution.isValid;
     Constants.TurretConstants.swivelOffset = SmartDashboard.getNumber("Turret Offset", Constants.TurretConstants.swivelOffset);
-
-    // System.out.println("AutoAimHub valid=" + isValid + " turretDeg=" + (solution.turretAngleDegrees) + " dist=" + solution.distanceMeters);
     SmartDashboard.putNumber("Turret Angle", solution.turretAngleDegrees);
-    // SmartDashboard.putNumber("Shoot Turret Angle", movesolution.turretAngleDegrees);
 
     // SmartDashboard.putNumber("robotVelX",  robotVelX);
     // SmartDashboard.putNumber("robotVelY",  robotVelY);

@@ -133,14 +133,20 @@ public class RobotContainer {
             NamedCommands.registerCommand("ToggleIndexer", new ToggleIndexer(true));
             configureBindings();
 
-            autoChooser.addOption("S1 O Shoot", new PathPlannerAuto("S1-O-Shoot"));
-            autoChooser.addOption("S3 Mid Shoot", new PathPlannerAuto("S3-MID-Shoot"));
-            autoChooser.addOption("Straight Line", new PathPlannerAuto("Straight Line"));
-            autoChooser.addOption("null", null);
             autoChooser.addOption("S1 Shoot", new PathPlannerAuto("Shoot-S1"));
             autoChooser.addOption("S2 Shoot", new PathPlannerAuto("Shoot-S2"));
             autoChooser.addOption("S3 Shoot", new PathPlannerAuto("Shoot-S3"));
-            autoChooser.addOption("testing2", new PathPlannerAuto("testing2"));
+            autoChooser.addOption("S1 O Shoot", new PathPlannerAuto("S1-O-Shoot"));
+            autoChooser.addOption("S2 Mid Shoot", new PathPlannerAuto("S2-MID-Shoot"));
+            autoChooser.addOption("S3 Mid Shoot", new PathPlannerAuto("S3-MID-Shoot"));
+            autoChooser.addOption("Trench Right", new PathPlannerAuto("TrenchMidShoot-Right"));
+            autoChooser.addOption("Trench Left", new PathPlannerAuto("TrenchMidShoot-Left"));
+            autoChooser.addOption("Trench Test", new PathPlannerAuto("Test Trench"));
+
+            autoChooser.addOption("Straight Line", new PathPlannerAuto("Straight Line"));
+            autoChooser.addOption("null", null);
+
+
 
             // Configure Limelight field preset to the 2026 rebuilt field by default.
             // This remaps incoming Limelight poses into the 2026 field coordinates.
@@ -221,11 +227,6 @@ public class RobotContainer {
                 SmartDashboard.putNumber("DesiredX", PROGdesiredX);
                 SmartDashboard.putNumber("DesiredY", PROGdesiredY);
                 SmartDashboard.putNumber("DesiredOmega", PROGdesiredOmega);
-
-                // double desiredX = -applyDeadzone(driver.getRawAxis(Constants.AXIS_Y), 0.2) * MaxSpeed; // forward
-                // double desiredY = -applyDeadzone(driver.getRawAxis(Constants.AXIS_X), 0.2) * MaxSpeed; // left
-                // double desiredOmega = -applyDeadzone(driver.getRawAxis(Constants.AXIS_TWIST), 0.2) * MaxAngularRate; // rotate
-
                 // Read Shuffleboard tunables and apply them to the limiter
                 try {
                     double rx = m_rateXEntry.getDouble(3.0);

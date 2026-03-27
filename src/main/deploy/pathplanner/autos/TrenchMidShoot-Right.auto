@@ -17,9 +17,33 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ToggleWheel"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "TogglePass"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "S1-O"
+            "pathName": "TrenchMid-Right-1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ToggleIndexer"
           }
         },
         {
@@ -31,31 +55,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Intake-Outpost"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Intaked-Shoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ManualTurret"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ToggleWheel"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.8
+            "pathName": "TrenchMid-Right-2"
           }
         },
         {
@@ -65,21 +65,63 @@
           }
         },
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 5.0
+            "pathName": "TrenchMid-Right-3"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ManualTurret"
+            "name": "ToggleIndexer"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TrenchMid-Right-4"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ToggleWheel"
+            "name": "ToggleIndexer"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TrenchMid-Right-5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "TogglePass"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ToggleIndexer"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TrenchMid-Right-6"
           }
         },
         {

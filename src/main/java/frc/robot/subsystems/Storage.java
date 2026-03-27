@@ -177,25 +177,23 @@ public void resetFlyTimer(){
     wheelSpeed = flyWheel.getRotorVelocity().refresh().getValueAsDouble();
     indexSpeed = indexMotor1.getRotorVelocity().refresh().getValueAsDouble();
 
-    if(currentIndexer == Indexer.ON && indexMotor2.getRotorVelocity().refresh().getValueAsDouble() < 42){
-      indexTimer.start();
-    } else {
-      indexTimer.stop();
-      indexTimer.reset();
-    } 
+    // if(currentIndexer == Indexer.ON && indexMotor2.getRotorVelocity().refresh().getValueAsDouble() < 42){
+    //   indexTimer.start();
+    // } else {
+    //   indexTimer.stop();
+    //   indexTimer.reset();
+    // } 
 
-    if (indexTimer.hasElapsed(3)) {
-      moveIndexer(-indexSpeed);
-    }
+    // if (indexTimer.hasElapsed(3)) {
+    //   moveIndexer(-indexSpeed);
+    // }
 
-    if (indexTimer.hasElapsed(5)) {
-      moveIndexer(indexSpeed);
-      indexTimer.stop();
-      indexTimer.reset();
-    }
-
-    // targetWheelSpeed = SmartDashboard.getNumber("Target Wheel Speed", targetWheelSpeed);
-        // moveWheel(SmartDashboard.getNumber("Target Wheel Speed", targetWheelSpeed));
+    // if (indexTimer.hasElapsed(5)) {
+    //   moveIndexer(indexSpeed);
+    //   indexTimer.stop();
+    //   indexTimer.reset();
+    // }
+    // uncommented rn bc doesn't seem to work?
 
     SmartDashboard.putBoolean("Storage Limit Switch", indexLimit.get());
     SmartDashboard.putString("Phase", currentPhase.toString());

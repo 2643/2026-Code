@@ -539,7 +539,7 @@ public class Constants {
      * otherwise returns it unchanged.
      */
     public static Pose3d flipIfRed(Pose3d pose) {
-        return !isRedAlliance() ? flipPose3d(pose) : pose; //reverse at comp
+        return isRedAlliance() ? flipPose3d(pose) : pose; //reverse at comp
     }
 
     // -------------------------------------------------------------------------
