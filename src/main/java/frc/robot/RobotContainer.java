@@ -127,6 +127,9 @@ public class RobotContainer {
             NamedCommands.registerCommand("ResetSwivel", new ResetSwivel());
             NamedCommands.registerCommand("ToggleWheel", new ToggleWheel(m_Storage.getPhase()));
             NamedCommands.registerCommand("ToggleIndexer", new ToggleIndexer(true));
+            NamedCommands.registerCommand("TogglePass", new Toggle());
+
+
             configureBindings();
 
             autoChooser.addOption("S1 O Shoot", new PathPlannerAuto("S1-O-Shoot"));
@@ -137,6 +140,8 @@ public class RobotContainer {
             autoChooser.addOption("S2 Shoot", new PathPlannerAuto("Shoot-S2"));
             autoChooser.addOption("S3 Shoot", new PathPlannerAuto("Shoot-S3"));
             autoChooser.addOption("testing2", new PathPlannerAuto("testing2"));
+            autoChooser.addOption("Trench Mid Shoot Left", new PathPlannerAuto("Trench-Mid-Shoot-Left"));
+            autoChooser.addOption("Trench Mid Shoot Right", new PathPlannerAuto("Trench-Mid-Shoot-Right"));
 
             // Configure Limelight field preset to the 2026 rebuilt field by default.
             // This remaps incoming Limelight poses into the 2026 field coordinates.
