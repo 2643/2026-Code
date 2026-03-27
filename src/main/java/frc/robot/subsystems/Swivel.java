@@ -67,6 +67,9 @@ public class Swivel extends SubsystemBase {
     configs.CurrentLimits.StatorCurrentLimit = Constants.TurretConstants.swivelStatorLimit;
     configs.CurrentLimits.SupplyCurrentLimit = Constants.TurretConstants.swivelSupplyLimit;
 
+    configs.CurrentLimits.SupplyCurrentLimitEnable = true;
+    configs.CurrentLimits.StatorCurrentLimitEnable = true;
+
     swivelMotor.getConfigurator().apply(configs);
     swivelMotor.setNeutralMode(NeutralModeValue.Brake);
     setSwivelPos(0);

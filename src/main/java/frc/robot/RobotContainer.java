@@ -210,12 +210,12 @@ public class RobotContainer {
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> {
                 // raw desired velocities from joystick
-                double desiredX = -applyDeadzone(driver.getRawAxis(Constants.AXIS_Y), 0.02) * MaxSpeed; // forward
-                double desiredY = -applyDeadzone(driver.getRawAxis(Constants.AXIS_X), 0.02) * MaxSpeed; // left
+                double desiredX = applyDeadzone(driver.getRawAxis(Constants.AXIS_Y), 0.02) * MaxSpeed; // forward
+                double desiredY = applyDeadzone(driver.getRawAxis(Constants.AXIS_X), 0.02) * MaxSpeed; // left
                 double desiredOmega = -applyDeadzone(driver.getRawAxis(Constants.AXIS_TWIST), 0.02) * MaxAngularRate; // rotate
 
-                double PROGdesiredX = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_Y), 0.02) * MaxSpeed; // forward
-                double PROGdesiredY = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_X), 0.02) * MaxSpeed; // left
+                double PROGdesiredX = applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_Y), 0.02) * MaxSpeed; // forward
+                double PROGdesiredY = applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_X), 0.02) * MaxSpeed; // left
                 double PROGdesiredOmega = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_TWIST), 0.02) * MaxAngularRate; // rotate
 
                 SmartDashboard.putNumber("DesiredX", PROGdesiredX);

@@ -40,7 +40,7 @@ public class Storage extends SubsystemBase {
   public double indexSpeed;
   public boolean shoot = false;
   public boolean spin = false;
-
+  public Timer indexTimer = new Timer();
 
   TalonFX flyWheel = new TalonFX(Constants.StorageConstants.wheelID);
   TalonFX indexMotor1 = new TalonFX(Constants.StorageConstants.indexMotorID);
@@ -72,7 +72,10 @@ public class Storage extends SubsystemBase {
 
     indexerConfigs.CurrentLimits.StatorCurrentLimit = Constants.StorageConstants.indexerStatorLimit;
     indexerConfigs.CurrentLimits.SupplyCurrentLimit = Constants.StorageConstants.indexerSupplyLimit;
-    
+    indexerConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
+    indexerConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+    configs.CurrentLimits.SupplyCurrentLimitEnable = true;
+    configs.CurrentLimits.StatorCurrentLimitEnable = true;
     indexMotor1.getConfigurator().apply(indexerConfigs);
     indexMotor2.getConfigurator().apply(indexerConfigs);
 
@@ -86,7 +89,7 @@ public class Storage extends SubsystemBase {
   }
 
   public void delayMotorStart(){
-    if (getIndexer() == Indexer.ON) {
+    if (getIndexer() == Indexer.ON ) {
       timer.start();
       if (timer.hasElapsed(3)) {
         resetTimer();
@@ -112,7 +115,7 @@ public void moveWheel(double speed) {
 
 public void moveIndexer(double speed) {
   targetIndexSpeed = speed;
-   if (getIndexer() == Indexer.ON)
+   if (currentIndexer == Indexer.ON && indexMotor2.getRotorVelocity().refresh().getValueAsDouble() < 42)
   { 
       indexMotor1.setControl(new DutyCycleOut(speed));
       
@@ -173,6 +176,23 @@ public void resetFlyTimer(){
 
     wheelSpeed = flyWheel.getRotorVelocity().refresh().getValueAsDouble();
     indexSpeed = indexMotor1.getRotorVelocity().refresh().getValueAsDouble();
+
+    if(currentIndexer == Indexer.ON && indexMotor2.getRotorVelocity().refresh().getValueAsDouble() < 42){
+      indexTimer.start();
+    } else {
+      indexTimer.stop();
+      indexTimer.reset();
+    } 
+
+    if (indexTimer.hasElapsed(3)) {
+      moveIndexer(-indexSpeed);
+    }
+
+    if (indexTimer.hasElapsed(5)) {
+      moveIndexer(indexSpeed);
+      indexTimer.stop();
+      indexTimer.reset();
+    }
 
     // targetWheelSpeed = SmartDashboard.getNumber("Target Wheel Speed", targetWheelSpeed);
         // moveWheel(SmartDashboard.getNumber("Target Wheel Speed", targetWheelSpeed));

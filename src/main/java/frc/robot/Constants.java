@@ -352,7 +352,7 @@ public class Constants {
                 public final static int intakeID = 18;
                 public final static double intakeSpeed = -0.6;
                 public final static int intakePort = 2;
-                public final static double IntakeCurrentlimit = 20;
+                public final static double IntakeCurrentlimit = 50;
         }
         public final class ControllerConstants {
                 public final static int square = 1;
@@ -466,8 +466,8 @@ public class Constants {
                  public final static double wheelStatorLimit = 80;
                 public final static double wheelSupplyLimit = 45;
                 ;
-                 public final static double indexerStatorLimit = 30;
-                public final static double indexerSupplyLimit = 30;
+                 public final static double indexerStatorLimit = 120;
+                public final static double indexerSupplyLimit = 120;
         }
 
         public class FieldConstants {
@@ -506,8 +506,9 @@ public class Constants {
      * otherwise returns it unchanged.
      */
     public static Pose2d flipIfRed(Pose2d pose) {
-        return isRedAlliance() ? FlippingUtil.flipFieldPose(pose) : pose;
+        return isRedAlliance() ? FlippingUtil.flipFieldPose(pose) : pose; //reverse this at com,p
     }
+
 
     // -------------------------------------------------------------------------
     // Pose3d flip helpers
@@ -538,7 +539,7 @@ public class Constants {
      * otherwise returns it unchanged.
      */
     public static Pose3d flipIfRed(Pose3d pose) {
-        return isRedAlliance() ? flipPose3d(pose) : pose;
+        return !isRedAlliance() ? flipPose3d(pose) : pose; //reverse at comp
     }
 
     // -------------------------------------------------------------------------
