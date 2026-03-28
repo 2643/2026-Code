@@ -70,8 +70,10 @@ public class Storage extends SubsystemBase {
     configs.CurrentLimits.StatorCurrentLimit = Constants.StorageConstants.wheelStatorLimit;
     configs.CurrentLimits.SupplyCurrentLimit = Constants.StorageConstants.wheelSupplyLimit;
 
-    indexerConfigs.CurrentLimits.StatorCurrentLimit = Constants.StorageConstants.indexerStatorLimit;
-    indexerConfigs.CurrentLimits.SupplyCurrentLimit = Constants.StorageConstants.indexerSupplyLimit;
+    configs.CurrentLimits.StatorCurrentLimitEnable = true;
+    configs.CurrentLimits.SupplyCurrentLimitEnable = true;
+
+
     
     indexMotor1.getConfigurator().apply(indexerConfigs);
     indexMotor2.getConfigurator().apply(indexerConfigs);

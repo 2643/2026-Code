@@ -77,7 +77,7 @@ public class Constants {
             .withCurrentLimits(
                     new CurrentLimitsConfigs()
                             // Prevent excessive drive Supply current and help avoid brownouts.
-                            .withSupplyCurrentLimit(Amps.of(30))
+                            .withSupplyCurrentLimit(Amps.of(60))
                             .withSupplyCurrentLimitEnable(true));
     private static final TalonFXConfiguration steerInitialConfigs = new TalonFXConfiguration()
             .withCurrentLimits(
@@ -350,7 +350,7 @@ public class Constants {
                 public final static int intakeID = 18;
                 public final static double intakeSpeed = -0.6;
                 public final static int intakePort = 2;
-                public final static double IntakeCurrentlimit = 20;
+                public final static double IntakeCurrentlimit = 60;
         }
         public final class ControllerConstants {
                 public final static int square = 1;
