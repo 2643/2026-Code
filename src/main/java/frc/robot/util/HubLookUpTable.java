@@ -6,6 +6,8 @@ package frc.robot.util;
 
 import java.util.TreeMap;
 
+import frc.robot.Constants;
+
 /** 
  * Lookup table for hub shooting parameters based on distance.
  * Supports linear interpolation between data points.

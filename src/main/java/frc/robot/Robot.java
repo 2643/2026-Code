@@ -50,10 +50,10 @@ public class Robot extends TimedRobot {
       if (ally.isPresent()) {
         if (ally.get() == Alliance.Red) {
             SmartDashboard.putString("Alliance", "Red");
-            isRed = true;
+            Constants.isRed = true;
       } else if (ally.get() == Alliance.Blue) {
           SmartDashboard.putString("Alliance", "Blue");
-          isRed = false;
+          Constants.isRed = false;
         }
       }
       SmartDashboard.putString("Station Number", DriverStation.getLocation().toString());
@@ -65,6 +65,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
+    if(SmartDashboard.getString("Alliance", "Red").equals("Red")) {
+      Constants.isRed = true;
+    } else {
+      Constants.isRed = false;
+    }
     SmartDashboard.putNumber("Anti Rotation Multiplier", Constants.TurretConstants.antiMultiplier);
     SmartDashboard.putNumber("Virtual X", Constants.TurretConstants.virtualX);
     SmartDashboard.putNumber("Virtual Y", Constants.TurretConstants.virtualY);
@@ -72,7 +77,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Shoot dy", Constants.TurretConstants.dy);
     SmartDashboard.putNumber("real dx", Constants.TurretConstants.realdx);
     SmartDashboard.putNumber("real dy", Constants.TurretConstants.realdy);
-
+    SmartDashboard.putBoolean("isRed", Constants.isRed);
     Constants.TurretConstants.antiMultiplier = SmartDashboard.getNumber("antiMultiplier", 0.2);
     if (minVoltage > RobotController.getBatteryVoltage()){
             minVoltage = RobotController.getBatteryVoltage();
@@ -170,6 +175,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    SmartDashboard.putNumber("Hood Offset", Constants.TurretConstants.hoodOffset);
+
     
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
@@ -188,6 +195,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Constants.TurretConstants.swivelGearRatio = SmartDashboard.getNumber("Swivel Gear Ratio", Constants.TurretConstants.swivelGearRatio);
+    Constants.TurretConstants.hoodOffset = SmartDashboard.getNumber("Hood Offset", Constants.TurretConstants.hoodOffset);
+
 
   }
 

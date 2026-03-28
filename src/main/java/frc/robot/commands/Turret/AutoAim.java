@@ -81,7 +81,7 @@ public class AutoAim extends Command {
 
     turretAngle += Constants.TurretConstants.antiRotationOffset;
     RobotContainer.m_Swivel.moveSwivel(turretAngle);
-    RobotContainer.m_Hood.moveHood(solution.trajectoryAngleDegrees);
+    RobotContainer.m_Hood.moveHood(solution.trajectoryAngleDegrees-0);
 
     if (RobotContainer.m_Storage.getWheel() == frc.robot.subsystems.Storage.Wheel.ON) {
       RobotContainer.m_Storage.moveWheel(solution.shooterSpeedRPS);

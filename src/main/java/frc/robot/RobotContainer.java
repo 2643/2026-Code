@@ -22,6 +22,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import frc.robot.commands.IndexerIntake;
+import frc.robot.commands.StopIndexer;
 // import frc.robot.Constants.ControllerConstants; (unused)
 import frc.robot.commands.Intake.ToggleIntake;
 import frc.robot.commands.Storage.Toggle;
@@ -127,6 +129,8 @@ public class RobotContainer {
             NamedCommands.registerCommand("ResetSwivel", new ResetSwivel());
             NamedCommands.registerCommand("ToggleWheel", new ToggleWheel(m_Storage.getPhase()));
             NamedCommands.registerCommand("ToggleIndexer", new ToggleIndexer(true));
+           
+
             configureBindings();
 
             autoChooser.addOption("S1 O Shoot", new PathPlannerAuto("S1-O-Shoot"));
@@ -205,8 +209,8 @@ public class RobotContainer {
                 double desiredY = -applyDeadzone(driver.getRawAxis(Constants.AXIS_X), 0.02) * MaxSpeed; // left
                 double desiredOmega = -applyDeadzone(driver.getRawAxis(Constants.AXIS_TWIST), 0.02) * MaxAngularRate; // rotate
 
-                double PROGdesiredX = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_Y), 0.02) * MaxSpeed; // forward
-                double PROGdesiredY = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_X), 0.02) * MaxSpeed; // left
+                double PROGdesiredX = applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_Y), 0.02) * MaxSpeed; // forward
+                double PROGdesiredY = applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_X), 0.02) * MaxSpeed; // left
                 double PROGdesiredOmega = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_TWIST), 0.02) * MaxAngularRate; // rotate
 
                 SmartDashboard.putNumber("DesiredX", PROGdesiredX);
