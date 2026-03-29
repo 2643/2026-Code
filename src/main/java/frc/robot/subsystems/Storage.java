@@ -90,7 +90,7 @@ public class Storage extends SubsystemBase {
   public void delayMotorStart(){
     if (getIndexer() == Indexer.ON) {
       timer.start();
-      if (timer.hasElapsed(3)) {
+      if (timer.hasElapsed(1)) {
         resetTimer();
         indexMotor1.setControl(new DutyCycleOut(Constants.StorageConstants.indexSpeed));
       } 
@@ -154,6 +154,21 @@ public void setIndexer(Indexer indexer) {
     shoot = false;
   }
 }
+
+public void moveMotor(double speed) {
+   if (getIndexer() == Indexer.ON)
+  { 
+    flyWheel.setControl(new DutyCycleOut(speed));
+    targetWheelSpeed = speed;
+  }
+  else
+  {
+    flyWheel.setControl(new DutyCycleOut(0));
+    targetWheelSpeed = 0;
+  }
+}
+
+
 
 public Indexer getIndexer() {
   return currentIndexer;

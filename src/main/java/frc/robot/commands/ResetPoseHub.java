@@ -12,10 +12,10 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ResetPoseRight extends Command {
+public class ResetPoseHub extends Command {
   boolean finish = false;
   /** Creates a new ResetPose. */
-  public ResetPoseRight() {
+  public ResetPoseHub() {
     addRequirements(RobotContainer.drivetrain);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -26,9 +26,9 @@ public class ResetPoseRight extends Command {
     var driveState = RobotContainer.drivetrain.getState();
       Rotation2d headingDeg = driveState.Pose.getRotation();
     if(Constants.isRed) {
-      RobotContainer.drivetrain.resetPose(new Pose2d(16, 7.5, headingDeg));
+      RobotContainer.drivetrain.resetPose(new Pose2d(13, 4, headingDeg));
      } else {
-      RobotContainer.drivetrain.resetPose(new Pose2d(0.5, 0.5, headingDeg));
+      RobotContainer.drivetrain.resetPose(new Pose2d(3.5, 4, headingDeg));
 
      }
      finish = true;

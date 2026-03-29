@@ -29,16 +29,6 @@ public class ToggleIndexer extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    finish = true;
-  }
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
-
-  // Called once the comm\=d ends or is interrupted.
-  @Override
-
-  public void end(boolean interrupted) {
     RobotContainer.m_Storage.resetTimer();
     switch (RobotContainer.m_Storage.getIndexer()){
       case ON -> RobotContainer.m_Storage.setIndexer(Indexer.OFF);
@@ -49,6 +39,17 @@ public class ToggleIndexer extends Command {
       RobotContainer.m_Storage.moveIndexer(Constants.StorageConstants.indexSpeed);
     else
       RobotContainer.m_Storage.moveIndexer(-Constants.StorageConstants.indexSpeed);
+    finish = true;
+  }
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {}
+
+  // Called once the comm\=d ends or is interrupted.
+  @Override
+
+  public void end(boolean interrupted) {
+    
     
       System.out.println("indexer command end");
     // CommandScheduler.getInstance().schedule(new AutoAim());

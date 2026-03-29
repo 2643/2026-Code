@@ -22,25 +22,25 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import frc.robot.commands.IndexerIntake;
 import frc.robot.commands.ResetPoseLeft;
+import frc.robot.commands.ResetPoseLeftTrench;
+import frc.robot.commands.ResetPoseMidBack;
+import frc.robot.commands.ResetPoseMidLeft;
+import frc.robot.commands.ResetPoseMidRight;
+import frc.robot.commands.ResetPoseHub;
 import frc.robot.commands.ResetPoseRight;
-import frc.robot.commands.StopIndexer;
+import frc.robot.commands.ResetPoseRightTrench;
 // import frc.robot.Constants.ControllerConstants; (unused)
 import frc.robot.commands.Intake.ToggleIntake;
-import frc.robot.commands.Storage.Toggle;
 import java.util.Optional;
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.commands.Storage.ToggleIndexer;
 import frc.robot.commands.Storage.ToggleWheel;
 import frc.robot.commands.Turret.AutoAim;
-import frc.robot.commands.Turret.ManualHoodDown;
-import frc.robot.commands.Turret.ManualHoodUp;
 import frc.robot.commands.Turret.ManualMoveSwivel;
 import frc.robot.commands.Turret.ManualTurret;
 import frc.robot.commands.Turret.ResetHood;
 import frc.robot.commands.Turret.ResetSwivel;
-import frc.robot.commands.Turret.Scram;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Storage;
@@ -77,21 +77,21 @@ public class RobotContainer {
     private final static Joystick operator = new Joystick(Constants.operatorPort);
     private final static Joystick progJoystick = new Joystick(Constants.progJoystickPort);
 
-    public final static JoystickButton wheel = new JoystickButton(operator, Constants.ControllerConstants.square);
-    public final static JoystickButton indexer = new JoystickButton(operator, Constants.ControllerConstants.x);
-    public final static JoystickButton reverse = new JoystickButton(driver, Constants.ControllerConstants.circle);   
-    public final static JoystickButton hootReinit = new JoystickButton(operator, Constants.ControllerConstants.rightNiche);
+    // public final static JoystickButton wheel = new JoystickButton(operator, Constants.ControllerConstants.square);
+    // public final static JoystickButton indexer = new JoystickButton(operator, Constants.ControllerConstants.x);
+    // public final static JoystickButton reverse = new JoystickButton(driver, Constants.ControllerConstants.circle);   
+    // public final static JoystickButton hootReinit = new JoystickButton(operator, Constants.ControllerConstants.rightNiche);
     
-    public static final JoystickButton intake = new JoystickButton(driver, Constants.ControllerConstants.x);
-    public static final JoystickButton manualTurret = new JoystickButton(operator, Constants.ControllerConstants.triangle);
-    public final static JoystickButton toggle = new JoystickButton(operator, Constants.ControllerConstants.circle);
-    public final static JoystickButton zeroGyro = new JoystickButton(driver, Constants.ControllerConstants.rightNiche);
-    public final static JoystickButton slowMode = new JoystickButton(driver, Constants.ControllerConstants.RB);
-    public final static JoystickButton hoodDown = new JoystickButton(operator, Constants.ControllerConstants.LB);
-    public final static JoystickButton hoodUp = new JoystickButton(operator, Constants.ControllerConstants.RB);
-    public final static JoystickButton scram = new JoystickButton(operator, Constants.ControllerConstants.leftNiche);
-    public final static JoystickButton swivelUp = new JoystickButton(operator, Constants.ControllerConstants.ZL);
-    public final static JoystickButton swivelDown = new JoystickButton(operator, Constants.ControllerConstants.ZR);
+    // public static final JoystickButton intake = new JoystickButton(driver, Constants.ControllerConstants.x);
+    // public static final JoystickButton manualTurret = new JoystickButton(operator, Constants.ControllerConstants.triangle);
+    // public final static JoystickButton toggle = new JoystickButton(operator, Constants.ControllerConstants.circle);
+    // public final static JoystickButton zeroGyro = new JoystickButton(driver, Constants.ControllerConstants.rightNiche);
+    // public final static JoystickButton slowMode = new JoystickButton(driver, Constants.ControllerConstants.RB);
+    // public final static JoystickButton hoodDown = new JoystickButton(operator, Constants.ControllerConstants.LB);
+    // public final static JoystickButton hoodUp = new JoystickButton(operator, Constants.ControllerConstants.RB);
+    // public final static JoystickButton scram = new JoystickButton(operator, Constants.ControllerConstants.leftNiche);
+    // public final static JoystickButton swivelUp = new JoystickButton(operator, Constants.ControllerConstants.ZL);
+    // public final static JoystickButton swivelDown = new JoystickButton(operator, Constants.ControllerConstants.ZR);
 
     public static final JoystickButton PROGintake = new JoystickButton(progJoystick, Constants.ControllerConstants.x);
     public static final JoystickButton PROGmanualTurret = new JoystickButton(progJoystick, Constants.ControllerConstants.triangle);
@@ -107,8 +107,16 @@ public class RobotContainer {
     public final static JoystickButton PROGindexer = new JoystickButton(progJoystick, Constants.ControllerConstants.square);
     public final static JoystickButton PROGreverse = new JoystickButton(progJoystick, Constants.ControllerConstants.circle);   
     public final static JoystickButton PROGhootReinit = new JoystickButton(progJoystick, Constants.ControllerConstants.leftNiche);
-    public final static JoystickButton PROGresetLeft = new JoystickButton(progJoystick, Constants.ControllerConstants.ZR);
-    public final static JoystickButton PROGresetRight = new JoystickButton(progJoystick, Constants.ControllerConstants.ZL);
+
+    public final static JoystickButton PROGresetLeftCorner = new JoystickButton(operator, Constants.ControllerConstants.ZL);
+    public final static JoystickButton PROGresetRightCorner = new JoystickButton(operator, Constants.ControllerConstants.ZR);
+    public final static JoystickButton PROGresetLeftTrench = new JoystickButton(operator, Constants.ControllerConstants.LB);
+    public final static JoystickButton PROGresetRightTrench = new JoystickButton(operator, Constants.ControllerConstants.RB);
+    public final static JoystickButton PROGresetMidRight = new JoystickButton(operator, Constants.ControllerConstants.circle);
+    public final static JoystickButton PROGresetMidLeft = new JoystickButton(operator, Constants.ControllerConstants.square);
+    public final static JoystickButton PROGresetMidBack = new JoystickButton(operator, Constants.ControllerConstants.x);
+    public final static JoystickButton PROGresetHub = new JoystickButton(operator, Constants.ControllerConstants.triangle);
+
 
     
     
@@ -179,19 +187,19 @@ public class RobotContainer {
         }
     
         private void configureBindings() {
-            toggle.onTrue(new Toggle());
-            intake.onTrue(new ToggleIntake(true));
-            wheel.onTrue(new ToggleWheel(m_Storage.getPhase()));
-            indexer.onTrue(new ToggleIndexer(true));
-            reverse.onTrue(new ToggleIndexer(false));
-            reverse.onTrue(new ToggleIntake(false));
-            manualTurret.onTrue(new ManualTurret());
-            scram.onTrue(new Scram());
-            hootReinit.onTrue(new ResetHood());
-            swivelUp.whileTrue(new ManualMoveSwivel(true));
-            swivelDown.whileTrue(new ManualMoveSwivel(false));
-            hoodDown.onTrue(new ManualHoodDown());
-            hoodUp.onTrue(new ManualHoodUp());
+            // toggle.onTrue(new Toggle());
+            // intake.onTrue(new ToggleIntake(true));
+            // wheel.onTrue(new ToggleWheel(m_Storage.getPhase()));
+            // indexer.onTrue(new ToggleIndexer(true));
+            // reverse.onTrue(new ToggleIndexer(false));
+            // reverse.onTrue(new ToggleIntake(false));
+            // manualTurret.onTrue(new ManualTurret());
+            // scram.onTrue(new Scram());
+            // hootReinit.onTrue(new ResetHood());
+            // swivelUp.whileTrue(new ManualMoveSwivel(true));
+            // swivelDown.whileTrue(new ManualMoveSwivel(false));
+            // hoodDown.onTrue(new ManualHoodDown());
+            // hoodUp.onTrue(new ManualHoodUp());
             
            
            
@@ -203,10 +211,16 @@ public class RobotContainer {
             PROGmanualTurret.onTrue(new ManualTurret());
             // PROGmanualTurret.onTrue(new AutoAim());
             PROGhootReinit.onTrue(new ResetHood());
-            // PROGswivelUp.whileTrue(new ManualMoveSwivel(true));
-            // PROGswivelDown.whileTrue(new ManualMoveSwivel(false));
-            PROGresetLeft.onTrue(new ResetPoseLeft());
-            PROGresetRight.onTrue(new ResetPoseRight());
+            PROGswivelUp.whileTrue(new ManualMoveSwivel(true));
+            PROGswivelDown.whileTrue(new ManualMoveSwivel(false));
+            PROGresetLeftCorner.onTrue(new ResetPoseLeft());
+            PROGresetRightCorner.onTrue(new ResetPoseRight());
+            PROGresetLeftTrench.onTrue(new ResetPoseLeftTrench());
+            PROGresetRightTrench.onTrue(new ResetPoseRightTrench());
+            PROGresetMidRight.onTrue(new ResetPoseMidRight());
+            PROGresetMidLeft.onTrue(new ResetPoseMidLeft());
+            PROGresetMidBack.onTrue(new ResetPoseMidBack());
+            PROGresetHub.onTrue(new ResetPoseHub());
             
         drivetrain.setDefaultCommand(  
             // Drivetrain will execute this command periodically
@@ -261,16 +275,16 @@ public class RobotContainer {
             RobotModeTriggers.disabled().whileTrue(
                     drivetrain.applyRequest(() -> idle).ignoringDisable(true));
           
-            zeroGyro.onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+            // zeroGyro.onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-            slowMode.onTrue(drivetrain.runOnce(() -> {
-                MaxSpeed = normalMaxSpeed * kSlowMultiplier;
-                MaxAngularRate = normalMaxAngularRate * kSlowMultiplier;
-            }));
-            slowMode.onFalse(drivetrain.runOnce(() -> {
-                MaxSpeed = normalMaxSpeed;
-                MaxAngularRate = normalMaxAngularRate;
-            }));
+            // slowMode.onTrue(drivetrain.runOnce(() -> {
+            //     MaxSpeed = normalMaxSpeed * kSlowMultiplier;
+            //     MaxAngularRate = normalMaxAngularRate * kSlowMultiplier;
+            // }));
+            // slowMode.onFalse(drivetrain.runOnce(() -> {
+            //     MaxSpeed = normalMaxSpeed;
+            //     MaxAngularRate = normalMaxAngularRate;
+            // }));
 
             PROGzeroGyro.onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 

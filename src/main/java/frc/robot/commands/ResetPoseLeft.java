@@ -26,7 +26,7 @@ public class ResetPoseLeft extends Command {
     var driveState = RobotContainer.drivetrain.getState();
       Rotation2d headingDeg = driveState.Pose.getRotation();
     if(Constants.isRed) {
-      RobotContainer.drivetrain.resetPose(new Pose2d(17.5, 0.5, headingDeg));
+      RobotContainer.drivetrain.resetPose(new Pose2d(16, 0.5, headingDeg));
      } else {
       RobotContainer.drivetrain.resetPose(new Pose2d(0.5, 7.5, headingDeg));
 
