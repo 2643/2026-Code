@@ -22,6 +22,8 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.util.LimelightHelpers;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 
 
@@ -60,11 +62,19 @@ public class Robot extends TimedRobot {
       SmartDashboard.putNumber("Match Number", DriverStation.getMatchNumber());
       SmartDashboard.putString("Game Specific Message", DriverStation.getGameSpecificMessage());
       SmartDashboard.putString("Field/LayoutHint", "2026-Rebuilt");
+      SmartDashboard.putBoolean("Reverse", Constants.reverse);
       CommandScheduler.getInstance().schedule(new AutoAim());
   }
 
-  @Override
+  @Override 
   public void robotPeriodic() {
+    SmartDashboard.putNumber("MaxSpeed", Constants.MaxSpeed);
+    if(SmartDashboard.getBoolean("Reverse", false)) {
+      Constants.MaxSpeed = -Constants.OperatorConstants.kSpeedAt12Volts.in(MetersPerSecond);;
+    } else {
+      Constants.MaxSpeed = Constants.OperatorConstants.kSpeedAt12Volts.in(MetersPerSecond);
+    }
+    
     if(SmartDashboard.getString("Alliance", "Red").equals("Red")) {
       Constants.isRed = true;
     } else {

@@ -23,6 +23,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.commands.IndexerIntake;
+import frc.robot.commands.ResetPoseLeft;
+import frc.robot.commands.ResetPoseRight;
 import frc.robot.commands.StopIndexer;
 // import frc.robot.Constants.ControllerConstants; (unused)
 import frc.robot.commands.Intake.ToggleIntake;
@@ -105,6 +107,9 @@ public class RobotContainer {
     public final static JoystickButton PROGindexer = new JoystickButton(progJoystick, Constants.ControllerConstants.square);
     public final static JoystickButton PROGreverse = new JoystickButton(progJoystick, Constants.ControllerConstants.circle);   
     public final static JoystickButton PROGhootReinit = new JoystickButton(progJoystick, Constants.ControllerConstants.leftNiche);
+    public final static JoystickButton PROGresetLeft = new JoystickButton(progJoystick, Constants.ControllerConstants.ZR);
+    public final static JoystickButton PROGresetRight = new JoystickButton(progJoystick, Constants.ControllerConstants.ZL);
+
     
     
     public final static Swerve drivetrain = Constants.OperatorConstants.createDrivetrain();
@@ -198,19 +203,21 @@ public class RobotContainer {
             PROGmanualTurret.onTrue(new ManualTurret());
             // PROGmanualTurret.onTrue(new AutoAim());
             PROGhootReinit.onTrue(new ResetHood());
-            PROGswivelUp.whileTrue(new ManualMoveSwivel(true));
-            PROGswivelDown.whileTrue(new ManualMoveSwivel(false));
+            // PROGswivelUp.whileTrue(new ManualMoveSwivel(true));
+            // PROGswivelDown.whileTrue(new ManualMoveSwivel(false));
+            PROGresetLeft.onTrue(new ResetPoseLeft());
+            PROGresetRight.onTrue(new ResetPoseRight());
             
         drivetrain.setDefaultCommand(  
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> {
                 // raw desired velocities from joystick
-                double desiredX = -applyDeadzone(driver.getRawAxis(Constants.AXIS_Y), 0.02) * MaxSpeed; // forward
-                double desiredY = -applyDeadzone(driver.getRawAxis(Constants.AXIS_X), 0.02) * MaxSpeed; // left
+                double desiredX = -applyDeadzone(driver.getRawAxis(Constants.AXIS_Y), 0.02) * Constants.MaxSpeed; // forward
+                double desiredY = -applyDeadzone(driver.getRawAxis(Constants.AXIS_X), 0.02) * Constants.MaxSpeed; // left
                 double desiredOmega = -applyDeadzone(driver.getRawAxis(Constants.AXIS_TWIST), 0.02) * MaxAngularRate; // rotate
 
-                double PROGdesiredX = applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_Y), 0.02) * MaxSpeed; // forward
-                double PROGdesiredY = applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_X), 0.02) * MaxSpeed; // left
+                double PROGdesiredX = applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_Y), 0.02) * Constants.MaxSpeed; // forward
+                double PROGdesiredY = applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_X), 0.02) * Constants.MaxSpeed; // left
                 double PROGdesiredOmega = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_TWIST), 0.02) * MaxAngularRate; // rotate
 
                 SmartDashboard.putNumber("DesiredX", PROGdesiredX);

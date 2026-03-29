@@ -333,6 +333,9 @@ public class Constants {
         public static final int resetGyroPort = 10; 
         public static final int slowModePort = 6;
 
+        public static double MaxSpeed = Constants.OperatorConstants.kSpeedAt12Volts.in(MetersPerSecond);
+        public static boolean reverse = false;
+
         public final class IntakeConstants {
                 // Square = 1
                 // X=2
@@ -351,7 +354,7 @@ public class Constants {
                 public final static int intakeID = 18;
                 public final static double intakeSpeed = -0.6;
                 public final static int intakePort = 2;
-                public final static double IntakeCurrentlimit = 100;
+                public final static double IntakeCurrentlimit = 120;
         }
         public final class ControllerConstants {
                 public final static int square = 1;
