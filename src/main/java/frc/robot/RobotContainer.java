@@ -8,8 +8,10 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
@@ -34,6 +36,8 @@ import frc.robot.commands.ResetPoseRightTrench;
 import frc.robot.commands.Intake.ToggleIntake;
 import java.util.Optional;
 import edu.wpi.first.math.geometry.Pose2d;
+import frc.robot.commands.Storage.Shoot;
+import frc.robot.commands.Storage.StopShoot;
 import frc.robot.commands.Storage.ToggleIndexer;
 import frc.robot.commands.Storage.ToggleWheel;
 import frc.robot.commands.Turret.AutoAim;
@@ -108,6 +112,22 @@ public class RobotContainer {
     public final static JoystickButton PROGreverse = new JoystickButton(progJoystick, Constants.ControllerConstants.circle);   
     public final static JoystickButton PROGhootReinit = new JoystickButton(progJoystick, Constants.ControllerConstants.leftNiche);
 
+    // ── SysId buttons (driver joystick) ──────────────────────────────────────
+    // Routine selection (onTrue): square=Translation, circle=Steer, triangle=Rotation
+    private final JoystickButton sysIdSelectTranslation = new JoystickButton(driver, Constants.ControllerConstants.square);
+    private final JoystickButton sysIdSelectSteer       = new JoystickButton(driver, Constants.ControllerConstants.circle);
+    private final JoystickButton sysIdSelectRotation    = new JoystickButton(driver, Constants.ControllerConstants.triangle);
+    // Test execution (whileTrue / hold): LB=quasi fwd, RB=quasi rev, ZL=dyn fwd, ZR=dyn rev
+    private final JoystickButton sysIdQuasiFwd  = new JoystickButton(driver, Constants.ControllerConstants.LB);
+    private final JoystickButton sysIdQuasiRev  = new JoystickButton(driver, Constants.ControllerConstants.RB);
+    private final JoystickButton sysIdDynFwd    = new JoystickButton(driver, Constants.ControllerConstants.ZL);
+    private final JoystickButton sysIdDynRev    = new JoystickButton(driver, Constants.ControllerConstants.ZR);
+    // SignalLogger control: X=start logging, leftNiche=stop logging
+    private final JoystickButton sysIdLogStart  = new JoystickButton(driver, Constants.ControllerConstants.x);
+    private final JoystickButton sysIdLogStop   = new JoystickButton(driver, Constants.ControllerConstants.leftNiche);
+    // Zero gyro kept on rightNiche
+    private final JoystickButton driverZeroGyro = new JoystickButton(driver, Constants.ControllerConstants.rightNiche);
+
     public final static JoystickButton PROGresetLeftCorner = new JoystickButton(operator, Constants.ControllerConstants.ZL);
     public final static JoystickButton PROGresetRightCorner = new JoystickButton(operator, Constants.ControllerConstants.ZR);
     public final static JoystickButton PROGresetLeftTrench = new JoystickButton(operator, Constants.ControllerConstants.LB);
@@ -134,7 +154,7 @@ public class RobotContainer {
     
         public RobotContainer() {
             NamedCommands.registerCommand("Intake", new ToggleIntake(true));
-            NamedCommands.registerCommand("Shoot", new ToggleWheel(Phase.ATTACK));
+            // NamedCommands.registerCommand("Shoot", new ToggleWheel(Phase.ATTACK));
             NamedCommands.registerCommand("ManualTurret", new ManualTurret());
             NamedCommands.registerCommand("AutoAim", new AutoAim());
             NamedCommands.registerCommand("Zero Gyro", drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
@@ -142,11 +162,14 @@ public class RobotContainer {
             NamedCommands.registerCommand("ResetSwivel", new ResetSwivel());
             NamedCommands.registerCommand("ToggleWheel", new ToggleWheel(m_Storage.getPhase()));
             NamedCommands.registerCommand("ToggleIndexer", new ToggleIndexer(true));
+            NamedCommands.registerCommand("Shoot", new Shoot());
+            NamedCommands.registerCommand("StopShoot", new StopShoot());
            
 
             configureBindings();
 
             autoChooser.addOption("S1 O Shoot", new PathPlannerAuto("S1-O-Shoot"));
+            autoChooser.addOption("S1 O Shoot v2", new PathPlannerAuto("S1-O-Shoot-v2"));
             autoChooser.addOption("S3 Mid Shoot", new PathPlannerAuto("S3-MID-Shoot"));
             autoChooser.addOption("Straight Line", new PathPlannerAuto("Straight Line"));
             autoChooser.addOption("null", null);
@@ -285,6 +308,22 @@ public class RobotContainer {
             //     MaxSpeed = normalMaxSpeed;
             //     MaxAngularRate = normalMaxAngularRate;
             // }));
+
+            // ── SysId bindings (driver joystick) ─────────────────────────────────
+            // Routine selection – press once to switch the active SysId routine
+            sysIdSelectTranslation.onTrue(drivetrain.runOnce(() -> drivetrain.setSysIdRoutineTranslation()).ignoringDisable(true));
+            sysIdSelectSteer      .onTrue(drivetrain.runOnce(() -> drivetrain.setSysIdRoutineSteer())      .ignoringDisable(true));
+            sysIdSelectRotation   .onTrue(drivetrain.runOnce(() -> drivetrain.setSysIdRoutineRotation())   .ignoringDisable(true));
+            // Test execution – hold button to run, release to stop
+            sysIdQuasiFwd.whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+            sysIdQuasiRev.whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+            sysIdDynFwd  .whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
+            sysIdDynRev  .whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+            // SignalLogger control
+            sysIdLogStart.onTrue(drivetrain.runOnce(() -> SignalLogger.start()).ignoringDisable(true));
+            sysIdLogStop .onTrue(drivetrain.runOnce(() -> SignalLogger.stop()) .ignoringDisable(true));
+            // Zero gyro
+            driverZeroGyro.onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
             PROGzeroGyro.onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 

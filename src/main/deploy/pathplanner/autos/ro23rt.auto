@@ -7,19 +7,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ResetHood"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ResetSwivel"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
+            "name": "ToggleIndexer"
           }
         },
         {

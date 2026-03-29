@@ -280,6 +280,21 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         return m_sysIdRoutineToApply.dynamic(direction);
     }
 
+    /** Selects the Translation SysId routine (used to find drive motor PID gains). */
+    public void setSysIdRoutineTranslation() {
+        m_sysIdRoutineToApply = m_sysIdRoutineTranslation;
+    }
+
+    /** Selects the Steer SysId routine (used to find steer motor PID gains). */
+    public void setSysIdRoutineSteer() {
+        m_sysIdRoutineToApply = m_sysIdRoutineSteer;
+    }
+
+    /** Selects the Rotation SysId routine (used to find heading controller gains). */
+    public void setSysIdRoutineRotation() {
+        m_sysIdRoutineToApply = m_sysIdRoutineRotation;
+    }
+
     @Override
     public void periodic() {
         // m_field.setRobotPose(this.getState().Pose);

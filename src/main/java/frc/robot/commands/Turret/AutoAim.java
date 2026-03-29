@@ -22,7 +22,6 @@ public class AutoAim extends Command {
     SmartDashboard.putNumber("Turret Offset", Constants.TurretConstants.swivelOffset);
     addRequirements(RobotContainer.m_Swivel);
     addRequirements(RobotContainer.m_Hood);
-    addRequirements(RobotContainer.m_Storage);
   }
 
   @Override
@@ -83,10 +82,10 @@ public class AutoAim extends Command {
     RobotContainer.m_Swivel.moveSwivel(turretAngle);
     RobotContainer.m_Hood.moveHood(solution.trajectoryAngleDegrees-0);
 
-    if (RobotContainer.m_Storage.getWheel() == frc.robot.subsystems.Storage.Wheel.ON) {
-      RobotContainer.m_Storage.moveWheel(solution.shooterSpeedRPS);
-      // }
-    }
+    // if (RobotContainer.m_Storage.getWheel() == frc.robot.subsystems.Storage.Wheel.ON) {
+    //   RobotContainer.m_Storage.moveWheel(solution.shooterSpeedRPS);
+    //   // }
+    // }
   }
 
   @Override
