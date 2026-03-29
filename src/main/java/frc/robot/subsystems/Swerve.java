@@ -64,7 +64,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
      * SysId routine for characterizing translation. This is used to find PID gains
      * for the drive motors.
      */
-    private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
+    public final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
             new SysIdRoutine.Config(
                     null, // Use default ramp rate (1 V/s)
                     Volts.of(4), // Reduce dynamic step voltage to 4 V to prevent brownout
@@ -80,7 +80,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
      * SysId routine for characterizing steer. This is used to find PID gains for
      * the steer motors.
      */
-    private final SysIdRoutine m_sysIdRoutineSteer = new SysIdRoutine(
+    public final SysIdRoutine m_sysIdRoutineSteer = new SysIdRoutine(
             new SysIdRoutine.Config(
                     null, // Use default ramp rate (1 V/s)
                     Volts.of(7), // Use dynamic voltage of 7 V
@@ -278,6 +278,14 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
      */
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return m_sysIdRoutineToApply.dynamic(direction);
+    }
+
+    /**
+     * Select which SysId routine to apply (Translation, Steer, or Rotation)
+     * @param routine The routine to apply
+     */
+    public void setSysIdRoutine(SysIdRoutine routine) {
+        m_sysIdRoutineToApply = routine;
     }
 
     @Override
