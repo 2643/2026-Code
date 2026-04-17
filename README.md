@@ -2,7 +2,7 @@
   <img src="https://github.com/user-attachments/assets/9ccde818-256d-49b7-8b3f-2c7d0d60547d" />
 </p>
 <p align="center">
-  This is the repository for 2643's code for the 2024 season: Crescendo!
+  This is the repository for 2643's code for the 2026 season: Rebuilt!
 </p>
 
 ## Robot
