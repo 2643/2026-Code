@@ -30,7 +30,7 @@
 
   Thanks to...
   
-  CTRE's [SwerveWithPathplanner](BaseTalonFXSwerve](https://github.com/CrossTheRoadElec/Phoenix6-Examples) "SwerveWithPathplanner")
+  CTRE's [SwerveWithPathplanner](https://github.com/CrossTheRoadElec/Phoenix6-Examples/tree/main/java/SwerveWithPathPlanner "SwerveWithPathplanner")
   
   3015's [PathPlanner](https://github.com/mjansen4857/pathplanner "PathPlanner")
 
