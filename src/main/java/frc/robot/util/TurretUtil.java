@@ -65,6 +65,61 @@ public class TurretUtil {
     
         private static final HubLookUpTable hubTable = new HubLookUpTable();
         private static final PassLookUpTable passTable = new PassLookUpTable();
+
+        // -------------------------
+        // Distance smoothing / hysteresis
+        // -------------------------
+        // Exponential moving average alpha (0-1). Higher = more responsive, lower = smoother
+        private static final double DIST_EMA_ALPHA = 0.4;
+        // Hysteresis threshold (meters) — ignore small changes below this
+        private static final double DIST_HYSTERESIS = 0.03; // 3 cm
+        // Number of consecutive stable cycles required to accept a change
+        private static final int DIST_STABLE_REQUIRED = 3;
+
+        // runtime state
+        private static double s_smoothedDistance = Double.NaN;
+        private static double s_commandedDistance = Double.NaN;
+        private static int s_stableCount = 0;
+
+        // -------------------------
+        // First-shot compensation
+        // -------------------------
+        private static int s_firstShotsRemaining = 0;
+        private static double s_firstShotHoodOffsetDeg = 0.0;
+        private static double s_firstShotRpsOffset = 0.0;
+
+        public static void setFirstShotsCount(int n) {
+            s_firstShotsRemaining = Math.max(0, n);
+        }
+
+        public static void resetFirstShots() {
+            s_firstShotsRemaining = 0;
+        }
+
+        /** Call when a shot has been fired (approx). Decrements remaining first-shot counter. */
+        public static void noteShotFired() {
+            if (s_firstShotsRemaining > 0) s_firstShotsRemaining--;
+        }
+
+        public static void setFirstShotOffsets(double hoodDegOffset, double rpsOffset) {
+            s_firstShotHoodOffsetDeg = hoodDegOffset;
+            s_firstShotRpsOffset = rpsOffset;
+        }
+
+        public static double getFirstShotHoodOffset() { return s_firstShotHoodOffsetDeg; }
+        public static double getFirstShotRpsOffset() { return s_firstShotRpsOffset; }
+
+        public static int getFirstShotsRemaining() { return s_firstShotsRemaining; }
+
+        /** Import hub lookup table from CSV on-disk and replace the in-memory table. */
+        public static void importHubTableFromCsv(java.nio.file.Path csvPath) throws java.io.IOException {
+            hubTable.importFromCsv(csvPath);
+        }
+
+        /** Dump current hub lookup table as Java addEntry(...) lines. */
+        public static String dumpHubTableAsJava() {
+            return hubTable.dumpAsJava();
+        }
     
         // =========================
         // TURRET POSE
@@ -176,13 +231,50 @@ public class TurretUtil {
          */
         public static ShotSolution computeShotSolution(Pose2d robotPose, TargetType target) {
             double dist = getDistance(robotPose, target);
-            double turretAngle = -(getTurretAngleDegrees(robotPose, target) +90);
+                // Smooth the distance to avoid rapid target jitter from small pose noise.
+                if (Double.isNaN(s_smoothedDistance)) {
+                    s_smoothedDistance = dist;
+                } else {
+                    s_smoothedDistance = s_smoothedDistance * (1.0 - DIST_EMA_ALPHA) + dist * DIST_EMA_ALPHA;
+                }
+
+                if (Double.isNaN(s_commandedDistance)) {
+                    s_commandedDistance = s_smoothedDistance;
+                    s_stableCount = DIST_STABLE_REQUIRED;
+                } else {
+                    if (Math.abs(s_smoothedDistance - s_commandedDistance) > DIST_HYSTERESIS) {
+                        // change detected, require stability
+                        s_stableCount = 0;
+                    } else {
+                        s_stableCount = Math.min(s_stableCount + 1, DIST_STABLE_REQUIRED);
+                    }
+                    if (s_stableCount >= DIST_STABLE_REQUIRED) {
+                        s_commandedDistance = s_smoothedDistance;
+                    }
+                }
+
+                double turretAngle = -(getTurretAngleDegrees(robotPose, target) +90);
             if (turretAngle < -180){
                 turretAngle+=360;
             }
             turretAngle = turretAngle * Constants.TurretConstants.swivelGearRatio;
-    
-            var params = getTableParams(dist, target);
+
+                // Use the commanded (smoothed+stable) distance for lookup
+                double finalDist = s_commandedDistance;
+                var params = getTableParams(finalDist, target);
+
+                // NOTE: first-shot offsets were applied here previously, but are
+                // temporarily disabled for testing because the indexer observed
+                // an RPM drop after two shots. To re-enable manually, uncomment
+                // the block below.
+                /*
+                if (s_firstShotsRemaining > 0) {
+                    params = new HubLookUpTable.ShootingParameters(
+                            params.shooterSpeed + s_firstShotRpsOffset,
+                            params.trajectoryAngle + s_firstShotHoodOffsetDeg,
+                            params.timeOfFlight);
+                }
+                */
     
             boolean valid = isWithinShootingRange(dist) && isTurretAngleReachable(turretAngle);
     
@@ -249,8 +341,20 @@ public class TurretUtil {
                 // Distance from virtual turret position to the stationary target
                 double virtualDist = new Translation2d(virtualX, virtualY).getDistance(goalTranslation);
     
-                // Look up shot parameters for this virtual distance
-                params = getTableParams(virtualDist, target);
+                    // Look up shot parameters for this virtual distance
+                    params = getTableParams(virtualDist, target);
+
+                    // NOTE: first-shot offsets were applied here previously, but are
+                    // temporarily disabled for testing. To re-enable, uncomment
+                    // the block below.
+                    /*
+                    if (s_firstShotsRemaining > 0) {
+                        params = new HubLookUpTable.ShootingParameters(
+                                params.shooterSpeed + s_firstShotRpsOffset,
+                                params.trajectoryAngle + s_firstShotHoodOffsetDeg,
+                                params.timeOfFlight);
+                    }
+                    */
     
                 // Refine time-of-flight for next iteration
                 tof = params.timeOfFlight;

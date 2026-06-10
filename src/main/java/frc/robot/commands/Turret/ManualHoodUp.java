@@ -20,7 +20,13 @@ public class ManualHoodUp extends Command {
   @Override
   public void initialize() {
     System.out.println("hi");
-    RobotContainer.m_Hood.moveHood(RobotContainer.m_Hood.getHoodPos() + 0.05);
+    // Convert current encoder position to logical angle using live scale/offset,
+    // then increment logical angle and call moveHood.
+    double scale = edu.wpi.first.wpilibj.smartdashboard.SmartDashboard.getNumber("Hood/AngleToEncoderScale", 1.0);
+    double off = edu.wpi.first.wpilibj.smartdashboard.SmartDashboard.getNumber("Hood/AngleToEncoderOffset", 0.0);
+    double currentEncoded = RobotContainer.m_Hood.getHoodPos();
+    double currentLogical = (currentEncoded - off) / scale;
+    RobotContainer.m_Hood.moveHood(currentLogical + 0.05);
     finish = true;
   }
 

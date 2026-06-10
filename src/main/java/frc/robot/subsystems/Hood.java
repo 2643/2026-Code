@@ -39,6 +39,8 @@ public class Hood extends SubsystemBase {
   public double angle = -1;
   private Timer timer = new Timer();
   public boolean reset = false;
+  private boolean homingInProgress = false;
+  private double homingStartTime = 0.0;
   public double slope = 1.3869;
   public double offset = 1.13255;
 
@@ -81,8 +83,31 @@ public class Hood extends SubsystemBase {
   
   
   public void moveHood(double position) {
-      hoodTarget = position;
-      m_controller.setSetpoint(hoodTarget, ControlType.kMAXMotionPositionControl);
+      // position is a logical hood angle/position (from lookup or heuristic).
+      // Convert to encoder units using live scale/offset so we can tune mapping.
+      double scale = SmartDashboard.getNumber("Hood/AngleToEncoderScale", 1.0);
+      double off = SmartDashboard.getNumber("Hood/AngleToEncoderOffset", 0.0);
+      SmartDashboard.putNumber("Hood/AngleToEncoderScale", scale);
+      SmartDashboard.putNumber("Hood/AngleToEncoderOffset", off);
+
+      double encodedSetpoint = position * scale + off;
+      hoodTarget = encodedSetpoint; // store encoder-domain target so isAtPosition works
+      SmartDashboard.putNumber("Hood/RequestedLogical", position);
+      SmartDashboard.putNumber("Hood/RequestedEncoded", encodedSetpoint);
+      SmartDashboard.putNumber("Hood/CurrentEncoded", encoder.getPosition());
+
+      // Command the SparkMax closed-loop controller. If the MAXMotion control
+      // mode doesn't move as expected, you can switch to a basic position control.
+      try {
+        m_controller.setSetpoint(encodedSetpoint, ControlType.kMAXMotionPositionControl);
+      } catch (Throwable t) {
+        // Fallback to simple position control
+        try {
+          m_controller.setSetpoint(encodedSetpoint, ControlType.kPosition);
+        } catch (Throwable t2) {
+          SmartDashboard.putString("Hood/SetpointErr", t2.toString());
+        }
+      }
   }
   public double getHoodPos() {
     return encoder.getPosition();
@@ -98,22 +123,62 @@ public class Hood extends SubsystemBase {
   }
   
   public void autoPitch() {
-    if(RobotContainer.m_Storage.getPhase() == Phase.ATTACK) {
-    roundedArea = Math.log(1/area);
-    angle = (slope*roundedArea)-offset;
-    if (angle < Constants.TurretConstants.hoodSoftLimit1 && angle > Constants.TurretConstants.hoodSoftLimit2) {
-      moveHood(angle);
+    // Use fused robot pose to compute turret-to-hub distance and lookup hood angle
+    if (RobotContainer.m_Storage.getPhase() == Phase.ATTACK) {
+  boolean usedFused = false;
+      double lookupAngle = Double.NaN;
+      double clamped = Double.NaN;
+      double dist = Double.NaN;
+  // Live adjustment (meters/degrees depending on units in lookup) to raise/lower hood
+  double hoodAdjust = SmartDashboard.getNumber("Hood/AngleAdjust", 0.0);
+  SmartDashboard.putNumber("Hood/AngleAdjust", hoodAdjust);
+      try {
+        if (RobotContainer.drivetrain != null && RobotContainer.drivetrain.getState() != null && RobotContainer.drivetrain.getState().Pose != null) {
+          var robotPose = RobotContainer.drivetrain.getState().Pose;
+          // treat a default Pose2d (0,0,0) as possibly uninitialized
+          if (!(robotPose.getTranslation().getX() == 0.0 && robotPose.getTranslation().getY() == 0.0 && robotPose.getRotation().getDegrees() == 0.0)) {
+            dist = frc.robot.util.TurretUtil.getDistance(robotPose, frc.robot.util.TurretUtil.TargetType.HUB);
+            lookupAngle = frc.robot.util.TurretUtil.getTrajectoryAngle(dist, frc.robot.util.TurretUtil.TargetType.HUB);
+            // Apply live adjust and clamp
+            lookupAngle += hoodAdjust;
+            clamped = Math.max(Constants.TurretConstants.hoodSoftLimit2, Math.min(Constants.TurretConstants.hoodSoftLimit1, lookupAngle));
+            angle = clamped;
+            moveHood(clamped);
+            usedFused = true;
+          }
+        }
+      } catch (Throwable t) {
+        SmartDashboard.putString("Hood/Error", t.toString());
+      }
+
+      // If we didn't use the fused pose (no pose yet), fall back to area heuristic
+      if (!usedFused) {
+        roundedArea = (area > 0) ? Math.log(1.0 / area) : roundedArea;
+        angle = (slope * roundedArea) - offset + hoodAdjust;
+        if (angle < Constants.TurretConstants.hoodSoftLimit1 && angle > Constants.TurretConstants.hoodSoftLimit2) {
+          moveHood(angle);
+        }
+      }
+
+      // Diagnostics for tuning and debugging
+      SmartDashboard.putBoolean("Hood/UsingFusedPose", usedFused);
+      SmartDashboard.putNumber("Hood/LookupAngle", Double.isNaN(lookupAngle) ? -1 : lookupAngle);
+      SmartDashboard.putNumber("Hood/Clamped", Double.isNaN(clamped) ? -1 : clamped);
+      SmartDashboard.putNumber("Hood/DistanceToHub", Double.isNaN(dist) ? -1 : dist);
+    } else {
+      moveHood(2.7);
     }
-  } else {
-    moveHood(2.7);
-  }
   }
 
 
   public void setEncoder() {
+    // Start a non-blocking homing routine: drive to the known soft-max
+    // and then record encoder position as that known value. This avoids
+    // setting encoder arbitrarily while hood is somewhere unknown.
     reset = false;
-    encoder.setPosition(0);
-    moveHood(2.9);
+    homingInProgress = true;
+    homingStartTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+    // Command to move to the soft limit (max hood)
     moveHood(Constants.TurretConstants.hoodSoftLimit1);
   }
 
@@ -157,6 +222,11 @@ public class Hood extends SubsystemBase {
       moveHood(1);
     }
   }
+  
+  // Auto-pitch only when turret is initialized and in attack phase
+  if (RobotContainer.m_Swivel.getState() == States.INITIALIZED && RobotContainer.m_Storage.getPhase() == Phase.ATTACK) {
+    autoPitch();
+  }
     
     SmartDashboard.putNumber("Target Hood Position", hoodTarget);
     SmartDashboard.putNumber("Target Area", area);
@@ -167,5 +237,21 @@ public class Hood extends SubsystemBase {
     SmartDashboard.putNumber("Angle", angle);
     SmartDashboard.putNumber("Offset", offset);
     SmartDashboard.putNumber("Slope", slope);
+    SmartDashboard.putBoolean("Hood/HomingInProgress", homingInProgress);
+    SmartDashboard.putNumber("Hood/HomingStart", homingStartTime);
+
+    // Complete non-blocking homing: if in progress, wait until position is reached or timeout
+    if (homingInProgress) {
+      double now = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+      boolean reached = isAtPosition();
+      // timeout after 3 seconds
+      if (reached || (now - homingStartTime) > 3.0) {
+        // Set encoder so current position equals the commanded soft limit
+        encoder.setPosition(Constants.TurretConstants.hoodSoftLimit1);
+        homingInProgress = false;
+        reset = true;
+        SmartDashboard.putString("Hood/HomingStatus", reached ? "reached" : "timeout");
+      }
+    }
   }
 }

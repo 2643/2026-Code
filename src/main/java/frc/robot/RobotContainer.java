@@ -43,6 +43,7 @@ import frc.robot.subsystems.Storage;
 import frc.robot.subsystems.Storage.Phase;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Swivel;
+import frc.robot.subsystems.HubTester;
 import frc.robot.subsystems.Vision;
 
 
@@ -115,6 +116,7 @@ public class RobotContainer {
     public static final Hood m_Hood = new Hood();
     public static final Storage m_Storage = new Storage();
     public static final Swivel m_Swivel = new Swivel();
+    public final HubTester m_HubTester = new HubTester();
 
         private final SendableChooser<Command> autoChooser = new SendableChooser<>();
         ComplexWidget ShuffleBoardAutonomousRoutines = Shuffleboard.getTab("Driver")

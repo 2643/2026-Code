@@ -22,6 +22,7 @@ import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -670,9 +671,8 @@ public class LimelightHelpers {
     private static PoseEstimate getBotPoseEstimate(String limelightName, String entryName, boolean isMegaTag2) {
         DoubleArrayEntry poseEntry = LimelightHelpers.getLimelightDoubleArrayEntry(limelightName, entryName);
         
-        TimestampedDoubleArray tsValue = poseEntry.getAtomic();
-        double[] poseArray = tsValue.value;
-        long timestamp = tsValue.timestamp;
+    TimestampedDoubleArray tsValue = poseEntry.getAtomic();
+    double[] poseArray = tsValue.value;
         
         if (poseArray.length == 0) {
             // Handle the case where no data is available
@@ -686,8 +686,16 @@ public class LimelightHelpers {
         double tagDist = extractArrayEntry(poseArray, 9);
         double tagArea = extractArrayEntry(poseArray, 10);
         
-        // Convert server timestamp from microseconds to seconds and adjust for latency
-        double adjustedTimestamp = (timestamp / 1000000.0) - (latency / 1000.0);
+        // Latency from the poseArray is in milliseconds; convert to seconds
+        double latencySeconds = latency / 1000.0;
+
+        // The NetworkTables timestamp on the Limelight is in the camera/server time
+        // domain, not the RoboRIO FPGA domain that WPILib's addVisionMeasurement expects.
+        // For robust fusion, compute an FPGA-domain timestamp by using the local
+        // RoboRIO FPGA clock at the time we read the entry and subtracting the
+        // reported latency. This aligns the vision measurement time with the
+        // robot's own clock.
+        double adjustedTimestamp = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - latencySeconds;
     
         RawFiducial[] rawFiducials = new RawFiducial[tagCount];
         int valsPerFiducial = 7;
@@ -709,7 +717,7 @@ public class LimelightHelpers {
             }
         }
     
-        return new PoseEstimate(pose, adjustedTimestamp, latency, tagCount, tagSpan, tagDist, tagArea, rawFiducials, isMegaTag2);
+    return new PoseEstimate(pose, adjustedTimestamp, latency, tagCount, tagSpan, tagDist, tagArea, rawFiducials, isMegaTag2);
     }
 
     /**

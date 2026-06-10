@@ -19,7 +19,11 @@ public class ManualHoodDown extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    RobotContainer.m_Hood.moveHood(RobotContainer.m_Hood.getHoodPos() - 0.05);
+    double scale = edu.wpi.first.wpilibj.smartdashboard.SmartDashboard.getNumber("Hood/AngleToEncoderScale", 1.0);
+    double off = edu.wpi.first.wpilibj.smartdashboard.SmartDashboard.getNumber("Hood/AngleToEncoderOffset", 0.0);
+    double currentEncoded = RobotContainer.m_Hood.getHoodPos();
+    double currentLogical = (currentEncoded - off) / scale;
+    RobotContainer.m_Hood.moveHood(currentLogical - 0.05);
     finish = true;
   }
 

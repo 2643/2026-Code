@@ -99,7 +99,7 @@ public class Constants {
     // This needs to be tuned to your individual robot
 //     public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(3.14 / 8);
 
-    public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.5);
+    public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(0.675);
 
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
     // This may need to be tuned to your individual robot
@@ -455,10 +455,15 @@ public class Constants {
                 public final static int indexMotor2ID = 19;
                 public final static int indexLimitPort = 0;
 
-                public final static double attackSpeed = -65;
-                public final static double defenseSpeed = -60;
-                public final static double indexSpeed = 0.6;
-               
+                public final static double attackSpeed = -80;
+                public final static double defenseSpeed = -80;
+                // Indexer velocity target (units match rotor velocity measurement). Set to 75 (1.5x) by default.
+                public final static double indexSpeed = 75.0;
+                // Indexer PID/FF defaults for velocity control
+                public final static double indexerP = 0.12;
+                public final static double indexerI = 0.0;
+                public final static double indexerD = 0.0;
+                public final static double indexerFF = 0.0;
                 public final static double wheelFF = 0.12;
                 public final static double wheelP = 0.5;
                 public final static double wheelI = 0;

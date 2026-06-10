@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Swivel.States;
-import frc.robot.RobotContainer;
 import frc.robot.commands.Turret.ResetSwivel;
 import frc.robot.commands.Turret.AutoAim;
 import frc.robot.commands.Turret.ResetHood;
@@ -22,7 +21,6 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.util.LimelightHelpers;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 
 
 public class Robot extends TimedRobot {
@@ -82,18 +80,21 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
 
     if (kUseLimelight) {
-      var driveState = m_robotContainer.drivetrain.getState();
+  var driveState = RobotContainer.drivetrain.getState();
       double headingDeg = driveState.Pose.getRotation().getDegrees();
-      Rotation2d idkp2 = driveState.Pose.getRotation();
-      double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
+  double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
 
-      LimelightHelpers.SetRobotOrientation(kLimelightName, headingDeg, 0, 0, 0, 0, 0);
-      var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(kLimelightName);
-      var TurretllMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(kTurretLimelightName);
+  LimelightHelpers.SetRobotOrientation(kLimelightName, headingDeg, 0, 0, 0, 0, 0);
+  // Use MegaTag1 variant since MegaTag2 was unreliable in testing
+  var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue(kLimelightName);
+  var TurretllMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue(kTurretLimelightName);
       double id = LimelightHelpers.getFiducialID(kLimelightName);
-      Pose2d idk = new Pose2d();
-      if (llMeasurement !=null){
-      idk = new Pose2d(llMeasurement.pose.getTranslation(), idkp2);
+      Pose2d idk = null;
+      if (llMeasurement != null) {
+        // prefer the full pose (x,y,theta) reported by the Limelight; don't overwrite
+        // the reported yaw with the drivetrain heading. Using the LL yaw is critical
+        // for correct field-relative pose updates.
+        idk = llMeasurement.pose;
       }
       boolean hasMeasurement = llMeasurement != null && llMeasurement.pose != null;
       boolean hasTags = hasMeasurement && llMeasurement.tagCount > 0;
@@ -129,21 +130,24 @@ public class Robot extends TimedRobot {
       }
 
       if (!m_seededFromVision && validForVision) {
-        m_robotContainer.drivetrain.resetPose(llMeasurement.pose);
+  RobotContainer.drivetrain.resetPose(llMeasurement.pose);
         m_seededFromVision = true;
         SmartDashboard.putBoolean("LL/SeededPose", true);
       }
 
-      if (!(kForceApplyVisionForTest) && validForVision) {
-        m_robotContainer.drivetrain.addVisionMeasurement(
+      // Always fuse vision when valid; if you want a testing-only immediate reset
+      // use the SmartDashboard flag. But for active updates, feed everything
+      // valid into the estimator.
+      if (validForVision && llMeasurement != null) {
+        var visionStdDevs = VecBuilder.fill(0.5, 0.5, 0.5); // [m, m, rad]; tune as needed
+        RobotContainer.drivetrain.addVisionMeasurement(
           llMeasurement.pose,
           llMeasurement.timestampSeconds,
-          VecBuilder.fill(0.7, 0.7, 9999999)
+          visionStdDevs
         );
-      } 
-      else if (kForceApplyVisionForTest && validForVision) {
-        if (llMeasurement !=null){
-        m_robotContainer.drivetrain.resetPose(idk); //arf arf arf!!!
+        // Optional: if user requested forced reset for testing, reset immediately
+        if (kForceApplyVisionForTest && idk != null) {
+          RobotContainer.drivetrain.resetPose(idk);
         }
       }
     }

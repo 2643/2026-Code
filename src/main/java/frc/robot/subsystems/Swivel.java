@@ -13,11 +13,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.RobotContainer;
 import frc.robot.commands.Turret.AutoAim;
-import frc.robot.subsystems.Storage.Phase;
 import frc.robot.util.LimelightHelpers;
 import java.util.ArrayList;
 
@@ -40,7 +37,7 @@ public class Swivel extends SubsystemBase {
   public double dist;
   public double tx;
   private final String limelightName = "limelight-allen";
-  private final String limelightURL = "http://10.26.43.201:5801/";
+  // URL removed: not used in code
   public boolean isVisible;
   public double yaw;
   public double area;
@@ -188,6 +185,14 @@ public class Swivel extends SubsystemBase {
     SmartDashboard.putNumber("dist", getDist());
     SmartDashboard.putNumber("Limelight TX", tx);
     SmartDashboard.putBoolean("AprilTag", isVisible);
+    SmartDashboard.putBoolean("Swivel/IsAutoAim", currentMode == Mode.AUTOAIM);
+    SmartDashboard.putNumber("Swivel/SwivelTarget", swivelTarget);
+    try {
+      SmartDashboard.putNumber("Swivel/MotorPosition", swivelMotor.getPosition().getValueAsDouble());
+      SmartDashboard.putNumber("Swivel/MotorVelocity", swivelMotor.getVelocity().getValueAsDouble());
+    } catch (Throwable t) {
+      SmartDashboard.putString("Swivel/MotorReadErr", t.toString());
+    }
     SmartDashboard.putString("Current State", currentState.toString());
     SmartDashboard.putBoolean("Swivel Limit", getSwivelLimit());
     SmartDashboard.putString("Current Mode", getMode().toString());
