@@ -140,9 +140,11 @@ public class Hood extends SubsystemBase {
           if (!(robotPose.getTranslation().getX() == 0.0 && robotPose.getTranslation().getY() == 0.0 && robotPose.getRotation().getDegrees() == 0.0)) {
             dist = frc.robot.util.TurretUtil.getDistance(robotPose, frc.robot.util.TurretUtil.TargetType.HUB);
             lookupAngle = frc.robot.util.TurretUtil.getTrajectoryAngle(dist, frc.robot.util.TurretUtil.TargetType.HUB);
-            // Apply live adjust and clamp
+            // Apply live adjust. Only clamp the upper bound (soft max). Allow
+            // values below the previous soft minimum so AutoAim can choose
+            // lower hood angles when needed.
             lookupAngle += hoodAdjust;
-            clamped = Math.max(Constants.TurretConstants.hoodSoftLimit2, Math.min(Constants.TurretConstants.hoodSoftLimit1, lookupAngle));
+            clamped = Math.min(Constants.TurretConstants.hoodSoftLimit1, lookupAngle);
             angle = clamped;
             moveHood(clamped);
             usedFused = true;
@@ -156,7 +158,9 @@ public class Hood extends SubsystemBase {
       if (!usedFused) {
         roundedArea = (area > 0) ? Math.log(1.0 / area) : roundedArea;
         angle = (slope * roundedArea) - offset + hoodAdjust;
-        if (angle < Constants.TurretConstants.hoodSoftLimit1 && angle > Constants.TurretConstants.hoodSoftLimit2) {
+        // Only enforce the upper soft limit. Allow the hood to move below the
+        // previous lower bound so there's no minimum enforced by software.
+        if (angle < Constants.TurretConstants.hoodSoftLimit1) {
           moveHood(angle);
         }
       }

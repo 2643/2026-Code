@@ -36,6 +36,11 @@ public class Robot extends TimedRobot {
   private boolean m_seededFromVision = false;
   // Whether we've synced the gyro (pigeon) to the Limelight-reported heading
   private boolean m_gyroSeededFromVision = false;
+  // Whether we've allowed the Limelight to set the robot heading from vision
+  // (only allowed once). After this is true, future vision updates may update
+  // translation but must preserve the drivetrain heading to avoid changing
+  // controller direction mid-run.
+  private boolean m_headingSeededFromVision = false;
 
   private final RobotContainer m_robotContainer;
 
@@ -134,15 +139,29 @@ public class Robot extends TimedRobot {
       }
 
       if (!m_seededFromVision && validForVision) {
-  RobotContainer.drivetrain.resetPose(llMeasurement.pose);
-        m_seededFromVision = true;
-        SmartDashboard.putBoolean("LL/SeededPose", true);
-        // Seed the gyro/pigeon to the camera heading the first time we accept vision.
-        if (!m_gyroSeededFromVision) {
-          // Convert pose rotation to robot-centric heading and seed
-          RobotContainer.drivetrain.seedFieldCentric();
-          m_gyroSeededFromVision = true;
-          SmartDashboard.putBoolean("LL/GyroSeededFromVision", true);
+        // Only seed/reset pose if the robot is nearly still. This avoids
+        // teleporting/resets while driving. Thresholds are tunable on dashboard.
+        double maxLinear = SmartDashboard.getNumber("LL/SeedMaxLinear_mps", 0.2); // m/s
+        double maxAngular = SmartDashboard.getNumber("LL/SeedMaxAngular_rps", 0.5); // rad/s
+        var speeds = RobotContainer.drivetrain.getState().Speeds;
+        double lin = Math.hypot(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond);
+        double ang = Math.abs(speeds.omegaRadiansPerSecond);
+        SmartDashboard.putNumber("LL/SeedRobotLin", lin);
+        SmartDashboard.putNumber("LL/SeedRobotAng", ang);
+        if (lin <= maxLinear && ang <= maxAngular) {
+          // For the initial seed, accept full pose (translation + heading).
+          RobotContainer.drivetrain.resetPose(llMeasurement.pose);
+          m_seededFromVision = true;
+          m_headingSeededFromVision = true;
+          SmartDashboard.putBoolean("LL/SeededPose", true);
+          // Seed the gyro/pigeon to the camera heading the first time we accept vision.
+          if (!m_gyroSeededFromVision) {
+            RobotContainer.drivetrain.seedFieldCentric();
+            m_gyroSeededFromVision = true;
+            SmartDashboard.putBoolean("LL/GyroSeededFromVision", true);
+          }
+        } else {
+          SmartDashboard.putBoolean("LL/SeededPose", false);
         }
       }
 
@@ -151,8 +170,16 @@ public class Robot extends TimedRobot {
       // valid into the estimator.
       if (validForVision && llMeasurement != null) {
         var visionStdDevs = VecBuilder.fill(0.5, 0.5, 0.5); // [m, m, rad]; tune as needed
+        // If we've already allowed vision to set the heading once, preserve
+        // the drivetrain heading for future vision updates so we don't change
+        // controller direction mid-run. Always allow translation updates.
+        var poseForFusion = llMeasurement.pose;
+        if (m_headingSeededFromVision && RobotContainer.drivetrain != null && RobotContainer.drivetrain.getState() != null) {
+          var currentPose = RobotContainer.drivetrain.getState().Pose;
+          poseForFusion = new Pose2d(llMeasurement.pose.getTranslation(), currentPose.getRotation());
+        }
         RobotContainer.drivetrain.addVisionMeasurement(
-          llMeasurement.pose,
+          poseForFusion,
           llMeasurement.timestampSeconds,
           visionStdDevs
         );
