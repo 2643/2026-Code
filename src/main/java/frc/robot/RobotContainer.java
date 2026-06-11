@@ -148,7 +148,7 @@ public class RobotContainer {
             // This remaps incoming Limelight poses into the 2026 field coordinates.
             // If you need to tweak offsets, call m_limelight.setFieldTransform(xMeters, yMeters, rotDegrees).
             try {
-                SmartDashboard.putString("Limelight/Mode", "RobotPeriodic-MegaTag2");
+                SmartDashboard.putString("Limelight/Mode", "RobotPeriodic-MegaTag1");
             } catch (Throwable t) {
                 // ignore
             }

@@ -5,17 +5,18 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.revrobotics.PersistMode;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.ResetMode;
+import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.MAXMotionConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.PersistMode;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.ResetMode;
-import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.FeedbackSensor;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -99,7 +100,7 @@ public class Hood extends SubsystemBase {
       // Command the SparkMax closed-loop controller. If the MAXMotion control
       // mode doesn't move as expected, you can switch to a basic position control.
       try {
-        m_controller.setSetpoint(encodedSetpoint, ControlType.kMAXMotionPositionControl);
+        m_controller.setSetpoint(encodedSetpoint, ControlType.kPosition);
       } catch (Throwable t) {
         // Fallback to simple position control
         try {
@@ -175,16 +176,28 @@ public class Hood extends SubsystemBase {
     // Start a non-blocking homing routine: drive to the known soft-max
     // and then record encoder position as that known value. This avoids
     // setting encoder arbitrarily while hood is somewhere unknown.
+    // Zero the encoder at the current physical position first so "0" maps
+    // to where the hood physically is now. Then command a closed-loop move
+    // to the soft limit (homing target).
+    encoder.setPosition(0.0);
     reset = false;
     homingInProgress = true;
     homingStartTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
     // Command to move to the soft limit (max hood)
-    moveHood(Constants.TurretConstants.hoodSoftLimit1);
+    m_controller.setSetpoint(0.1, ControlType.kDutyCycle);
+    // moveHood(Constants.TurretConstants.hoodSoftLimit1);
   }
 
 //hello sigmas, this is joshua, I am now in the code mwahhahahahh (signed 3/9/2026)
-  public void setHood(double position) {
-    hoodMotor.set(position);
+  /**
+   * Direct percent output to hood motor. Interprets input as a percent
+   * (range -1.0 .. 1.0). This is intended for manual control/testing only.
+   * Do NOT pass encoder setpoints here.
+   */
+  public void setHood(double percent) {
+    // Clamp to safe range to avoid accidental full-speed commands.
+    double out = Math.max(-1.0, Math.min(1.0, percent));
+    hoodMotor.set(out);
   }
 
   public void startTimer() {
@@ -211,20 +224,22 @@ public class Hood extends SubsystemBase {
     // } else if (getHoodPos() >= Constants.TurretConstants.hoodHardLimit1 || getHoodPos() <= Constants.TurretConstants.hoodHardLimit2) {
     //   // disable = true;
     // }
+    if (encoder.getPosition() >= Constants.TurretConstants.hoodHardLimit1*2) {
+      m_controller.setSetpoint(0, ControlType.kDutyCycle);
+      encoder.setPosition(Constants.TurretConstants.hoodSoftLimit1);
+    }
     // }
     
-   if (RobotContainer.m_Swivel.getState() == States.INITIALIZED && timer.hasElapsed(3)){
+   if (timer.hasElapsed(1) && reset == false){
     // moveHood(SmartDashboard.getNumber("Target Hood Position", hoodTarget));
     slope = SmartDashboard.getNumber("Slope", 1.3869);
     offset = SmartDashboard.getNumber("Offset", 1.13255);
-    if (!reset){
-      reset = true;
-      moveHood(1);
-    }
+    moveHood(1);
+    reset = true;
   }
   
   // Auto-pitch only when turret is initialized and in attack phase
-  if (RobotContainer.m_Swivel.getState() == States.INITIALIZED && RobotContainer.m_Storage.getPhase() == Phase.ATTACK) {
+  if (RobotContainer.m_Swivel.getState() == States.INITIALIZED && timer.hasElapsed(3) && reset) {
     autoPitch();
   }
     
@@ -247,7 +262,7 @@ public class Hood extends SubsystemBase {
       // timeout after 3 seconds
       if (reached || (now - homingStartTime) > 3.0) {
         // Set encoder so current position equals the commanded soft limit
-        encoder.setPosition(Constants.TurretConstants.hoodSoftLimit1);
+        // encoder.setPosition(Constants.TurretConstants.hoodSoftLimit1);
         homingInProgress = false;
         reset = true;
         SmartDashboard.putString("Hood/HomingStatus", reached ? "reached" : "timeout");

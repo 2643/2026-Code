@@ -34,6 +34,8 @@ public class Robot extends TimedRobot {
 
   private static boolean kForceApplyVisionForTest = true; // disable force mode; use fused vision instead
   private boolean m_seededFromVision = false;
+  // Whether we've synced the gyro (pigeon) to the Limelight-reported heading
+  private boolean m_gyroSeededFromVision = false;
 
   private final RobotContainer m_robotContainer;
 
@@ -84,9 +86,11 @@ public class Robot extends TimedRobot {
       double headingDeg = driveState.Pose.getRotation().getDegrees();
   double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
 
+  // Always tell the Limelight the current robot heading (gyro-derived) so
+  // MegaTag2 localization can use an accurate yaw when we switch to it.
   LimelightHelpers.SetRobotOrientation(kLimelightName, headingDeg, 0, 0, 0, 0, 0);
-  // Use MegaTag1 variant since MegaTag2 was unreliable in testing
-  var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue(kLimelightName);
+  // Use MegaTag1 exclusively for all pose estimates.
+    frc.robot.util.LimelightHelpers.PoseEstimate llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue(kLimelightName);
   var TurretllMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue(kTurretLimelightName);
       double id = LimelightHelpers.getFiducialID(kLimelightName);
       Pose2d idk = null;
@@ -133,6 +137,13 @@ public class Robot extends TimedRobot {
   RobotContainer.drivetrain.resetPose(llMeasurement.pose);
         m_seededFromVision = true;
         SmartDashboard.putBoolean("LL/SeededPose", true);
+        // Seed the gyro/pigeon to the camera heading the first time we accept vision.
+        if (!m_gyroSeededFromVision) {
+          // Convert pose rotation to robot-centric heading and seed
+          RobotContainer.drivetrain.seedFieldCentric();
+          m_gyroSeededFromVision = true;
+          SmartDashboard.putBoolean("LL/GyroSeededFromVision", true);
+        }
       }
 
       // Always fuse vision when valid; if you want a testing-only immediate reset
@@ -146,13 +157,41 @@ public class Robot extends TimedRobot {
           visionStdDevs
         );
         // Optional: if user requested forced reset for testing, reset immediately
+        // Optional: if user requested forced reset for testing, apply flicker
+        // filter first to avoid teleporting on small camera jitters.
         if (kForceApplyVisionForTest && idk != null) {
-          RobotContainer.drivetrain.resetPose(idk);
-        }
+            double posThresh = SmartDashboard.getNumber("LL/FlickerPosThreshold", 0.2); // meters
+            double angThreshDeg = SmartDashboard.getNumber("LL/FlickerAngleThresholdDeg", 5.0); // degrees
+            var currentPose = RobotContainer.drivetrain.getState().Pose;
+            double dist = currentPose.getTranslation().getDistance(idk.getTranslation());
+            double currentTheta = currentPose.getRotation().getRadians();
+            double idkTheta = idk.getRotation().getRadians();
+            double dtheta = Math.toDegrees(Math.atan2(Math.sin(idkTheta - currentTheta), Math.cos(idkTheta - currentTheta)));
+            double angDiff = Math.abs(dtheta);
+            SmartDashboard.putNumber("LL/FlickerDist", dist);
+            SmartDashboard.putNumber("LL/FlickerAngleDiff", angDiff);
+
+            // Persistence counter: require N consecutive frames above threshold before allowing reset
+            int N = 3; // frames
+            int consecutive = (int) SmartDashboard.getNumber("LL/FlickerConsecutive", 0);
+            boolean frameExceeds = dist > posThresh || angDiff > angThreshDeg; // OR logic
+            if (frameExceeds) {
+              consecutive = Math.min(consecutive + 1, N);
+            } else {
+              consecutive = 0;
+            }
+            SmartDashboard.putNumber("LL/FlickerConsecutive", consecutive);
+            boolean allowReset = consecutive >= N;
+            SmartDashboard.putBoolean("LL/ResetAllowed", allowReset);
+            if (allowReset) {
+              RobotContainer.drivetrain.resetPose(idk);
+              // clear counter after reset to avoid repeated immediate resets
+              SmartDashboard.putNumber("LL/FlickerConsecutive", 0);
+            }
+          }
       }
     }
-  } 
-
+  }
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();

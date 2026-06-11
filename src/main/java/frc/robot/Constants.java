@@ -385,23 +385,23 @@ public class Constants {
                 public static double antiRotationOffset = 0.0;
                 public static double antiMultiplier = -0.05;
 
-                public final static double hoodP = 1.5;
-                public final static double hoodI = 0.01;
-                public final static double hoodD = 0.01;
-                public final static double hoodAccel = 100;
-                public final static double hoodVel = 100;
+                public final static double hoodP = 0.07;
+                public final static double hoodI = 0.001;
+                public final static double hoodD = 0.00;
+                public final static double hoodAccel = 0.2;
+                public final static double hoodVel = 0.2;
 
                 public final static double swivelHardLimit2 = -2.5;
                 public final static double swivelHardLimit1 = 6.02;
                 public final static double swivelDeadMid = (swivelHardLimit2 - 5.8) / 2;
 
-                public final static double hoodHardLimit1 = 2.7;
+                public final static double hoodHardLimit1 = 2.96;
                 public final static double hoodHardLimit2 = 0;
 
                 public final static double swivelSoftLimit2 = -2.33;
                 public final static double swivelSoftLimit1 = 5.95;
 
-                public final static double hoodSoftLimit1 = 2.5;
+                public final static double hoodSoftLimit1 = 2.76;
                 public final static double hoodSoftLimit2 = 0.1;
 
                 public final static double manualSwivel = 2.92041015625;
@@ -458,9 +458,9 @@ public class Constants {
                 public final static double attackSpeed = -80;
                 public final static double defenseSpeed = -80;
                 // Indexer velocity target (units match rotor velocity measurement). Set to 75 (1.5x) by default.
-                public final static double indexSpeed = 75.0;
+                public final static double indexSpeed = 112.5; // bumped 1.5x from 75
                 // Indexer PID/FF defaults for velocity control
-                public final static double indexerP = 0.12;
+                public final static double indexerP = 0.18; // stronger P (1.5x)
                 public final static double indexerI = 0.0;
                 public final static double indexerD = 0.0;
                 public final static double indexerFF = 0.0;
