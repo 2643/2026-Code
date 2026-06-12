@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import javax.naming.TimeLimitExceededException;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
@@ -183,7 +185,7 @@ public class Hood extends SubsystemBase {
     // Zero the encoder at the current physical position first so "0" maps
     // to where the hood physically is now. Then command a closed-loop move
     // to the soft limit (homing target).
-    encoder.setPosition(0.0);
+    // encoder.setPosition(0.0);
     reset = false;
     homingInProgress = true;
     homingStartTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
@@ -234,17 +236,32 @@ public class Hood extends SubsystemBase {
     }
     // }
     
-   if (timer.hasElapsed(1) && reset == false){
-    // moveHood(SmartDashboard.getNumber("Target Hood Position", hoodTarget));
-    slope = SmartDashboard.getNumber("Slope", 1.3869);
-    offset = SmartDashboard.getNumber("Offset", 1.13255);
-    moveHood(1);
-    reset = true;
+   if (timer.get()>=1 && timer.get() <= 1.5){
+    // // moveHood(SmartDashboard.getNumber("Target Hood Position", hoodTarget));
+    // slope = SmartDashboard.getNumber("Slope", 1.3869);
+    // offset = SmartDashboard.getNumber("Offset", 1.13255);
+    moveHood(2);
   }
   
+  if (timer.get()>=1.5 && timer.get() <= 2){
+    // // moveHood(SmartDashboard.getNumber("Target Hood Position", hoodTarget));
+    // slope = SmartDashboard.getNumber("Slope", 1.3869);
+    // offset = SmartDashboard.getNumber("Offset", 1.13255);
+    moveHood(1);
+  }
+   if (timer.get()>=2 && timer.get() <= 2.5){
+    // // moveHood(SmartDashboard.getNumber("Target Hood Position", hoodTarget));
+    // slope = SmartDashboard.getNumber("Slope", 1.3869);
+    // offset = SmartDashboard.getNumber("Offset", 1.13255);
+    moveHood(0);
+    reset = true;
+  }
+
   // Auto-pitch only when turret is initialized and in attack phase
-  if (RobotContainer.m_Swivel.getState() == States.INITIALIZED && timer.hasElapsed(3) && reset) {
+  if (RobotContainer.m_Swivel.getState() == States.INITIALIZED && timer.get() >= 3 && reset) {
     autoPitch();
+    // moveHood(SmartDashboard.getNumber("Target Hood Position", hoodTarget));
+    timer.stop();
   }
     
     SmartDashboard.putNumber("Target Hood Position", hoodTarget);
@@ -258,6 +275,8 @@ public class Hood extends SubsystemBase {
     SmartDashboard.putNumber("Slope", slope);
     SmartDashboard.putBoolean("Hood/HomingInProgress", homingInProgress);
     SmartDashboard.putNumber("Hood/HomingStart", homingStartTime);
+    SmartDashboard.putNumber("timer", timer.get());
+    SmartDashboard.putBoolean("reset", reset);
 
     // Complete non-blocking homing: if in progress, wait until position is reached or timeout
     if (homingInProgress) {
@@ -268,7 +287,7 @@ public class Hood extends SubsystemBase {
         // Set encoder so current position equals the commanded soft limit
         // encoder.setPosition(Constants.TurretConstants.hoodSoftLimit1);
         homingInProgress = false;
-        reset = true;
+        // reset = true;
         SmartDashboard.putString("Hood/HomingStatus", reached ? "reached" : "timeout");
       }
     }
