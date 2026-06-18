@@ -92,8 +92,10 @@ public class Hood extends SubsystemBase {
       double off = SmartDashboard.getNumber("Hood/AngleToEncoderOffset", 0.0);
       SmartDashboard.putNumber("Hood/AngleToEncoderScale", scale);
       SmartDashboard.putNumber("Hood/AngleToEncoderOffset", off);
-
-      double encodedSetpoint = position * scale + off;
+      double encodedSetpoint;
+      if (position < Constants.TurretConstants.hoodSoftLimit1 && position > Constants.TurretConstants.hoodSoftLimit2){
+            encodedSetpoint = position * scale + off;
+      } else {encodedSetpoint = hoodTarget;}
       hoodTarget = encodedSetpoint; // store encoder-domain target so isAtPosition works
       SmartDashboard.putNumber("Hood/RequestedLogical", position);
       SmartDashboard.putNumber("Hood/RequestedEncoded", encodedSetpoint);
@@ -236,7 +238,7 @@ public class Hood extends SubsystemBase {
     }
     // }
     
-   if (timer.get()>=1 && timer.get() <= 1.5){
+   if (timer.get()>=1.3 && timer.get() <= 1.5){
     // // moveHood(SmartDashboard.getNumber("Target Hood Position", hoodTarget));
     // slope = SmartDashboard.getNumber("Slope", 1.3869);
     // offset = SmartDashboard.getNumber("Offset", 1.13255);
@@ -259,7 +261,7 @@ public class Hood extends SubsystemBase {
 
   // Auto-pitch only when turret is initialized and in attack phase
   if (RobotContainer.m_Swivel.getState() == States.INITIALIZED && timer.get() >= 3 && reset) {
-    autoPitch();
+    // autoPitch();
     // moveHood(SmartDashboard.getNumber("Target Hood Position", hoodTarget));
     timer.stop();
   }

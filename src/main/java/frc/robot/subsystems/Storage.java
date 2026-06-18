@@ -281,9 +281,9 @@ public void resetFlyTimer(){
       }
     }
 
-    if(getWheel() == Wheel.ON) {
-       moveWheel(SmartDashboard.getNumber("Target Wheel Speed", targetWheelSpeed));
-    }
+    // if(getWheel() == Wheel.ON) {
+    //    moveWheel(SmartDashboard.getNumber("Target Wheel Speed", targetWheelSpeed));
+    // }
        
     SmartDashboard.putBoolean("Storage Limit Switch", indexLimit.get());
     SmartDashboard.putString("Phase", currentPhase.toString());
@@ -294,7 +294,7 @@ public void resetFlyTimer(){
     SmartDashboard.putBoolean("Wheel", spin);
     SmartDashboard.putBoolean("Shooting", shoot);
     SmartDashboard.putNumber("Target Wheel Speed", targetWheelSpeed);
-    targetWheelSpeed = SmartDashboard.getNumber("Target Wheel Speed", targetWheelSpeed);
+    // targetWheelSpeed = SmartDashboard.getNumber("Target Wheel Speed", targetWheelSpeed);
 
     
   }

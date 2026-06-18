@@ -29,9 +29,9 @@ public class Robot extends TimedRobot {
   public static boolean isRed;
   public double minVoltage = 67;
   private final boolean kUseLimelight = true;
-  private static final String kLimelightName = "limelight-allen";
+  private static final String limeAllen = "limelight-allen";
   // turret limelight unused; kept here for reference
-  // private static final String kTurretLimelightName = "limelight-bhavik";
+  private static final String limeBhavik = "limelight-bhavik";
 
   private static boolean kForceApplyVisionForTest = true; // disable force mode; use fused vision instead
   private boolean m_seededFromVision = false;
@@ -88,7 +88,8 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
 
     if (kUseLimelight) {
-      processLimelight();
+      processLimelight(limeBhavik);
+      processLimelight(limeAllen);
     }
   }
 
@@ -96,7 +97,8 @@ public class Robot extends TimedRobot {
    * Consolidated limelight/vision processing moved out of robotPeriodic to
    * improve readability. Behavior is identical to the previous inline code.
    */
-  private void processLimelight() {
+  private void processLimelight(String lname) {
+    String kLimelightName = lname;
     var driveState = RobotContainer.drivetrain.getState();
     double headingDeg = driveState.Pose.getRotation().getDegrees();
     double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
@@ -195,8 +197,12 @@ public class Robot extends TimedRobot {
 
       // Testing-only: optional immediate reset with flicker filter to avoid teleporting on small jitters.
       if (kForceApplyVisionForTest && idPose != null) {
-        double posThresh = SmartDashboard.getNumber("LL/FlickerPosThreshold", 0.2); // meters
-        double angThreshDeg = SmartDashboard.getNumber("LL/FlickerAngleThresholdDeg", 5.0); // degrees
+        double posThresh = SmartDashboard.getNumber("LL/FlickerPosThreshold", 0.3); // meters
+        double posThreshmax = SmartDashboard.getNumber("LL/FlickerPosThresholdMax", 1.2); // meters
+
+        double angThreshDeg = SmartDashboard.getNumber("LL/FlickerAngleThresholdDeg", 10.0); // degrees
+        double angThreshDegMax = SmartDashboard.getNumber("LL/FlickerAngleThresholdDegMax", 50.0); // degrees
+
         var currentPose = RobotContainer.drivetrain.getState().Pose;
         double dist = currentPose.getTranslation().getDistance(idPose.getTranslation());
         double currentTheta = currentPose.getRotation().getRadians();
@@ -207,18 +213,20 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("LL/FlickerAngleDiff", angDiff);
 
         // Persistence counter: require N consecutive frames above threshold before allowing reset
-        int N = 5; // frames
+        int N = 10; // frames
         int consecutive = (int) SmartDashboard.getNumber("LL/FlickerConsecutive", 0);
         boolean frameExceeds = dist > posThresh || angDiff > angThreshDeg; // OR logic
-        if (frameExceeds) {
+        boolean frameTooFar = dist > posThreshmax || angDiff > angThreshDegMax;
+        if (frameTooFar) {
           consecutive = Math.min(consecutive + 1, N);
         } else {
           consecutive = 0;
         }
+
         SmartDashboard.putNumber("LL/FlickerConsecutive", consecutive);
         boolean allowReset = consecutive >= N;
         SmartDashboard.putBoolean("LL/ResetAllowed", allowReset);
-        if (allowReset) {
+        if (allowReset || (frameExceeds && !frameTooFar)) {
           RobotContainer.drivetrain.resetPose(poseForFusion);
           // clear counter after reset to avoid repeated immediate resets
           SmartDashboard.putNumber("LL/FlickerConsecutive", 0);
