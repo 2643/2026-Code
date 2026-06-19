@@ -387,7 +387,7 @@ public class Constants {
 
                 public final static double hoodP = 0.07;
                 public final static double hoodI = 0.001;
-                public final static double hoodD = 0;
+                public final static double hoodD = 0.0005;
                 public final static double hoodAccel = 0.2;
                 public final static double hoodVel = 0.2;
 

@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import javax.naming.TimeLimitExceededException;
-
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
@@ -192,7 +190,7 @@ public class Hood extends SubsystemBase {
     homingInProgress = true;
     homingStartTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
     // Command to move to the soft limit (max hood)
-    m_controller.setSetpoint(0.1, ControlType.kDutyCycle);
+    m_controller.setSetpoint(0.3, ControlType.kDutyCycle);
     // moveHood(Constants.TurretConstants.hoodSoftLimit1);
   }
 
@@ -232,26 +230,28 @@ public class Hood extends SubsystemBase {
     // } else if (getHoodPos() >= Constants.TurretConstants.hoodHardLimit1 || getHoodPos() <= Constants.TurretConstants.hoodHardLimit2) {
     //   // disable = true;
     // }
-    if (encoder.getPosition() >= Constants.TurretConstants.hoodHardLimit1*2) {
+    if (encoder.getPosition() >= Constants.TurretConstants.hoodHardLimit1*3) {
       m_controller.setSetpoint(0, ControlType.kDutyCycle);
       encoder.setPosition(Constants.TurretConstants.hoodSoftLimit1);
+          RobotContainer.m_Hood.resetTimer();
+          RobotContainer.m_Hood.startTimer();
     }
     // }
     
-   if (timer.get()>=1.3 && timer.get() <= 1.5){
+   if (timer.get()>=0.3 && timer.get() <= 0.8){
     // // moveHood(SmartDashboard.getNumber("Target Hood Position", hoodTarget));
     // slope = SmartDashboard.getNumber("Slope", 1.3869);
     // offset = SmartDashboard.getNumber("Offset", 1.13255);
     moveHood(2);
   }
   
-  if (timer.get()>=1.5 && timer.get() <= 2){
+  if (timer.get()>=1.3 && timer.get() <= 1.8){
     // // moveHood(SmartDashboard.getNumber("Target Hood Position", hoodTarget));
     // slope = SmartDashboard.getNumber("Slope", 1.3869);
     // offset = SmartDashboard.getNumber("Offset", 1.13255);
     moveHood(1);
   }
-   if (timer.get()>=2 && timer.get() <= 2.5){
+   if (timer.get()>=2.3 && timer.get() <= 2.8){
     // // moveHood(SmartDashboard.getNumber("Target Hood Position", hoodTarget));
     // slope = SmartDashboard.getNumber("Slope", 1.3869);
     // offset = SmartDashboard.getNumber("Offset", 1.13255);
@@ -260,8 +260,8 @@ public class Hood extends SubsystemBase {
   }
 
   // Auto-pitch only when turret is initialized and in attack phase
-  if (RobotContainer.m_Swivel.getState() == States.INITIALIZED && timer.get() >= 3 && reset) {
-    // autoPitch();
+  if (RobotContainer.m_Swivel.getState() == States.INITIALIZED && timer.get() >= 3.3 && reset) {
+    autoPitch();
     // moveHood(SmartDashboard.getNumber("Target Hood Position", hoodTarget));
     timer.stop();
   }

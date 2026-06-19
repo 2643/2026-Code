@@ -22,8 +22,7 @@ public class ResetHood extends Command {
   @Override
   public void initialize() {
     RobotContainer.m_Hood.setEncoder();
-    RobotContainer.m_Hood.resetTimer();
-    RobotContainer.m_Hood.startTimer();
+
 
     finish = true;
   }
