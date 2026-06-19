@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python list_entries.py)",
+      "Bash(python extract.py)",
+      "Bash(python debug_ts.py)",
+      "Bash(python analyze.py)",
+      "Bash(python currents.py)",
+      "Bash(python full_analysis.py \"C:/Users/2643User1/Documents/rio_2026-06-19_22-50-13.hoot.wpilog\")",
+      "Bash(python ka_extract.py \"C:/Users/2643User1/Documents/rio_2026-06-19_22-50-13.hoot.wpilog\")",
+      "Bash(python analyze2.py \"C:/Users/2643User1/Documents/rio_2026-06-19_23-00-10.hoot.wpilog\")",
+      "Bash(python step_check.py)",
+      "Bash(python step_currents.py)"
+    ]
+  }
+}

@@ -6,21 +6,23 @@ package frc.robot;
 
 import java.util.Optional;
 
+import com.ctre.phoenix6.SignalLogger;
+
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.Swivel.States;
-import frc.robot.commands.Turret.ResetSwivel;
 import frc.robot.commands.Turret.AutoAim;
 import frc.robot.commands.Turret.ResetHood;
-import edu.wpi.first.math.util.Units;
+import frc.robot.commands.Turret.ResetSwivel;
+import frc.robot.subsystems.Swivel.States;
 import frc.robot.util.LimelightHelpers;
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
 
 
 public class Robot extends TimedRobot {
@@ -67,6 +69,13 @@ public class Robot extends TimedRobot {
       SmartDashboard.putString("Game Specific Message", DriverStation.getGameSpecificMessage());
       SmartDashboard.putString("Field/LayoutHint", "2026-Rebuilt");
       CommandScheduler.getInstance().schedule(new AutoAim());
+      SignalLogger.setPath("/home/lvuser/logs/");
+      SignalLogger.start();
+  }
+  @Override
+
+  public void disabledInit(){
+  // SignalLogger.stop();
   }
 
   @Override

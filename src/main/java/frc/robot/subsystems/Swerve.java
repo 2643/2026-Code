@@ -267,6 +267,8 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
      */
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
         return m_sysIdRoutineToApply.quasistatic(direction);
+        // .beforeStarting(SignalLogger::start)
+        // .finallyDo((interrupted) -> SignalLogger.stop());
     }
 
     /**
@@ -278,6 +280,8 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
      */
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return m_sysIdRoutineToApply.dynamic(direction);
+        // .beforeStarting(SignalLogger::start)
+        // .finallyDo((interrupted) -> SignalLogger.stop());
     }
 
     @Override

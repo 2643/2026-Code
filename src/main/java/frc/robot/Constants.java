@@ -40,14 +40,14 @@ public class Constants {
     // the
     // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
     private static final Slot0Configs steerGains = new Slot0Configs()
-            .withKP(CHOSEN_MODULE.angleKP).withKI(CHOSEN_MODULE.angleKI).withKD(CHOSEN_MODULE.angleKD)
-            .withKS(0.1).withKV(0.1).withKA(0.1)
+            .withKP(100).withKI(0).withKD(0.5)       // stiff angle hold (kP=MK4i default) + kD damping for smoothness
+            .withKS(0.13).withKV(2.38).withKA(0.03)  // from SysId 2026-06-19; azimuth (mechanism) units
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
     private static final Slot0Configs driveGains = new Slot0Configs()
-            .withKP(0.46).withKI(0).withKD(0)
-            .withKS(1.5).withKV(1.51).withKA(0.21);
+            .withKP(0.10).withKI(0).withKD(0)        // velocity loop: kS/kV feedforward does the work, kP trims error (smooth)
+             .withKS(0.17).withKV(0.11).withKA(0.0);  // kA=0 is safe for swerve velocity control
 
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors
