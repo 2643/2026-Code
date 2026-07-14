@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.stopSignal;
+import frc.robot.commands.DriveToFuel;
 // import frc.robot.Constants.ControllerConstants; (unused)
 import frc.robot.commands.Intake.ToggleIntake;
 import frc.robot.commands.Storage.Toggle;
@@ -118,6 +119,7 @@ public class RobotContainer {
     public final static JoystickButton PROGindexer = new JoystickButton(progJoystick, Constants.ControllerConstants.square);
     public final static JoystickButton PROGreverseindexer = new JoystickButton(progJoystick, Constants.ControllerConstants.circle);   
     public final static JoystickButton PROGhootReinit = new JoystickButton(progJoystick, Constants.ControllerConstants.leftNiche);
+    public final static JoystickButton PROGdriveToFuel = new JoystickButton(progJoystick, Constants.ControllerConstants.bigButton);
 
     public final static JoystickButton PROGreverseintake = new JoystickButton(progOpJoystick, Constants.ControllerConstants.square);   
     public final static JoystickButton PROGtoggle = new JoystickButton(operator, Constants.ControllerConstants.circle);
@@ -147,6 +149,7 @@ public class RobotContainer {
             NamedCommands.registerCommand("ResetSwivel", new ResetSwivel());
             NamedCommands.registerCommand("ToggleWheel", new ToggleWheel(m_Storage.getPhase()));
             NamedCommands.registerCommand("ToggleIndexer", new ToggleIndexer(true));
+            NamedCommands.registerCommand("DriveToFuel", new DriveToFuel());
             configureBindings();
 
             autoChooser.addOption("S1 O Shoot", new PathPlannerAuto("S1-O-Shoot"));
@@ -221,6 +224,8 @@ public class RobotContainer {
             PROGhootReinit.onTrue(new ResetHood());
             PROGswivelUp.whileTrue(new ManualMoveSwivel(true));
             PROGswivelDown.whileTrue(new ManualMoveSwivel(false));
+
+            PROGdriveToFuel.whileTrue(new DriveToFuel());
 
             PROGreverseintake.onTrue(new ToggleIntake(false));
             PROGreverseintake.onTrue(new ToggleIndexer(false));
@@ -329,12 +334,4 @@ public class RobotContainer {
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
    * predicate, or via the named factories in {@link
    * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   
+   * CommandXboxController Xbox}/{@link edu.wpi.f

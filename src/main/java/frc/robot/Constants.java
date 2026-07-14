@@ -494,20 +494,36 @@ public class OperatorConstants {
         public static final class FuelVisionConstants {
                 /** Camera name exactly as configured in the PhotonVision UI. */
                 public static final String kCameraName = "Arducam_OV9782_USB_Camera";
+                                public static final String kCameraName2 = "Arducam_OV9782_USB_Camera (1)";
+
+                /**
+                 * MJPEG output streams from the PhotonVision coprocessor, for dashboards.
+                 * PhotonVision serves the processed stream of camera 0 on port 1182 and
+                 * camera 1 on port 1184 (inputs are 1181/1183). Swap the ports if the
+                 * cameras appear switched. Consider a static IP instead of .local for comp.
+                 */
+                public static final String kCameraStreamURL = "http://photonvision.local:1182/stream.mjpg";
+                public static final String kCameraStreamURL2 = "http://photonvision.local:1184/stream.mjpg";
+
 
                 // ------------- TODO: MEASURE THESE ON THE REAL ROBOT -------------
                 /** Height of the camera lens off the floor (meters). */
                 public static final double kCameraHeightMeters = 0.50; // TODO measure
+                public static final double kCameraHeightMeters2 = 0.50; // TODO measure
 
                 /** Camera tilt (radians). NEGATIVE = tilted DOWN toward the floor. */
                 public static final double kCameraPitchRadians = Math.toRadians(-20.0); // TODO measure
+                public static final double kCameraPitchRadians2 = Math.toRadians(-20.0); // TODO measure
 
                 /** Camera position relative to robot center (meters). +X forward, +Y left. */
                 public static final edu.wpi.first.math.geometry.Translation2d kCameraOffset =
                         new edu.wpi.first.math.geometry.Translation2d(0.30, 0.0); // TODO measure
+                public static final edu.wpi.first.math.geometry.Translation2d kCameraOffset2 =
+                        new edu.wpi.first.math.geometry.Translation2d(0.30, 0.0); // TODO measure
 
                 /** Which way the camera faces relative to robot forward (0 = straight ahead). */
                 public static final Rotation2d kCameraYawOffset = Rotation2d.fromDegrees(0.0); // TODO measure
+                public static final Rotation2d kCameraYawOffset2 = Rotation2d.fromDegrees(0.0); // TODO measure
                 // ------------------------------------------------------------------
 
                 /** Height of the center of a fuel sitting on the floor = fuel radius (meters). */
@@ -517,6 +533,22 @@ public class OperatorConstants {
                 public static final double kMaxDetectionRangeMeters = 8.0;
                 /** Ignore detections closer than this (meters) - likely inside the robot/intake. */
                 public static final double kMinDetectionRangeMeters = 0.2;
+
+                /** Detections from different cameras closer than this (meters) are treated as the same fuel. */
+                public static final double kMergeToleranceMeters = 0.20;
+
+                /** Object permanence: how long a fuel stays in the array after last seen (seconds). */
+                public static final double kFuelMemorySeconds = 0.5;
+
+                // ---------------- Drive-to-fuel (chase) tuning ----------------
+                /** Forward speed per meter of distance to the fuel (m/s per m). */
+                public static final double kChaseTranslationP = 1.5;
+                /** Max chase speed (m/s). */
+                public static final double kChaseMaxSpeedMetersPerSec = 2.0;
+                /** Turn rate per radian of bearing error toward the fuel (rad/s per rad). */
+                public static final double kChaseRotationP = 4.0;
+                /** Max chase turn rate (rad/s). */
+                public static final double kChaseMaxAngularRateRadPerSec = 2.0 * Math.PI;
         }
 
         public class FieldConstants {
@@ -535,61 +567,4 @@ public class OperatorConstants {
     private static final Pose2d leftNeutralBlue = new Pose2d(8.2, 7.2, new Rotation2d(-Math.PI / 2));
     private static final Pose2d rightNeutralBlue = new Pose2d(8.2, 0.8, new Rotation2d(Math.PI / 2));
 
-    private static final Pose2d leftOppBlue = new Pose2d(13.4, 7.4, new Rotation2d(0));
-    private static final Pose2d rightOppBlue = new Pose2d(13.4, 0.627, new Rotation2d(Math.PI));
-    // -------------------------------------------------------------------------
-    // Pose2d flip helpers
-    // -------------------------------------------------------------------------
-
-    /**
-     * Flips a Pose2d to the red alliance side of the field using the same
-     * rotational symmetry that PathPlanner uses for 2026:
-     *   flipped_X = fieldSizeX - X,  flipped_Y = fieldSizeY - Y
-     */
-    public static Pose2d flipPose(Pose2d pose) {
-        return FlippingUtil.flipFieldPose(pose);
-    }
-
-    /**
-     * Returns the pose flipped to the red alliance side if currently on red,
-     * otherwise returns it unchanged.
-     */
-    public static Pose2d flipIfRed(Pose2d pose) {
-        return isRedAlliance() ? FlippingUtil.flipFieldPose(pose) : pose;
-    }
-
-    // -------------------------------------------------------------------------
-    // Pose3d flip helpers
-    // -------------------------------------------------------------------------
-
-    /**
-     * Flips a Pose3d to the red alliance side of the field using the same
-     * rotational symmetry that PathPlanner uses for 2026:
-     *   flipped_X = fieldSizeX - X,  flipped_Y = fieldSizeY - Y,  yaw += 180°
-     */
-    public static Pose3d flipPose3d(Pose3d pose) {
-        Rotation3d flipped = new Rotation3d(
-            pose.getRotation().getX(),
-            pose.getRotation().getY(),
-            pose.getRotation().getZ() + Math.PI
-        );
-        return new Pose3d(
-            new Translation3d(
-                FlippingUtil.fieldSizeX - pose.getX(),
-                FlippingUtil.fieldSizeY - pose.getY(),
-                pose.getZ()),
-            flipped
-        );
-    }
-
-    /**
-     * Returns the Pose3d flipped to the red alliance side if currently on red,
-     * otherwise returns it unchanged.
-     */
-    public static Pose3d flipIfRed(Pose3d pose) {
-        return isRedAlliance() ? flipPose3d(pose) : pose;
-    }
-
-    // -------------------------------------------------------------------------
-    // Alliance helper
-    // -----------------------------------------------------------------
+    private static final Pose2d leftOppBlue = new Pos

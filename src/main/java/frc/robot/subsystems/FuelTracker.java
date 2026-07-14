@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -14,9 +15,13 @@ import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.HttpCamera;
+import edu.wpi.first.cscore.HttpCamera.HttpCameraKind;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.FuelVisionConstants;
@@ -35,9 +40,12 @@ import frc.robot.Constants.FuelVisionConstants;
  *       robot's current pose from the swerve pose estimator.</li>
  * </ol>
  *
- * <p>Detections from all cameras are merged (fuel seen by both cameras within
- * {@link FuelVisionConstants#kMergeToleranceMeters} counts once) into a live snapshot
- * array of field positions, available via {@link #getFuelFieldPositions()}.
+ * <p>Detections are merged across cameras and fed into a short-memory tracker:
+ * a fuel stays in the array for {@link FuelVisionConstants#kFuelMemorySeconds}
+ * after it was last seen, so it doesn't vanish the instant it leaves the camera
+ * frame (e.g. right as the robot drives up to intake it). Remembered fuel is
+ * stored in FIELD coordinates, so its robot-relative position stays correct
+ * as the robot keeps moving.
  */
 public class FuelTracker extends SubsystemBase {
 
@@ -49,8 +57,7 @@ public class FuelTracker extends SubsystemBase {
     final Translation2d offset;      // camera position on robot, +X fwd, +Y left
     final Rotation2d yawOffset;      // which way the camera faces vs robot forward
 
-    // Latest detections from this camera (robot-relative and field frame).
-    List<Translation2d> robotRel = new ArrayList<>();
+    /** Latest field-frame detections from this camera. */
     List<Translation2d> field = new ArrayList<>();
 
     FuelCamera(String name, double heightMeters, double pitchRadians,
@@ -70,7 +77,6 @@ public class FuelTracker extends SubsystemBase {
       }
       PhotonPipelineResult latest = results.get(results.size() - 1);
 
-      List<Translation2d> newRobotRel = new ArrayList<>();
       List<Translation2d> newField = new ArrayList<>();
 
       if (latest.hasTargets()) {
@@ -98,25 +104,33 @@ public class FuelTracker extends SubsystemBase {
           Translation2d robotToFuel = offset.plus(camToFuel.rotateBy(yawOffset));
 
           // Robot frame -> field frame.
-          Translation2d fieldPos = robotPose.getTranslation()
-              .plus(robotToFuel.rotateBy(robotPose.getRotation()));
-
-          newRobotRel.add(robotToFuel);
-          newField.add(fieldPos);
+          newField.add(robotPose.getTranslation()
+              .plus(robotToFuel.rotateBy(robotPose.getRotation())));
         }
       }
 
-      robotRel = newRobotRel;
       field = newField;
+    }
+  }
+
+  /** A fuel we've seen recently, remembered in field coordinates. */
+  private static class TrackedFuel {
+    Translation2d fieldPos;
+    double lastSeenSeconds;
+
+    TrackedFuel(Translation2d fieldPos, double lastSeenSeconds) {
+      this.fieldPos = fieldPos;
+      this.lastSeenSeconds = lastSeenSeconds;
     }
   }
 
   private final FuelCamera[] cameras;
   private final Supplier<Pose2d> robotPoseSupplier;
+  private final List<TrackedFuel> tracked = new ArrayList<>();
 
-  /** Field-frame (blue-origin) positions of all fuel currently visible, merged across cameras. */
+  /** Field-frame (blue-origin) positions of all currently-tracked fuel. */
   private Translation2d[] fuelFieldPositions = new Translation2d[0];
-  /** Robot-relative positions (+X forward, +Y left) of all fuel currently visible. */
+  /** Robot-relative positions (+X forward, +Y left) of all currently-tracked fuel. */
   private Translation2d[] fuelRobotRelative = new Translation2d[0];
 
   /**
@@ -139,33 +153,14 @@ public class FuelTracker extends SubsystemBase {
             FuelVisionConstants.kCameraOffset2,
             FuelVisionConstants.kCameraYawOffset2),
     };
+
+    // Publish both PhotonVision MJPEG streams to CameraServer so they show up
+    // in Elastic / Shuffleboard / SmartDashboard camera widgets.
+    startDashboardStream("Fuel Cam 0", FuelVisionConstants.kCameraStreamURL);
+    startDashboardStream("Fuel Cam 1", FuelVisionConstants.kCameraStreamURL2);
   }
 
-  /** Field positions (meters, blue-alliance origin) of every fuel currently in view. */
-  public Translation2d[] getFuelFieldPositions() {
-    return fuelFieldPositions.clone();
-  }
-
-  /** Robot-relative positions (+X forward, +Y left, meters) of every fuel currently in view. */
-  public Translation2d[] getFuelRobotRelative() {
-    return fuelRobotRelative.clone();
-  }
-
-  /** True if at least one fuel is currently visible. */
-  public boolean hasFuel() {
-    return fuelFieldPositions.length > 0;
-  }
-
-  /** The field position of the fuel closest to the robot, if any is visible. */
-  public Optional<Translation2d> getClosestFuel() {
-    Translation2d[] robotRel = fuelRobotRelative;
-    Translation2d[] field = fuelFieldPositions;
-    if (field.length == 0) {
-      return Optional.empty();
-    }
-    int closest = 0;
-    double best = robotRel[0].getNorm();
-    for (int i = 1; i < robotRel.length; i++) {
-      double d = robotRel[i].getNorm();
-      if (d < best) {
-        best = d;
+  private static void startDashboardStream(String name, String url) {
+    try {
+      CameraServer.startAutomaticCapture(new HttpCamera(name, url, HttpCameraKind.kMJPGStreamer));
+    } cat
