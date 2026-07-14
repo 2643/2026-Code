@@ -48,6 +48,7 @@ import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Swivel;
 import frc.robot.subsystems.HubTester;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.FuelTracker;
 
 
 
@@ -129,6 +130,7 @@ public class RobotContainer {
     public static final Storage m_Storage = new Storage();
     public static final Swivel m_Swivel = new Swivel();
     public final HubTester m_HubTester = new HubTester();
+    public final static FuelTracker m_FuelTracker = new FuelTracker(() -> drivetrain.getState().Pose);
 
         private final SendableChooser<Command> autoChooser = new SendableChooser<>();
         ComplexWidget ShuffleBoardAutonomousRoutines = Shuffleboard.getTab("Driver")
@@ -335,9 +337,4 @@ public class RobotContainer {
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-   return autoChooser.getSelected();
-  }
-}
+   
