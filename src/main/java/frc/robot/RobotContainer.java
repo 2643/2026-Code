@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.fasterxml.jackson.databind.EnumNamingStrategies.SnakeCaseStrategy;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -24,8 +25,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.commands.stopSignal;
-import frc.robot.commands.DriveToFuel;
+// import frc.robot.commands.DriveToFuel;
 // import frc.robot.Constants.ControllerConstants; (unused)
 import frc.robot.commands.Intake.ToggleIntake;
 import frc.robot.commands.Storage.Toggle;
@@ -49,11 +49,13 @@ import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Swivel;
 import frc.robot.subsystems.HubTester;
 import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.FuelTracker;
+// import frc.robot.subsystems.FuelTracker;
 
 
 
 public class RobotContainer {
+    private double reverse = 1;
+    
     private final double kSlowMultiplier = 0.15;
     private final double normalMaxSpeed = Constants.OperatorConstants.kSpeedAt12Volts.in(MetersPerSecond); // desired top speed
     private final double normalMaxAngularRate = RotationsPerSecond.of(2).in(RadiansPerSecond); // max angular velocity
@@ -132,7 +134,7 @@ public class RobotContainer {
     public static final Storage m_Storage = new Storage();
     public static final Swivel m_Swivel = new Swivel();
     public final HubTester m_HubTester = new HubTester();
-    public final static FuelTracker m_FuelTracker = new FuelTracker(() -> drivetrain.getState().Pose);
+    // public final static FuelTracker m_FuelTracker = new FuelTracker(() -> drivetrain.getState().Pose);
 
         private final SendableChooser<Command> autoChooser = new SendableChooser<>();
         ComplexWidget ShuffleBoardAutonomousRoutines = Shuffleboard.getTab("Driver")
@@ -149,7 +151,7 @@ public class RobotContainer {
             NamedCommands.registerCommand("ResetSwivel", new ResetSwivel());
             NamedCommands.registerCommand("ToggleWheel", new ToggleWheel(m_Storage.getPhase()));
             NamedCommands.registerCommand("ToggleIndexer", new ToggleIndexer(true));
-            NamedCommands.registerCommand("DriveToFuel", new DriveToFuel());
+            // NamedCommands.registerCommand("DriveToFuel", new DriveToFuel());
             configureBindings();
 
             autoChooser.addOption("S1 O Shoot", new PathPlannerAuto("S1-O-Shoot"));
@@ -171,6 +173,8 @@ public class RobotContainer {
             }
             // Create Shuffleboard tunables for the trapezoid limiter (Driver tab)
             var tab = Shuffleboard.getTab("Driver");
+            SmartDashboard.putNumber("Reverse", reverse);
+
             m_rateXEntry = tab.add("Limiter Rate X (m/s/s)", 2.0).withPosition(4, 2).withSize(2, 1).getEntry();
             m_rateYEntry = tab.add("Limiter Rate Y (m/s/s)", 2.0).withPosition(6, 2).withSize(2, 1).getEntry();
             m_rateOmegaEntry = tab.add("Limiter Rate Omega (rad/s/s)", 4.0).withPosition(8, 2).withSize(2, 1).getEntry();
@@ -209,9 +213,7 @@ public class RobotContainer {
             // swivelDown.whileTrue(new ManualMoveSwivel(false));
             // hoodDown.onTrue(new ManualHoodDown());
             // hoodUp.onTrue(new ManualHoodUp());
-            signalLoggerStart.onTrue(new frc.robot.commands.startSignal());
-            signalLoggerStop.onTrue(new frc.robot.commands.stopSignal());
-            dynaforward.whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+           dynaforward.whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
             dynareverse.whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
             quasforward.whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
             quasreverse.whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
@@ -225,7 +227,7 @@ public class RobotContainer {
             PROGswivelUp.whileTrue(new ManualMoveSwivel(true));
             PROGswivelDown.whileTrue(new ManualMoveSwivel(false));
 
-            PROGdriveToFuel.whileTrue(new DriveToFuel());
+            // PROGdriveToFuel.whileTrue(new DriveToFuel());
 
             PROGreverseintake.onTrue(new ToggleIntake(false));
             PROGreverseintake.onTrue(new ToggleIndexer(false));
@@ -237,13 +239,14 @@ public class RobotContainer {
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> {
                 // raw desired velocities from joystick
-                double desiredX = -applyDeadzone(driver.getRawAxis(Constants.AXIS_Y), 0.02) * MaxSpeed; // forward
-                double desiredY = -applyDeadzone(driver.getRawAxis(Constants.AXIS_X), 0.02) * MaxSpeed; // left
+                double desiredX = -applyDeadzone(driver.getRawAxis(Constants.AXIS_Y), 0.02) * MaxSpeed * reverse; // forward
+                double desiredY = -applyDeadzone(driver.getRawAxis(Constants.AXIS_X), 0.02) * MaxSpeed * reverse; // left
                 double desiredOmega = -applyDeadzone(driver.getRawAxis(Constants.AXIS_TWIST), 0.02) * MaxAngularRate; // rotate
 
-                double PROGdesiredX = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_Y), 0.02) * MaxSpeed; // forward
-                double PROGdesiredY = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_X), 0.02) * MaxSpeed; // left
+                double PROGdesiredX = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_Y), 0.02) * MaxSpeed * reverse; // forward
+                double PROGdesiredY = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_X), 0.02) * MaxSpeed * reverse; // left
                 double PROGdesiredOmega = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_TWIST), 0.02) * MaxAngularRate; // rotate
+                reverse = SmartDashboard.getNumber("Reverse", reverse);
 
                 SmartDashboard.putNumber("DesiredX", PROGdesiredX);
                 SmartDashboard.putNumber("DesiredY", PROGdesiredY);
@@ -334,4 +337,17 @@ public class RobotContainer {
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
    * predicate, or via the named factories in {@link
    * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.f
+   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
+   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
+   * joysticks}.
+   */
+  /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
+  public Command getAutonomousCommand() {
+    // An example command will be run in autonomous
+   return autoChooser.getSelected();
+  }
+}

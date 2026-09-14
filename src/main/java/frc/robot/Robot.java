@@ -29,7 +29,6 @@ public class Robot extends TimedRobot {
   
   private Command m_autonomousCommand;
   public static boolean isRed;
-  public double minVoltage = 67;
   private final boolean kUseLimelight = true;
   private static final String limeAllen = "limelight-allen";
   // turret limelight unused; kept here for reference
@@ -51,11 +50,15 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
   }
 
+  public static boolean isRed(){
+    return isRed;
+  }
+
   @Override
   public void robotInit() {
       SmartDashboard.putNumber("Swivel Gear Ratio", Constants.TurretConstants.swivelGearRatio);
      Optional<Alliance> ally = DriverStation.getAlliance();
-      if (ally.isPresent()) {
+      // if (ally.isPresent()) {
         if (ally.get() == Alliance.Red) {
             SmartDashboard.putString("Alliance", "Red");
             isRed = true;
@@ -63,7 +66,7 @@ public class Robot extends TimedRobot {
           SmartDashboard.putString("Alliance", "Blue");
           isRed = false;
         }
-      }
+      // }
       SmartDashboard.putString("Station Number", DriverStation.getLocation().toString());
       SmartDashboard.putNumber("Match Number", DriverStation.getMatchNumber());
       SmartDashboard.putString("Game Specific Message", DriverStation.getGameSpecificMessage());
@@ -71,6 +74,8 @@ public class Robot extends TimedRobot {
       CommandScheduler.getInstance().schedule(new AutoAim());
       SignalLogger.setPath("/home/lvuser/logs/");
       SignalLogger.start();
+      // Record all NetworkTables + Driver Station data to a .wpilog for AdvantageScope replay.
+      frc.robot.util.AdvantageScopeLogger.start();
   }
   @Override
 
@@ -87,12 +92,11 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Shoot dy", Constants.TurretConstants.dy);
     SmartDashboard.putNumber("real dx", Constants.TurretConstants.realdx);
     SmartDashboard.putNumber("real dy", Constants.TurretConstants.realdy);
+    SmartDashboard.putBoolean("Alliance", isRed);
 
     Constants.TurretConstants.antiMultiplier = SmartDashboard.getNumber("antiMultiplier", 0.2);
-    if (minVoltage > RobotController.getBatteryVoltage()){
-            minVoltage = RobotController.getBatteryVoltage();
-        }
-    SmartDashboard.putNumber("Min Voltage", minVoltage);
+    
+    SmartDashboard.putNumber("Voltage", RobotController.getBatteryVoltage());
         
     CommandScheduler.getInstance().run();
 
@@ -100,6 +104,9 @@ public class Robot extends TimedRobot {
       // processLimelight(limeBhavik);
       processLimelight(limeAllen);
     }
+
+    // Publish robot pose, swerve states, and subsystem states for AdvantageScope.
+    frc.robot.util.AdvantageScopeLogger.update();
   }
 
   /**
@@ -135,6 +142,11 @@ public class Robot extends TimedRobot {
     boolean turnRateOk = Math.abs(omegaRps) < 99999.0;
     boolean validForVision = tv && hasTags && turnRateOk;
 
+    if(SmartDashboard.getString("Alliance", "Red").equals("Red"))
+      isRed = true;
+    else
+      isRed = false;
+
   // turret-specific measurement not used anymore; commenting out
   // boolean hasMeasurementTurret = turretLlMeasurement != null && turretLlMeasurement.pose != null && id == 10;
 
@@ -145,6 +157,12 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("LL/ValidForVision", validForVision);
     SmartDashboard.putNumber("LL/ID", id);
     kForceApplyVisionForTest = SmartDashboard.getBoolean("LL/resetWithPose", kForceApplyVisionForTest);
+
+    // Log the camera pose estimate for AdvantageScope's field view.
+    frc.robot.util.AdvantageScopeLogger.updateVision(
+        hasMeasurement ? llMeasurement.pose : null,
+        validForVision,
+        hasMeasurement ? llMeasurement.tagCount : 0);
 
     if (hasMeasurement) {
       SmartDashboard.putNumber("LL/PoseX", llMeasurement.pose.getX());
