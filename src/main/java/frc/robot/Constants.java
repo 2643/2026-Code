@@ -88,7 +88,7 @@ public class OperatorConstants {
 
     // The stator current at which the wheels start to slip;
     // This needs to be tuned to your individual robot
-    private static final Current kSlipCurrent = Amps.of(70);
+    private static final Current kSlipCurrent = Amps.of(60);
 
     // Initial configs for the drive and steer motors and the azimuth encoder; these cannot be null.
     // Some configs will be overwritten; check the `with*InitialConfigs()` API documentation.
@@ -97,15 +97,19 @@ public class OperatorConstants {
             new CurrentLimitsConfigs()
                 // Default supply current limit is 70 A, but it can be lowered to avoid brownouts.
                 // Supply current limits can be larger than the breaker current rating.
-                .withSupplyCurrentLimit(Amps.of(60))
+                .withSupplyCurrentLimit(Amps.of(40))
                 .withSupplyCurrentLimitEnable(true)
+        )
+        .withOpenLoopRamps(
+            new OpenLoopRampsConfigs()
+                .withVoltageOpenLoopRampPeriod(0.2)
         );
     private static final TalonFXConfiguration steerInitialConfigs = new TalonFXConfiguration()
         .withCurrentLimits(
             new CurrentLimitsConfigs()
                 // Swerve azimuth does not require much torque output, so we can set a relatively low
                 // stator current limit to help avoid brownouts without impacting performance.
-                .withStatorCurrentLimit(Amps.of(30))
+                .withStatorCurrentLimit(Amps.of(20))
                 .withStatorCurrentLimitEnable(true)
         );
     private static final CANcoderConfiguration encoderInitialConfigs = new CANcoderConfiguration();
@@ -362,9 +366,9 @@ public class OperatorConstants {
                 // Big button = 14
 
                 public final static int intakeID = 18;
-                public final static double intakeSpeed = -0.6;
+                public final static double intakeSpeed = -0.5;
                 public final static int intakePort = 2;
-                public final static double IntakeCurrentlimit = 20;
+                public final static double IntakeCurrentlimit = 10;
         }
         public final class ControllerConstants {
                 public final static int square = 1;
@@ -470,7 +474,7 @@ public class OperatorConstants {
                 public final static double attackSpeed = -80;
                 public final static double defenseSpeed = -80;
                 // Indexer velocity target (units match rotor velocity measurement). Set to 75 (1.5x) by default.
-                public final static double indexSpeed = 112.5; // bumped 1.5x from 75
+                public final static double indexSpeed = 130; // bumped 1.5x from 75
                 // Indexer PID/FF defaults for velocity control
                 public final static double indexerP = 0.18; // stronger P (1.5x)
                 public final static double indexerI = 0.0;
@@ -480,11 +484,11 @@ public class OperatorConstants {
                 public final static double wheelP = 0.5;
                 public final static double wheelI = 0;
                 public final static double wheelD = 0;
-                 public final static double wheelStatorLimit = 80;
+                 public final static double wheelStatorLimit = 70;
                 public final static double wheelSupplyLimit = 45;
                 ;
-                 public final static double indexerStatorLimit = 50;
-                public final static double indexerSupplyLimit = 50;
+                 public final static double indexerStatorLimit = 80;
+                public final static double indexerSupplyLimit = 80;
         }
 
         /**

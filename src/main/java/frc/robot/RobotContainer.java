@@ -305,7 +305,7 @@ public class RobotContainer {
             // slow mode (hold button 6 to reduce speeds)
             PROGslowMode.onTrue(drivetrain.runOnce(() -> {
                 MaxSpeed = normalMaxSpeed * kSlowMultiplier;
-                MaxAngularRate = normalMaxAngularRate * kSlowMultiplier;
+                MaxAngularRate = normalMaxAngularRate * (kSlowMultiplier+0.35);
             }));
             PROGslowMode.onFalse(drivetrain.runOnce(() -> {
                 MaxSpeed = normalMaxSpeed;

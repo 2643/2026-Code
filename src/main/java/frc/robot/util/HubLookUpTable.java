@@ -65,14 +65,17 @@ public class HubLookUpTable {
         // addEntry(2.67, -60, 0.52, 0);
         // addEntry(3.06, -63, 0.55, 0);
         // addEntry(2.227, -58, 0.34, 0);
-        addEntry(0.65, -50, 0, 0);
-        addEntry(1.29, -52, 0.2, 0);
         // addEntry(2.97, -62, 0.48, 0);
-        addEntry(2.5, -53, 0.43, 0);
-        addEntry(2.79, -60, 0.7, 0);
-        addEntry(1.28, -50, 0, 0);
-        addEntry(1.68, -54, 0.1, 0);
-        addEntry(5, -68, 1.4, 0);
+        addEntry(2.5, -53-4, 0.6+0.6, 1.4+0.5);
+        addEntry(2.43, -54-4, 0.5+0.6, 1.35+0.5);
+
+        addEntry(2.79, -57-4, 0.7+0.6, 1.5+0.5);
+
+        // addEntry(1.28, -50, 0+0.4, );
+        addEntry(1.68, -51, 0.6+0.6, 1.1+0.5);
+        addEntry(3, -62, 1.35, 1.6+0.5);
+        addEntry(4, -65, 1.69, 1.8+0.5);
+
 
         // AI GENERATED DATA - NOT TESTED
         // addEntry(2, -05, 0.301, 1.12);

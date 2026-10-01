@@ -354,8 +354,8 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
      */
     @Override
     public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds) {
-        // timestampSeconds from LimelightHelpers MegaTag2 is already FPGA-domain
-        super.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds);
+        // Phoenix 6 expects timestamps in Utils.getCurrentTimeSeconds() timebase, not FPGA time.
+        super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds));
     }
 
     /**
@@ -381,7 +381,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
             Pose2d visionRobotPoseMeters,
             double timestampSeconds,
             Matrix<N3, N1> visionMeasurementStdDevs) {
-        // timestampSeconds from LimelightHelpers MegaTag2 is already FPGA-domain
-        super.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
+        // Phoenix 6 expects timestamps in Utils.getCurrentTimeSeconds() timebase, not FPGA time.
+        super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
     }
 }

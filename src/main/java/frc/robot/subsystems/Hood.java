@@ -24,6 +24,8 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Storage.Phase;
 import frc.robot.subsystems.Swivel.States;
+import frc.robot.subsystems.Swivel.Mode;
+
 import frc.robot.util.LimelightHelpers;
 
 public class Hood extends SubsystemBase {
@@ -261,8 +263,11 @@ public class Hood extends SubsystemBase {
 
   // Auto-pitch only when turret is initialized and in attack phase
   if (RobotContainer.m_Swivel.getState() == States.INITIALIZED && timer.get() >= 3.3 && reset) {
-    autoPitch();
-    // moveHood(SmartDashboard.getNumber("Target Hood Position", hoodTarget));
+    if(RobotContainer.m_Swivel.getMode() == Mode.AUTOAIM) { 
+      autoPitch();
+    } else if(RobotContainer.m_Swivel.getMode() == Mode.MANUAL) {
+      moveHood(SmartDashboard.getNumber("Target Hood Position", hoodTarget));
+    }
     timer.stop();
   }
     

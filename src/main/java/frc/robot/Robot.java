@@ -196,31 +196,52 @@ public class Robot extends TimedRobot {
         m_seededFromVision = true;
         m_headingSeededFromVision = true;
         SmartDashboard.putBoolean("LL/SeededPose", true);
-        // Seed the gyro/pigeon to the camera heading the first time we accept vision.
-        if (!m_gyroSeededFromVision) {
-          RobotContainer.drivetrain.seedFieldCentric();
-          m_gyroSeededFromVision = true;
-          SmartDashboard.putBoolean("LL/GyroSeededFromVision", true);
-        }
+        // seedFieldCentric() resets the pose heading to the operator-forward direction,
+        // which would throw away the vision heading we just set (and break MegaTag2).
+        // Operator perspective is already handled in Swerve.periodic().
+        // if (!m_gyroSeededFromVision) {
+        //   RobotContainer.drivetrain.seedFieldCentric();
+        //   m_gyroSeededFromVision = true;
+        //   SmartDashboard.putBoolean("LL/GyroSeededFromVision", true);
+        // }
       } else {
         SmartDashboard.putBoolean("LL/SeededPose", false);
       }
     }
 
-    // Fuse vision updates into the drivetrain estimator when valid.
+    // Continuous fusion: MegaTag2 into the pose estimator (Kalman filter).
+    // MT2 uses the gyro heading we send via SetRobotOrientation, so it is only valid
+    // after the heading has been seeded above. Heading std dev is huge so vision never
+    // fights the gyro on rotation; only X/Y get corrected.
+    if (m_seededFromVision) {
+      LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(kLimelightName);
+      double omegaDegPerSec = Math.abs(Math.toDegrees(driveState.Speeds.omegaRadiansPerSecond));
+      boolean mt2Valid = mt2 != null && mt2.pose != null && mt2.tagCount > 0 && omegaDegPerSec < 720.0;
+      SmartDashboard.putBoolean("LL/MT2Valid", mt2Valid);
+      if (mt2Valid) {
+        // Trust vision less the farther away the tags are; trust more with multiple tags.
+        double xyStdDev = SmartDashboard.getNumber("LL/MT2BaseStdDev", 0.5)
+            * (1.0 + mt2.avgTagDist * mt2.avgTagDist / 10.0)
+            / (mt2.tagCount > 1 ? 2.0 : 1.0);
+        SmartDashboard.putNumber("LL/MT2StdDev", xyStdDev);
+        SmartDashboard.putNumber("LL/MT2PoseX", mt2.pose.getX());
+        SmartDashboard.putNumber("LL/MT2PoseY", mt2.pose.getY());
+        RobotContainer.drivetrain.addVisionMeasurement(
+          mt2.pose,
+          mt2.timestampSeconds,
+          VecBuilder.fill(xyStdDev, xyStdDev, 9999999)
+        );
+      }
+    }
+
+    // OLD: constantly resetPose() to the Limelight pose. Replaced by addVisionMeasurement above.
+    /*
     if (validForVision && llMeasurement != null) {
-      var visionStdDevs = VecBuilder.fill(0.5, 0.5, 0.5); // [m, m, rad]; tune as needed
-      // Preserve drivetrain heading after we've allowed vision to set the heading once.
       var poseForFusion = llMeasurement.pose;
       if (m_headingSeededFromVision && RobotContainer.drivetrain != null && RobotContainer.drivetrain.getState() != null) {
         var currentPose = RobotContainer.drivetrain.getState().Pose;
         poseForFusion = new Pose2d(llMeasurement.pose.getTranslation(), currentPose.getRotation());
       }
-      RobotContainer.drivetrain.addVisionMeasurement(
-        poseForFusion,
-        llMeasurement.timestampSeconds,
-        visionStdDevs
-      );
 
       // Testing-only: optional immediate reset with flicker filter to avoid teleporting on small jitters.
       if (kForceApplyVisionForTest && idPose != null) {
@@ -260,6 +281,7 @@ public class Robot extends TimedRobot {
         }
       }
     }
+    */
   }
   @Override
   public void autonomousInit() {
