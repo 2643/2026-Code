@@ -239,6 +239,8 @@ public class RobotContainer {
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> {
                 // raw desired velocities from joystick
+
+                
                 double desiredX = -applyDeadzone(driver.getRawAxis(Constants.AXIS_Y), 0.02) * MaxSpeed * reverse; // forward
                 double desiredY = -applyDeadzone(driver.getRawAxis(Constants.AXIS_X), 0.02) * MaxSpeed * reverse; // left
                 double desiredOmega = -applyDeadzone(driver.getRawAxis(Constants.AXIS_TWIST), 0.02) * MaxAngularRate; // rotate
@@ -246,8 +248,12 @@ public class RobotContainer {
                 double PROGdesiredX = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_Y), 0.02) * MaxSpeed * reverse; // forward
                 double PROGdesiredY = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_X), 0.02) * MaxSpeed * reverse; // left
                 double PROGdesiredOmega = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_TWIST), 0.02) * MaxAngularRate; // rotate
-                reverse = SmartDashboard.getNumber("Reverse", reverse);
-
+                // reverse = SmartDashboard.getNumber("Reverse", reverse);
+                if (SmartDashboard.getString("Alliance", "Red").equals("Blue")){
+                    reverse = -1;
+                } else {
+                    reverse = 1;
+                }
                 SmartDashboard.putNumber("DesiredX", PROGdesiredX);
                 SmartDashboard.putNumber("DesiredY", PROGdesiredY);
                 SmartDashboard.putNumber("DesiredOmega", PROGdesiredOmega);
@@ -300,7 +306,10 @@ public class RobotContainer {
             //     MaxAngularRate = normalMaxAngularRate;
             // }));
 
-            PROGzeroGyro.onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+            PROGzeroGyro.onTrue(drivetrain.runOnce(() -> {
+                drivetrain.seedFieldCentric();
+                Robot.requestVisionReseed();
+            }));
 
             // slow mode (hold button 6 to reduce speeds)
             PROGslowMode.onTrue(drivetrain.runOnce(() -> {

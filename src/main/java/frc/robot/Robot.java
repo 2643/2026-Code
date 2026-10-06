@@ -43,8 +43,16 @@ public class Robot extends TimedRobot {
   // translation but must preserve the drivetrain heading to avoid changing
   // controller direction mid-run.
   private boolean m_headingSeededFromVision = false;
+  // Set by zero-gyro: seedFieldCentric() sets heading to the alliance-forward direction,
+  // which is 180 off if the DS alliance doesn't match the side we're on. Re-seeding from
+  // MegaTag1 restores the true field heading before MegaTag2 is used again.
+  private static boolean s_visionReseedRequested = false;
 
   private final RobotContainer m_robotContainer;
+
+  public static void requestVisionReseed() {
+    s_visionReseedRequested = true;
+  }
 
   public Robot() {
     m_robotContainer = new RobotContainer();
@@ -85,7 +93,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-    SmartDashboard.putNumber("Anti Rotation Multiplier", Constants.TurretConstants.antiMultiplier);
     SmartDashboard.putNumber("Virtual X", Constants.TurretConstants.virtualX);
     SmartDashboard.putNumber("Virtual Y", Constants.TurretConstants.virtualY);
     SmartDashboard.putNumber("Shoot dx", Constants.TurretConstants.dx);
@@ -94,7 +101,9 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("real dy", Constants.TurretConstants.realdy);
     SmartDashboard.putBoolean("Alliance", isRed);
 
-    Constants.TurretConstants.antiMultiplier = SmartDashboard.getNumber("antiMultiplier", 0.2);
+    // Read and write the same key so edits on the dashboard actually stick.
+    Constants.TurretConstants.antiMultiplier = SmartDashboard.getNumber("Anti Rotation Multiplier", 0.2);
+    SmartDashboard.putNumber("Anti Rotation Multiplier", Constants.TurretConstants.antiMultiplier);
     
     SmartDashboard.putNumber("Voltage", RobotController.getBatteryVoltage());
         
@@ -180,6 +189,11 @@ public class Robot extends TimedRobot {
     //   SmartDashboard.putNumber("LLTurret/AvgTagArea", turretLlMeasurement.avgTagArea);
     //   SmartDashboard.putNumber("LLTurret/Timestamp", turretLlMeasurement.timestampSeconds);
     // }
+
+    if (s_visionReseedRequested) {
+      m_seededFromVision = false;
+      s_visionReseedRequested = false;
+    }
 
     // Seed/reset pose only when robot is nearly still to avoid teleporting while driving.
     if (!m_seededFromVision && validForVision) {

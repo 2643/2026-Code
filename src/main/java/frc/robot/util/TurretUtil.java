@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 /**
@@ -318,11 +319,21 @@ public class TurretUtil {
                                                             double robotVelX,
                                                             double robotVelY,
                                                             TargetType target) {
-            Translation2d turretNow = getTurretPose(robotPose).getTranslation();
+            // Tunables (SmartDashboard):
+            //  SOTM/LeadScale  - multiplies time-of-flight for leading. >1 leads more, <1 leads less.
+            //  SOTM/LatencySec - time between "now" and the ball actually leaving (turret move,
+            //                    feeder, pose lag). Robot position is predicted ahead by this much.
+            double leadScale = SmartDashboard.getNumber("SOTM/LeadScale", 1.0);
+            double latency = SmartDashboard.getNumber("SOTM/LatencySec", 0.0);
+            SmartDashboard.putNumber("SOTM/LeadScale", leadScale);
+            SmartDashboard.putNumber("SOTM/LatencySec", latency);
+
+            Translation2d turretNow = getTurretPose(robotPose).getTranslation()
+                    .plus(new Translation2d(robotVelX * latency, robotVelY * latency));
             Translation2d goalTranslation = getTargetPose(target).getTranslation();
-    
+
             // Seed: static time-of-flight from current turret position
-            double tof = getTimeOfFlight(turretNow.getDistance(goalTranslation), target);
+            double tof = getTimeOfFlight(turretNow.getDistance(goalTranslation), target) * leadScale;
     
             // Iterative virtual-target refinement (5 passes)
             double virtualX = turretNow.getX();
@@ -357,8 +368,9 @@ public class TurretUtil {
                     */
     
                 // Refine time-of-flight for next iteration
-                tof = params.timeOfFlight;
+                tof = params.timeOfFlight * leadScale;
             }
+            SmartDashboard.putNumber("SOTM/LeadTof", tof);
     
             // Final virtual distance (from the last iteration's virtual position)
             double finalDist = new Translation2d(virtualX, virtualY).getDistance(goalTranslation);

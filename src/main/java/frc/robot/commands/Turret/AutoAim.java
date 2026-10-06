@@ -1,5 +1,7 @@
 package frc.robot.commands.Turret;
 
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -49,9 +51,18 @@ public class AutoAim extends Command {
       currentTarget = TurretUtil.getNearestPassTargetType(robotPose);
     }
 
-    var robotPose = RobotContainer.drivetrain.getState().Pose;
-    double robotVelX = RobotContainer.drivetrain.getState().Speeds.vxMetersPerSecond;
-    double robotVelY = RobotContainer.drivetrain.getState().Speeds.vyMetersPerSecond;
+    var driveState = RobotContainer.drivetrain.getState();
+    var robotPose = driveState.Pose;
+    // Phoenix 6 Speeds are ROBOT-relative; the lead math needs FIELD-relative velocity.
+    var fieldSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(driveState.Speeds, robotPose.getRotation());
+    // Turret sits off the robot center, so spinning the robot also moves the turret: v = omega x r
+    var turretOffsetField = new Translation2d(Constants.TurretConstants.kTurretOffsetX, Constants.TurretConstants.kTurretOffsetY)
+        .rotateBy(robotPose.getRotation());
+    double omega = fieldSpeeds.omegaRadiansPerSecond;
+    double robotVelX = fieldSpeeds.vxMetersPerSecond - omega * turretOffsetField.getY();
+    double robotVelY = fieldSpeeds.vyMetersPerSecond + omega * turretOffsetField.getX();
+    SmartDashboard.putNumber("SOTM/FieldVelX", robotVelX);
+    SmartDashboard.putNumber("SOTM/FieldVelY", robotVelY);
     // TurretUtil.ShotSolution solution = TurretUtil.computeShotSolution(robotPose, currentTarget);
     TurretUtil.ShotSolution solution = TurretUtil.computeLeadShotSolution(robotPose, robotVelX, robotVelY, currentTarget);
 
