@@ -10,6 +10,7 @@ import frc.robot.Constants;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix6.hardware.TalonFX;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
@@ -175,6 +176,37 @@ public class Swivel extends SubsystemBase {
       tags.clear();
     }
    
+public static double faceAngle(double x, double y, double tx, double ty) {
+        return Math.atan2(ty - y, tx - x);
+    }
+
+    // Turn rate (radians/second) to keep facing the target while moving
+    public static double turnRate(double x, double y, double speed, double direction,
+                                  double tx, double ty, double tvx, double tvy) {
+        double dx = tx - x, dy = ty - y;
+        double vx = speed * Math.cos(direction);
+        double vy = speed * Math.sin(direction);
+        double rvx = tvx - vx, rvy = tvy - vy;
+        double d2 = dx * dx + dy * dy;
+        return d2 == 0 ? 0 : (dx * rvy - dy * rvx) / d2;
+    }
+
+    // Stationary target
+    public static double turnRate(double x, double y, double speed, double direction,
+                                  double tx, double ty) {
+        return turnRate(x, y, speed, direction, tx, ty, 0, 0);
+    }
+
+    public static double aim() {
+        double x = 0, y = 0, speed = Constants.OperatorConstants.kSpeedAt12Volts.in(MetersPerSecond), direction = 0; // moving right
+        double tx = 10, ty = 10;
+        double dt = 0.02; // 20 ms time step
+
+        double angle = faceAngle(x, y, tx, ty);
+
+        angle += turnRate(x, y, speed, direction, tx, ty) * dt;
+        return angle;
+    }
 
   // public void autoAlign(){
   //   if (currentMode != Mode.AUTOAIM) {
@@ -271,7 +303,8 @@ public class Swivel extends SubsystemBase {
 
     @Override
   public void periodic() {
-
+    
+    tx = aim();
     tx = LimelightHelpers.getTYNC(limelightName);  // Horizontal offset (same as yaw)
     isVisible = LimelightHelpers.getTV(limelightName);
     area = LimelightHelpers.getTA(limelightName);
