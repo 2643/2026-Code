@@ -75,6 +75,8 @@ public class HubLookUpTable {
         addEntry(1.68, -51, 0.6+0.5, 1.1+0.5);
         addEntry(3, -60, 1.3, 1.6);
         addEntry(4, -64, 1.75, 1.8);
+        addEntry(5.5, -71, 2, 2);
+        addEntry(4.7, -66.5, 1.9, 1.9);
 
 
         // AI GENERATED DATA - NOT TESTED

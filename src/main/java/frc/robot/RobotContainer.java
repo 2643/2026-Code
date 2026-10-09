@@ -162,6 +162,7 @@ public class RobotContainer {
             autoChooser.addOption("S2 Shoot", new PathPlannerAuto("Shoot-S2"));
             autoChooser.addOption("S3 Shoot", new PathPlannerAuto("Shoot-S3"));
             autoChooser.addOption("testing2", new PathPlannerAuto("testing2"));
+            autoChooser.addOption("Mid Test", new PathPlannerAuto("Mid Test"));
 
             // Configure Limelight field preset to the 2026 rebuilt field by default.
             // This remaps incoming Limelight poses into the 2026 field coordinates.
@@ -313,8 +314,8 @@ public class RobotContainer {
 
             // slow mode (hold button 6 to reduce speeds)
             PROGslowMode.onTrue(drivetrain.runOnce(() -> {
-                MaxSpeed = normalMaxSpeed * kSlowMultiplier;
-                MaxAngularRate = normalMaxAngularRate * (kSlowMultiplier+0.35);
+                MaxSpeed = normalMaxSpeed * (kSlowMultiplier*1.4);
+                MaxAngularRate = normalMaxAngularRate * (kSlowMultiplier+0.2);
             }));
             PROGslowMode.onFalse(drivetrain.runOnce(() -> {
                 MaxSpeed = normalMaxSpeed;

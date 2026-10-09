@@ -240,6 +240,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("LL/MT2StdDev", xyStdDev);
         SmartDashboard.putNumber("LL/MT2PoseX", mt2.pose.getX());
         SmartDashboard.putNumber("LL/MT2PoseY", mt2.pose.getY());
+        frc.robot.util.ShotVelocityEstimator.addVisionSample(mt2.pose.getTranslation(), mt2.timestampSeconds);
         RobotContainer.drivetrain.addVisionMeasurement(
           mt2.pose,
           mt2.timestampSeconds,

@@ -88,7 +88,7 @@ public class OperatorConstants {
 
     // The stator current at which the wheels start to slip;
     // This needs to be tuned to your individual robot
-    private static final Current kSlipCurrent = Amps.of(60);
+    public static final Current kSlipCurrent = Amps.of(60);
 
     // Initial configs for the drive and steer motors and the azimuth encoder; these cannot be null.
     // Some configs will be overwritten; check the `with*InitialConfigs()` API documentation.
@@ -368,7 +368,7 @@ public class OperatorConstants {
                 public final static int intakeID = 18;
                 public final static double intakeSpeed = -0.5;
                 public final static int intakePort = 2;
-                public final static double IntakeCurrentlimit = 10;
+                public final static double IntakeCurrentlimit = 100;
         }
         public final class ControllerConstants {
                 public final static int square = 1;
@@ -484,11 +484,11 @@ public class OperatorConstants {
                 public final static double wheelP = 0.5;
                 public final static double wheelI = 0;
                 public final static double wheelD = 0;
-                 public final static double wheelStatorLimit = 70;
+                 public final static double wheelStatorLimit = 60;
                 public final static double wheelSupplyLimit = 45;
                 ;
-                 public final static double indexerStatorLimit = 80;
-                public final static double indexerSupplyLimit = 80;
+                 public final static double indexerStatorLimit = 70;
+                public final static double indexerSupplyLimit = 70;
         }
 
         /**

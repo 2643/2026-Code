@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.util.ShotVelocityEstimator;
 import frc.robot.util.TurretUtil;
 import frc.robot.util.TurretUtil.TargetType;
 import frc.robot.subsystems.Swivel.Mode;
@@ -58,9 +59,14 @@ public class AutoAim extends Command {
     // Turret sits off the robot center, so spinning the robot also moves the turret: v = omega x r
     var turretOffsetField = new Translation2d(Constants.TurretConstants.kTurretOffsetX, Constants.TurretConstants.kTurretOffsetY)
         .rotateBy(robotPose.getRotation());
-    double omega = fieldSpeeds.omegaRadiansPerSecond;
-    double robotVelX = fieldSpeeds.vxMetersPerSecond - omega * turretOffsetField.getY();
-    double robotVelY = fieldSpeeds.vyMetersPerSecond + omega * turretOffsetField.getX();
+    // Wheel velocity lies when the wheels slip (e.g. pushing matches); blend toward vision.
+    Translation2d centerVel = ShotVelocityEstimator.getFieldVelocity(
+        fieldSpeeds.vxMetersPerSecond, fieldSpeeds.vyMetersPerSecond);
+    // Gyro yaw rate instead of wheel kinematics, so it stays correct while slipping.
+    double omega = Math.toRadians(
+        RobotContainer.drivetrain.getPigeon2().getAngularVelocityZWorld().getValueAsDouble());
+    double robotVelX = centerVel.getX() - omega * turretOffsetField.getY();
+    double robotVelY = centerVel.getY() + omega * turretOffsetField.getX();
     SmartDashboard.putNumber("SOTM/FieldVelX", robotVelX);
     SmartDashboard.putNumber("SOTM/FieldVelY", robotVelY);
     // TurretUtil.ShotSolution solution = TurretUtil.computeShotSolution(robotPose, currentTarget);
