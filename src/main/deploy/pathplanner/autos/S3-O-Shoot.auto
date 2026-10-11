@@ -17,21 +17,27 @@
           }
         },
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 2.0
+            "pathName": "S3-Outpost"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ToggleWheel"
+            "name": "Intake"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "S3"
+            "pathName": "Outpost-Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Intake-Shoot"
           }
         },
         {
@@ -43,7 +49,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Intake"
+            "name": "ToggleWheel"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.5
           }
         },
         {
@@ -55,7 +67,19 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 7.0
+            "waitTime": 5.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ManualTurret"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ToggleWheel"
           }
         },
         {

@@ -3,32 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.4835062611806795,
-        "y": 3.9782110912343462
+        "x": 3.2169935344827594,
+        "y": 7.4
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0609393395765436,
-        "y": 3.9249349371710864
+        "x": 3.7066883701635107,
+        "y": 7.378708920187793
       },
       "isLocked": false,
-      "linkedName": "START2"
+      "linkedName": "START1"
     },
     {
       "anchor": {
-        "x": 3.477329545454545,
-        "y": 0.6440568181818185
+        "x": 7.759014084507042,
+        "y": 6.866713615023475
       },
       "prevControl": {
-        "x": 3.227330361404765,
-        "y": 0.6434180894099344
+        "x": 7.269319248826292,
+        "y": 7.590610328638498
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "SHAKE2"
+      "linkedName": "MID1-Intake"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 180.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -42,7 +47,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -90.0
   },
   "reversed": false,
   "folder": null,

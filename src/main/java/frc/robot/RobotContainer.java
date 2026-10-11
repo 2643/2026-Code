@@ -155,14 +155,18 @@ public class RobotContainer {
             configureBindings();
 
             autoChooser.addOption("S1 O Shoot", new PathPlannerAuto("S1-O-Shoot"));
-            autoChooser.addOption("S3 Mid Shoot", new PathPlannerAuto("S3-MID-Shoot"));
+            autoChooser.addOption("S2 O Shoot", new PathPlannerAuto("S2-O-Shoot"));
+            autoChooser.addOption("S3 O Shoot", new PathPlannerAuto("S3-O-Shoot"));
+            autoChooser.addOption("S1 Mid Shoot", new PathPlannerAuto("S1-Mid-Shoot"));
+            autoChooser.addOption("S2 Mid Shoot", new PathPlannerAuto("S2-Mid-Shoot"));
+            autoChooser.addOption("S3 Mid Shoot", new PathPlannerAuto("S3-Mid-Shoot"));
+            autoChooser.addOption("S1 Shoot", new PathPlannerAuto("S1-Shoot"));
+            autoChooser.addOption("S2 Shoot", new PathPlannerAuto("S2-Shoot"));
+            autoChooser.addOption("S2 Right Shoot", new PathPlannerAuto("S2-Right-Shoot"));
+            autoChooser.addOption("S3 Shoot", new PathPlannerAuto("S3-Shoot"));
             autoChooser.addOption("Straight Line", new PathPlannerAuto("Straight Line"));
             autoChooser.addOption("null", null);
-            autoChooser.addOption("S1 Shoot", new PathPlannerAuto("Shoot-S1"));
-            autoChooser.addOption("S2 Shoot", new PathPlannerAuto("Shoot-S2"));
-            autoChooser.addOption("S3 Shoot", new PathPlannerAuto("Shoot-S3"));
-            autoChooser.addOption("testing2", new PathPlannerAuto("testing2"));
-            autoChooser.addOption("Mid Test", new PathPlannerAuto("Mid Test"));
+
 
             // Configure Limelight field preset to the 2026 rebuilt field by default.
             // This remaps incoming Limelight poses into the 2026 field coordinates.

@@ -5,12 +5,6 @@
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "S3-Shake"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "ResetHood"
@@ -25,7 +19,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Shake-S3-MID"
+            "pathName": "S3-Mid3"
           }
         },
         {
@@ -37,13 +31,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "MID3-Intake"
+            "pathName": "Mid3-Intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ToggleWheel"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "IntakeMid-Shoot"
+            "pathName": "Mid3-Shoot"
           }
         },
         {
@@ -55,7 +55,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "ToggleIndexer"
           }
         },
         {
@@ -73,7 +73,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "ToggleIndexer"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ToggleWheel"
           }
         },
         {

@@ -19,7 +19,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "S2-O"
+            "pathName": "S1-Outpost"
           }
         },
         {
@@ -31,13 +31,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Intake-Outpost"
+            "pathName": "Outpost-Intake"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Intaked-Shoot"
+            "pathName": "Intake-Shoot"
           }
         },
         {
@@ -55,7 +55,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 2.8
+            "waitTime": 1.5
           }
         },
         {

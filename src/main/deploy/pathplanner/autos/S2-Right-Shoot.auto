@@ -7,13 +7,19 @@
         {
           "type": "named",
           "data": {
-            "name": "ResetSwivel"
+            "name": "ResetHood"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ResetHood"
+            "name": "ResetSwivel"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
           }
         },
         {
@@ -23,15 +29,27 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "S2-Right"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "ManualTurret"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "S3"
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.5
           }
         },
         {
@@ -49,6 +67,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "ToggleWheel"
           }
         },
@@ -56,12 +80,6 @@
           "type": "named",
           "data": {
             "name": "ToggleIndexer"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ManualTurret"
           }
         }
       ]

@@ -7,19 +7,37 @@
         {
           "type": "named",
           "data": {
-            "name": "ResetSwivel"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "ResetHood"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ToggleWheel"
+            "name": "ResetSwivel"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "S2-Outpost"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Outpost-Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Intake-Shoot"
           }
         },
         {
@@ -29,9 +47,15 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "S3"
+            "name": "ToggleWheel"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.5
           }
         },
         {
@@ -49,6 +73,12 @@
         {
           "type": "named",
           "data": {
+            "name": "ManualTurret"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "ToggleWheel"
           }
         },
@@ -61,7 +91,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ManualTurret"
+            "name": "Intake"
           }
         }
       ]
