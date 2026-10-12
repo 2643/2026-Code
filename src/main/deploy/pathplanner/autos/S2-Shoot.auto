@@ -23,9 +23,70 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "ToggleWheel"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "S2-Center"
+            "pathName": "S2-CENTER"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "ManualTurret"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.1
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ToggleIndexer"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Wiggle2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Wiggle2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Wiggle2"
           }
         },
         {
@@ -37,42 +98,6 @@
         {
           "type": "named",
           "data": {
-            "name": "ManualTurret"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ToggleWheel"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.8
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ToggleIndexer"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 5.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Intake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "ToggleWheel"
           }
         },
@@ -80,12 +105,6 @@
           "type": "named",
           "data": {
             "name": "ToggleIndexer"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ManualTurret"
           }
         }
       ]

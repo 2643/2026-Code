@@ -62,7 +62,7 @@ public class RobotContainer {
     private double MaxSpeed = normalMaxSpeed;
     private double MaxAngularRate = normalMaxAngularRate;
     // Trapezoidal limiter to smooth joystick requests
-    private final frc.robot.util.TrapezoidLimiter m_trapezoidLimiter = new frc.robot.util.TrapezoidLimiter(3.0, 3.0, 6.0);
+    private final frc.robot.util.TrapezoidLimiter m_trapezoidLimiter = new frc.robot.util.TrapezoidLimiter(2.0, 2.0, 4.0);
     // Shuffleboard tunables
     private final edu.wpi.first.networktables.GenericEntry m_rateXEntry;
     private final edu.wpi.first.networktables.GenericEntry m_rateYEntry;
@@ -269,9 +269,9 @@ public class RobotContainer {
 
                 // Read Shuffleboard tunables and apply them to the limiter
                 try {
-                    double rx = m_rateXEntry.getDouble(3.0);
-                    double ry = m_rateYEntry.getDouble(3.0);
-                    double ro = m_rateOmegaEntry.getDouble(6.0);
+                    double rx = m_rateXEntry.getDouble(2.0);
+                    double ry = m_rateYEntry.getDouble(2.0);
+                    double ro = m_rateOmegaEntry.getDouble(4.0);
                     m_trapezoidLimiter.setRates(rx, ry, ro);
                 } catch (Throwable t) {
                     // ignore and use current rates

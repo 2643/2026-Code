@@ -17,6 +17,12 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "S1-Mid1"
@@ -31,7 +37,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Mid1-Intake"
+            "pathName": "MID1-Intake"
           }
         },
         {
@@ -53,33 +59,51 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "ToggleIndexer"
-          }
-        },
-        {
           "type": "wait",
           "data": {
-            "waitTime": 5.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ManualTurret"
+            "waitTime": 1.0
           }
         },
         {
           "type": "named",
           "data": {
             "name": "ToggleIndexer"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Wiggle1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Wiggle1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Wiggle1"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "ToggleWheel"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ToggleIndexer"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ManualTurret"
           }
         },
         {

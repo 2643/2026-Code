@@ -23,9 +23,9 @@ public class AutoAim extends Command {
 
   public AutoAim() {
     SmartDashboard.putNumber("Turret Offset", Constants.TurretConstants.swivelOffset);
-    addRequirements(RobotContainer.m_Swivel);
-    addRequirements(RobotContainer.m_Hood);
-    addRequirements(RobotContainer.m_Storage);
+    // No requirements on purpose: AutoAim is a background service that only acts in
+    // Mode.AUTOAIM. Requiring Swivel/Hood/Storage made Swivel.autoAlign()'s reschedule
+    // interrupt any auto that uses those subsystems (e.g. after ManualTurret in S2-Shoot).
   }
 
   @Override

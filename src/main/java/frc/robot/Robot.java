@@ -66,7 +66,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
       SmartDashboard.putNumber("Swivel Gear Ratio", Constants.TurretConstants.swivelGearRatio);
      Optional<Alliance> ally = DriverStation.getAlliance();
-      // if (ally.isPresent()) {
+      if (ally.isPresent()) {
         if (ally.get() == Alliance.Red) {
             SmartDashboard.putString("Alliance", "Red");
             isRed = true;
@@ -74,7 +74,7 @@ public class Robot extends TimedRobot {
           SmartDashboard.putString("Alliance", "Blue");
           isRed = false;
         }
-      // }
+      }
       SmartDashboard.putString("Station Number", DriverStation.getLocation().toString());
       SmartDashboard.putNumber("Match Number", DriverStation.getMatchNumber());
       SmartDashboard.putString("Game Specific Message", DriverStation.getGameSpecificMessage());
