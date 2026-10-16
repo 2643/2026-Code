@@ -41,13 +41,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "ManualTurret"
+                  "name": "Intake"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Intake"
+                  "name": "ManualTurret"
                 }
               },
               {
@@ -69,6 +69,12 @@
           "type": "named",
           "data": {
             "name": "ToggleIndexer"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Wiggle2"
           }
         },
         {

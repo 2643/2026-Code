@@ -368,7 +368,7 @@ public class OperatorConstants {
                 public final static int intakeID = 18;
                 public final static double intakeSpeed = -0.5;
                 public final static int intakePort = 2;
-                public final static double IntakeCurrentlimit = 100;
+                public final static double IntakeCurrentlimit = 400;
         }
         public final class ControllerConstants {
                 public final static int square = 1;

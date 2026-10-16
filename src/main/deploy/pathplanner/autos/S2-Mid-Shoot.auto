@@ -65,9 +65,27 @@
           }
         },
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 5.0
+            "pathName": "Wiggle3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Wiggle3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Wiggle3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Wiggle3"
           }
         },
         {

@@ -1,0 +1,115 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "ResetSwivel"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ResetHood"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ToggleWheel"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ManualTurret"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "S3-Snipe"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ToggleIndexer"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SnipeWiggle3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SnipeWiggle3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SnipeWiggle3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SnipeWiggle3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SnipeWiggle3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SnipeWiggle3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SnipeWiggle3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SnipeWiggle3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ToggleWheel"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ToggleIndexer"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ManualTurret"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

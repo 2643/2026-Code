@@ -1,0 +1,115 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "ResetHood"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ResetSwivel"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ToggleWheel"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "S2-Left"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ManualTurret"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ToggleIndexer"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Wiggle1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Wiggle1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Wiggle1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Wiggle1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Wiggle1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ToggleWheel"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ToggleIndexer"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
