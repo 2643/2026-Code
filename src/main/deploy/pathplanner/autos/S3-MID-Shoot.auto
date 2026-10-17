@@ -19,6 +19,12 @@
         {
           "type": "path",
           "data": {
+            "pathName": "S3-Start"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
             "pathName": "S3-Mid3"
           }
         },

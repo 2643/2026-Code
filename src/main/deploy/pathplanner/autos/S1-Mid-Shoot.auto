@@ -89,6 +89,12 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "Wiggle1"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "ToggleWheel"

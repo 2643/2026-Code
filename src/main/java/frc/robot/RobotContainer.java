@@ -119,11 +119,11 @@ public class RobotContainer {
     public final static JoystickButton PROGswivelDown = new JoystickButton(progJoystick, Constants.ControllerConstants.ZR);
     public final static JoystickButton PROGwheel = new JoystickButton(progJoystick, Constants.ControllerConstants.LB);
     public final static JoystickButton PROGindexer = new JoystickButton(progJoystick, Constants.ControllerConstants.square);
-    public final static JoystickButton PROGreverseindexer = new JoystickButton(progJoystick, Constants.ControllerConstants.circle);   
+    // public final static JoystickButton PROGreverseindexer = new JoystickButton(progJoystick, Constants.ControllerConstants.circle);   
     public final static JoystickButton PROGhootReinit = new JoystickButton(progJoystick, Constants.ControllerConstants.leftNiche);
     public final static JoystickButton PROGdriveToFuel = new JoystickButton(progJoystick, Constants.ControllerConstants.bigButton);
 
-    public final static JoystickButton PROGreverseintake = new JoystickButton(progOpJoystick, Constants.ControllerConstants.square);   
+    public final static JoystickButton PROGreverseintake = new JoystickButton(progJoystick, Constants.ControllerConstants.circle);   
     public final static JoystickButton PROGtoggle = new JoystickButton(operator, Constants.ControllerConstants.circle);
 
     
@@ -227,7 +227,7 @@ public class RobotContainer {
             PROGintake.onTrue(new ToggleIntake(true));
             PROGwheel.onTrue(new ToggleWheel(m_Storage.getPhase()));
             PROGindexer.onTrue(new ToggleIndexer(true));
-            PROGreverseindexer.onTrue(new ToggleIndexer(false));
+            // PROGreverseindexer.onTrue(new ToggleIndexer(false));
             PROGmanualTurret.onTrue(new ManualTurret());
             // PROGmanualTurret.onTrue(new AutoAim());
             PROGhootReinit.onTrue(new ResetHood());

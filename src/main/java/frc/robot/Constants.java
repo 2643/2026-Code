@@ -351,22 +351,8 @@ public class OperatorConstants {
         public static final int slowModePort = 6;
 
         public final class IntakeConstants {
-                // Square = 1
-                // X=2
-                // Circle = 3
-                // Triangle = 4
-                // LB = 5
-                // RB = 6
-                // ZL = 7
-                // ZR = 8
-                // Left niche = 9
-                // Right niche = 10
-                // L3 = 11
-                // R3 = 12
-                // Big button = 14
-
                 public final static int intakeID = 18;
-                public final static double intakeSpeed = -0.6;
+                public final static double intakeSpeed = -0.8;
                 public final static int intakePort = 2;
                 public final static double IntakeCurrentlimit = 400;
         }
@@ -393,8 +379,8 @@ public class OperatorConstants {
                 public final static double swivelP = 20;
                 public final static double swivelI = 0.01;
                 public final static double swivelD = 0.01;
-                public final static double swivelAccel = 20; //ai says to reduce the accel even more like down to 20-30 to maybe improve shoot on move 
-                public final static double swivelVel = 50;
+                public final static double swivelAccel = 50; //ai says to reduce the accel even more like down to 20-30 to maybe improve shoot on move 
+                public final static double swivelVel = 80;
                 public final static double swivelStatorLimit = 30;
                 public final static double swivelSupplyLimit = 20;
 

@@ -69,10 +69,8 @@ public class Robot extends TimedRobot {
      Optional<Alliance> ally = DriverStation.getAlliance();
       if (ally.isPresent()) {
         if (ally.get() == Alliance.Red) {
-            SmartDashboard.putString("Alliance", "Red");
             isRed = true;
       } else if (ally.get() == Alliance.Blue) {
-          SmartDashboard.putString("Alliance", "Blue");
           isRed = false;
         }
       }
@@ -94,13 +92,15 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
+    isRed = SmartDashboard.getBoolean("isRed", isRed);
+
     SmartDashboard.putNumber("Virtual X", Constants.TurretConstants.virtualX);
     SmartDashboard.putNumber("Virtual Y", Constants.TurretConstants.virtualY);
     SmartDashboard.putNumber("Shoot dx", Constants.TurretConstants.dx);
     SmartDashboard.putNumber("Shoot dy", Constants.TurretConstants.dy);
     SmartDashboard.putNumber("real dx", Constants.TurretConstants.realdx);
     SmartDashboard.putNumber("real dy", Constants.TurretConstants.realdy);
-    SmartDashboard.putBoolean("Alliance", isRed);
+    SmartDashboard.putBoolean("isRed", isRed);
 
     // Read and write the same key so edits on the dashboard actually stick.
     Constants.TurretConstants.antiMultiplier = SmartDashboard.getNumber("Anti Rotation Multiplier", 0.2);
@@ -157,10 +157,7 @@ public class Robot extends TimedRobot {
     boolean allianceTagsOnly = AllianceTags.isAllianceEstimate(llMeasurement);
     boolean validForVision = tv && hasTags && turnRateOk && allianceTagsOnly;
 
-    if(SmartDashboard.getString("Alliance", "Red").equals("Red"))
-      isRed = true;
-    else
-      isRed = false;
+    
 
   // turret-specific measurement not used anymore; commenting out
   // boolean hasMeasurementTurret = turretLlMeasurement != null && turretLlMeasurement.pose != null && id == 10;
