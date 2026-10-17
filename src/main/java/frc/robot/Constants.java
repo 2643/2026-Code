@@ -366,7 +366,7 @@ public class OperatorConstants {
                 // Big button = 14
 
                 public final static int intakeID = 18;
-                public final static double intakeSpeed = -0.5;
+                public final static double intakeSpeed = -0.6;
                 public final static int intakePort = 2;
                 public final static double IntakeCurrentlimit = 400;
         }
