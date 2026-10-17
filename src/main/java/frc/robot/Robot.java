@@ -22,6 +22,7 @@ import frc.robot.commands.Turret.AutoAim;
 import frc.robot.commands.Turret.ResetHood;
 import frc.robot.commands.Turret.ResetSwivel;
 import frc.robot.subsystems.Swivel.States;
+import frc.robot.util.AllianceTags;
 import frc.robot.util.LimelightHelpers;
 
 
@@ -109,6 +110,9 @@ public class Robot extends TimedRobot {
         
     CommandScheduler.getInstance().run();
 
+    // Only ever look at the AprilTags on our own alliance's half of the field.
+    AllianceTags.update(limeAllen, limeBhavik);
+
     if (kUseLimelight) {
       // processLimelight(limeBhavik);
       processLimelight(limeAllen);
@@ -149,7 +153,9 @@ public class Robot extends TimedRobot {
     boolean hasTags = hasMeasurement && llMeasurement.tagCount > 0;
     boolean tv = LimelightHelpers.getTV(kLimelightName);
     boolean turnRateOk = Math.abs(omegaRps) < 99999.0;
-    boolean validForVision = tv && hasTags && turnRateOk;
+    // Tags on the other alliance's half of the field are ignored entirely.
+    boolean allianceTagsOnly = AllianceTags.isAllianceEstimate(llMeasurement);
+    boolean validForVision = tv && hasTags && turnRateOk && allianceTagsOnly;
 
     if(SmartDashboard.getString("Alliance", "Red").equals("Red"))
       isRed = true;
@@ -164,6 +170,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("LL/HasTags", hasTags);
     SmartDashboard.putBoolean("LL/TurnRateOk", turnRateOk);
     SmartDashboard.putBoolean("LL/ValidForVision", validForVision);
+    SmartDashboard.putBoolean("LL/AllianceTagsOnly", allianceTagsOnly);
     SmartDashboard.putNumber("LL/ID", id);
     kForceApplyVisionForTest = SmartDashboard.getBoolean("LL/resetWithPose", kForceApplyVisionForTest);
 
@@ -230,7 +237,8 @@ public class Robot extends TimedRobot {
     if (m_seededFromVision) {
       LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(kLimelightName);
       double omegaDegPerSec = Math.abs(Math.toDegrees(driveState.Speeds.omegaRadiansPerSecond));
-      boolean mt2Valid = mt2 != null && mt2.pose != null && mt2.tagCount > 0 && omegaDegPerSec < 720.0;
+      boolean mt2Valid = mt2 != null && mt2.pose != null && mt2.tagCount > 0 && omegaDegPerSec < 720.0
+          && AllianceTags.isAllianceEstimate(mt2);
       SmartDashboard.putBoolean("LL/MT2Valid", mt2Valid);
       if (mt2Valid) {
         // Trust vision less the farther away the tags are; trust more with multiple tags.

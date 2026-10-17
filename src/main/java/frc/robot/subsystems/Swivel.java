@@ -15,6 +15,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.commands.Turret.AutoAim;
+import frc.robot.util.AllianceTags;
 import frc.robot.util.LimelightHelpers;
 import java.util.ArrayList;
 
@@ -133,7 +134,10 @@ public class Swivel extends SubsystemBase {
    public void autoAlign(){
     var fiducials = LimelightHelpers.getRawFiducials(limelightName);
     for (var f : fiducials) {
-        seen.add(f.id);
+        // Ignore the other alliance's tags.
+        if (AllianceTags.isAllianceTag(f.id)) {
+          seen.add(f.id);
+        }
     }
 
     if(currentState == States.INITIALIZED && currentMode == Mode.AUTOAIM && !Constants.TurretConstants.running) {
@@ -176,10 +180,17 @@ public class Swivel extends SubsystemBase {
     @Override
   public void periodic() {
 
-    tx = LimelightHelpers.getTYNC(limelightName);  
-    isVisible = LimelightHelpers.getTV(limelightName);
-    area = LimelightHelpers.getTA(limelightName);
+    // Keep the camera filtered to our own alliance's tags (no-op unless the alliance changed).
+    AllianceTags.update(limelightName);
+
     fiducialID = LimelightHelpers.getFiducialID(limelightName);
+    boolean tagIsOurs = AllianceTags.isAllianceTag(fiducialID);
+    isVisible = LimelightHelpers.getTV(limelightName) && tagIsOurs;
+    tx = isVisible ? LimelightHelpers.getTYNC(limelightName) : 0.0;
+    area = isVisible ? LimelightHelpers.getTA(limelightName) : 0.0;
+    if (!tagIsOurs) {
+      fiducialID = -1;
+    }
     SmartDashboard.putNumber("Current Swivel Position", getSwivelPos());
     SmartDashboard.putNumber("Target Swivel Position", swivelTarget);
     SmartDashboard.putNumber("dist", getDist());

@@ -9,6 +9,7 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.HttpCamera;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.util.AllianceTags;
 import frc.robot.util.LimelightHelpers;
 
 public class Vision extends SubsystemBase {
@@ -42,6 +43,8 @@ public class Vision extends SubsystemBase {
   /** Creates a new Vision. */
   public Vision() {
   LimelightHelpers.setLEDMode_PipelineControl(primaryLimelight);
+    // Only track the AprilTags on our own alliance's half of the field.
+    AllianceTags.update(primaryLimelight, limelightName1, limelightName2);
     // Start automatic MJPEG captures for both Limelight HTTP streams so dashboards
     // (Shuffleboard/SmartDashboard/CameraServer/Elastic) can view them.
     // Try starting HTTP camera captures. Some dashboards need an explicit
@@ -82,11 +85,18 @@ public class Vision extends SubsystemBase {
 
   
   public void updateData() {
+  // Keep the cameras pointed at our own alliance's tags (no-op unless the alliance changed).
+  AllianceTags.update(primaryLimelight, limelightName1, limelightName2);
+
   // Primary (default) limelight
-  isVisible = LimelightHelpers.getTV(primaryLimelight);
-  yaw = LimelightHelpers.getTX(primaryLimelight);
-  area = LimelightHelpers.getTA(primaryLimelight);
   fiducialID = LimelightHelpers.getFiducialID(primaryLimelight);
+  boolean primaryIsOurs = AllianceTags.isAllianceTag(fiducialID);
+  isVisible = LimelightHelpers.getTV(primaryLimelight) && primaryIsOurs;
+  yaw = isVisible ? LimelightHelpers.getTX(primaryLimelight) : 0.0;
+  area = isVisible ? LimelightHelpers.getTA(primaryLimelight) : 0.0;
+  if (!primaryIsOurs) {
+    fiducialID = -1;
+  }
 
   SmartDashboard.putBoolean("Has Target (primary)", isVisible);
   SmartDashboard.putNumber("Target Yaw (primary)", yaw);
@@ -94,13 +104,15 @@ public class Vision extends SubsystemBase {
   SmartDashboard.putNumber("Fiducial ID (primary)", fiducialID);
 
   // Secondary named limelights (if present)
-  boolean ll1Visible = LimelightHelpers.getTV(limelightName1);
-  double ll1Yaw = LimelightHelpers.getTX(limelightName1);
-  double ll1Area = LimelightHelpers.getTA(limelightName1);
+  boolean ll1Visible = LimelightHelpers.getTV(limelightName1)
+      && AllianceTags.isAllianceTag(LimelightHelpers.getFiducialID(limelightName1));
+  double ll1Yaw = ll1Visible ? LimelightHelpers.getTX(limelightName1) : 0.0;
+  double ll1Area = ll1Visible ? LimelightHelpers.getTA(limelightName1) : 0.0;
 
-  boolean ll2Visible = LimelightHelpers.getTV(limelightName2);
-  double ll2Yaw = LimelightHelpers.getTX(limelightName2);
-  double ll2Area = LimelightHelpers.getTA(limelightName2);
+  boolean ll2Visible = LimelightHelpers.getTV(limelightName2)
+      && AllianceTags.isAllianceTag(LimelightHelpers.getFiducialID(limelightName2));
+  double ll2Yaw = ll2Visible ? LimelightHelpers.getTX(limelightName2) : 0.0;
+  double ll2Area = ll2Visible ? LimelightHelpers.getTA(limelightName2) : 0.0;
 
   SmartDashboard.putBoolean("Has Target (allen)", ll1Visible);
   SmartDashboard.putNumber("Target Yaw (allen)", ll1Yaw);
