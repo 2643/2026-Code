@@ -17,6 +17,12 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "S3-Start"
@@ -65,21 +71,9 @@
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "Wiggle3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Wiggle3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Wiggle3"
+            "waitTime": 9.0
           }
         },
         {

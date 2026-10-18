@@ -1,0 +1,151 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "ResetHood"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ResetSwivel"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "S1-Start"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "S1-Mid1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MID1-Intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ToggleWheel"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Mid1-Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ManualTurret"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ToggleIndexer"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 5.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ToggleIndexer"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Trench1-Mid1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MID1-Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Mid1-Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ToggleIndexer"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 5.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ToggleWheel"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ToggleIndexer"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ManualTurret"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

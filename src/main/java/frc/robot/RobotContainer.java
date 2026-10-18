@@ -158,7 +158,7 @@ public class RobotContainer {
             autoChooser.addOption("S2 O Shoot", new PathPlannerAuto("S2-O-Shoot"));
             autoChooser.addOption("S3 O Shoot", new PathPlannerAuto("S3-O-Shoot"));
             autoChooser.addOption("S1 Mid Shoot", new PathPlannerAuto("S1-Mid-Shoot"));
-            autoChooser.addOption("S2 Mid Shoot", new PathPlannerAuto("S2-Mid-Shoot"));
+            // autoChooser.addOption("S2 Mid Shoot", new PathPlannerAuto("S2-Mid-Shoot"));
             autoChooser.addOption("S3 Mid Shoot", new PathPlannerAuto("S3-Mid-Shoot"));
             autoChooser.addOption("S3 Snipe", new PathPlannerAuto("S3-Snipe"));
             autoChooser.addOption("S1 Shoot", new PathPlannerAuto("S1-Shoot"));
@@ -166,6 +166,9 @@ public class RobotContainer {
             autoChooser.addOption("S2 Right Shoot", new PathPlannerAuto("S2-Right-Shoot"));
             autoChooser.addOption("S2 Right Shoot", new PathPlannerAuto("S2-Left-Shoot"));
             autoChooser.addOption("S3 Shoot", new PathPlannerAuto("S3-Shoot"));
+            autoChooser.addOption("S3 Double Sweep", new PathPlannerAuto("S3-Double-Sweep"));
+            autoChooser.addOption("S1 Double Sweep", new PathPlannerAuto("S1-Double-Sweep"));
+            autoChooser.addOption("S1 Sweep Depot", new PathPlannerAuto("S1-Sweep-Depot"));
             autoChooser.addOption("Straight Line", new PathPlannerAuto("Straight Line"));
             autoChooser.addOption("null", null);
 

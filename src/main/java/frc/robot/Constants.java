@@ -460,7 +460,7 @@ public class OperatorConstants {
                 public final static double attackSpeed = -80;
                 public final static double defenseSpeed = -80;
                 // Indexer velocity target (units match rotor velocity measurement). Set to 75 (1.5x) by default.
-                public final static double indexSpeed = 130; // bumped 1.5x from 75
+                public final static double indexSpeed = 180; // bumped 1.5x from 75
                 // Indexer PID/FF defaults for velocity control
                 public final static double indexerP = 0.18; // stronger P (1.5x)
                 public final static double indexerI = 0.0;

@@ -109,6 +109,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Voltage", RobotController.getBatteryVoltage());
         
     CommandScheduler.getInstance().run();
+    
 
     // Only ever look at the AprilTags on our own alliance's half of the field.
     AllianceTags.update(limeAllen, limeBhavik);
