@@ -258,7 +258,7 @@ public class RobotContainer {
                 double PROGdesiredX = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_Y), 0.02) * MaxSpeed * reverse; // forward
                 double PROGdesiredY = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_X), 0.02) * MaxSpeed * reverse; // left
                 double PROGdesiredOmega = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_TWIST), 0.02) * MaxAngularRate; // rotate
-                // reverse = SmartDashboard.getNumber("Reverse", reverse);
+                reverse = SmartDashboard.getNumber("Reverse", reverse);
                 if (SmartDashboard.getString("Alliance", "Red").equals("Blue")){
                     reverse = -1;
                 } else {
