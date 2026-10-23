@@ -35,28 +35,15 @@
           }
         },
         {
-          "type": "race",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "ManualTurret"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.1
-                }
-              }
-            ]
+            "name": "ManualTurret"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
           }
         },
         {
@@ -72,27 +59,9 @@
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "Wiggle2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Wiggle2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Wiggle2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Wiggle2"
+            "waitTime": 12.0
           }
         },
         {

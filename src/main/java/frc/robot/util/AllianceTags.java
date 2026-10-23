@@ -29,10 +29,10 @@ import frc.robot.Robot;
 public class AllianceTags {
 
   /** AprilTag IDs on the red half of the field. */
-  public static final int[] RED_TAG_IDS = IntStream.rangeClosed(1, 16).toArray();
+  public static final int[] RED_TAG_IDS = {9,10,11,15,16,13,14};
 
   /** AprilTag IDs on the blue half of the field. */
-  public static final int[] BLUE_TAG_IDS = IntStream.rangeClosed(17, 32).toArray();
+  public static final int[] BLUE_TAG_IDS = {25,26,31,32,29,30};
 
   /** Every tag on the field, used when the filter is turned off. */
   public static final int[] ALL_TAG_IDS = IntStream.rangeClosed(1, 32).toArray();
@@ -46,20 +46,14 @@ public class AllianceTags {
   private AllianceTags() {}
 
   /** Returns true if we are on red. Prefers the Driver Station, falls back to the dashboard flag. */
-  public static boolean isRed() {
-    Optional<Alliance> ally = DriverStation.getAlliance();
-    if (ally.isPresent()) {
-      return ally.get() == Alliance.Red;
-    }
-    return Robot.isRed();
-  }
+
 
   /** The tag IDs we are allowed to look at right now. */
   public static int[] getAllianceTagIDs() {
     if (!enabled) {
       return ALL_TAG_IDS;
     }
-    return isRed() ? RED_TAG_IDS : BLUE_TAG_IDS;
+    return Robot.isRed() ? RED_TAG_IDS : BLUE_TAG_IDS;
   }
 
   /** True if the given tag is on our alliance's half of the field. */
@@ -70,7 +64,7 @@ public class AllianceTags {
     if (id < 1 || id > 32) {
       return false;
     }
-    return isRed() ? id <= 16 : id >= 17;
+    return Robot.isRed() ? id <= 16 : id >= 17;
   }
 
   /** True if the given tag is on our alliance's half of the field. -1 (no tag) is never ours. */
@@ -109,7 +103,7 @@ public class AllianceTags {
     enabled = SmartDashboard.getBoolean("Vision/AllianceTagFilter", enabled);
     SmartDashboard.putBoolean("Vision/AllianceTagFilter", enabled);
 
-    boolean red = isRed();
+    boolean red = Robot.isRed();
     String state = enabled ? (red ? "Red 1-16" : "Blue 17-32") : "All 1-32";
     SmartDashboard.putString("Vision/VisibleTags", state);
 

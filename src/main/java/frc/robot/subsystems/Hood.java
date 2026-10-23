@@ -89,7 +89,7 @@ public class Hood extends SubsystemBase {
       // position is a logical hood angle/position (from lookup or heuristic).
       // Convert to encoder units using live scale/offset so we can tune mapping.
       double scale = SmartDashboard.getNumber("Hood/AngleToEncoderScale", 1.0);
-      double off = SmartDashboard.getNumber("Hood/AngleToEncoderOffset", 0.0);
+      double off = SmartDashboard.getNumber("Hood/AngleToEncoderOffset", -0.6);
       SmartDashboard.putNumber("Hood/AngleToEncoderScale", scale);
       SmartDashboard.putNumber("Hood/AngleToEncoderOffset", off);
       double encodedSetpoint;
@@ -234,7 +234,7 @@ public class Hood extends SubsystemBase {
     // }
     if (encoder.getPosition() >= Constants.TurretConstants.hoodHardLimit1*3) {
       m_controller.setSetpoint(0, ControlType.kDutyCycle);
-      encoder.setPosition(Constants.TurretConstants.hoodSoftLimit1);
+      encoder.setPosition(Constants.TurretConstants.hoodSoftLimit1 -0.35);
           RobotContainer.m_Hood.resetTimer();
           RobotContainer.m_Hood.startTimer();
     }
