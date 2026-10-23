@@ -21,9 +21,12 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.Turret.AutoAim;
 import frc.robot.commands.Turret.ResetHood;
 import frc.robot.commands.Turret.ResetSwivel;
+import frc.robot.subsystems.Storage.Phase;
 import frc.robot.subsystems.Swivel.States;
 import frc.robot.util.AllianceTags;
 import frc.robot.util.LimelightHelpers;
+import frc.robot.RobotContainer;
+
 
 
 public class Robot extends TimedRobot {
@@ -343,7 +346,12 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Constants.TurretConstants.swivelGearRatio = SmartDashboard.getNumber("Swivel Gear Ratio", Constants.TurretConstants.swivelGearRatio);
-
+    var robotPose = RobotContainer.drivetrain.getState().Pose;
+    if(robotPose.getX() < 11 && robotPose.getX() > 5.5) {
+        RobotContainer.m_Storage.setPhase(Phase.DEFENSE);
+    } else {
+        RobotContainer.m_Storage.setPhase(Phase.ATTACK);
+    } 
   }
 
   @Override
