@@ -74,9 +74,13 @@ public class Storage extends SubsystemBase {
     
     configs.CurrentLimits.StatorCurrentLimit = Constants.StorageConstants.wheelStatorLimit;
     configs.CurrentLimits.SupplyCurrentLimit = Constants.StorageConstants.wheelSupplyLimit;
+    configs.CurrentLimits.SupplyCurrentLimitEnable = true;
+  configs.CurrentLimits.StatorCurrentLimitEnable = true;
 
   indexerConfigs.CurrentLimits.StatorCurrentLimit = Constants.StorageConstants.indexerStatorLimit;
   indexerConfigs.CurrentLimits.SupplyCurrentLimit = Constants.StorageConstants.indexerSupplyLimit;
+  indexerConfigs.CurrentLimits.SupplyCurrentLimitEnable = false;
+  indexerConfigs.CurrentLimits.StatorCurrentLimitEnable = false;
   // indexer PID defaults
   indexerConfigs.Slot0.kP = Constants.StorageConstants.indexerP;
   indexerConfigs.Slot0.kI = Constants.StorageConstants.indexerI;

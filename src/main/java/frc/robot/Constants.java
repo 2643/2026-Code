@@ -345,6 +345,7 @@ public class OperatorConstants {
         public static final int driverPort = 0;
         public static final int progJoystickPort = 2;
         public static final int progOpJoystickPort = 3;
+        
 
 
         public static final int resetGyroPort = 10; 
@@ -370,6 +371,7 @@ public class OperatorConstants {
                 public final static int L3 = 11;
                 public final static int R3 = 12;
                 public final static int bigButton = 14;
+                public static int reverse = 1;
         }
         public final class TurretConstants {    
                 public final static int swivelLimitPort = 1;
@@ -473,8 +475,8 @@ public class OperatorConstants {
                  public final static double wheelStatorLimit = 60;
                 public final static double wheelSupplyLimit = 45;
                 ;
-                 public final static double indexerStatorLimit = 70;
-                public final static double indexerSupplyLimit = 70;
+                 public final static double indexerStatorLimit = 150;
+                public final static double indexerSupplyLimit = 150;
         }
 
         /**

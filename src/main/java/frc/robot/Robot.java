@@ -34,6 +34,7 @@ public class Robot extends TimedRobot {
   private static final String limeAllen = "limelight-allen";
   // turret limelight unused; kept here for reference
   private static final String limeBhavik = "limelight-bhavik";
+  public static boolean reverseCheck = false;
 
   private static boolean kForceApplyVisionForTest = true; // disable force mode; use fused vision instead
   private boolean m_seededFromVision = false;
@@ -93,6 +94,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     isRed = SmartDashboard.getBoolean("isRed", isRed);
+    reverseCheck = SmartDashboard.getBoolean("Reverse", reverseCheck);
 
     SmartDashboard.putNumber("Virtual X", Constants.TurretConstants.virtualX);
     SmartDashboard.putNumber("Virtual Y", Constants.TurretConstants.virtualY);
@@ -101,6 +103,13 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("real dx", Constants.TurretConstants.realdx);
     SmartDashboard.putNumber("real dy", Constants.TurretConstants.realdy);
     SmartDashboard.putBoolean("isRed", isRed);
+    SmartDashboard.putBoolean("Reverse", reverseCheck);
+
+    if(reverseCheck) {
+      Constants.ControllerConstants.reverse = 1;
+    } else {
+      Constants.ControllerConstants.reverse = -1;
+    }
 
     // Read and write the same key so edits on the dashboard actually stick.
     Constants.TurretConstants.antiMultiplier = SmartDashboard.getNumber("Anti Rotation Multiplier", 0.2);

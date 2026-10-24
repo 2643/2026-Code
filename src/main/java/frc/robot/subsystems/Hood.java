@@ -89,11 +89,11 @@ public class Hood extends SubsystemBase {
       // position is a logical hood angle/position (from lookup or heuristic).
       // Convert to encoder units using live scale/offset so we can tune mapping.
       double scale = SmartDashboard.getNumber("Hood/AngleToEncoderScale", 1.0);
-      double off = SmartDashboard.getNumber("Hood/AngleToEncoderOffset", -0.6);
+      double off = SmartDashboard.getNumber("Hood/AngleToEncoderOffset", -0.9);
       SmartDashboard.putNumber("Hood/AngleToEncoderScale", scale);
       SmartDashboard.putNumber("Hood/AngleToEncoderOffset", off);
       double encodedSetpoint;
-      if (position < Constants.TurretConstants.hoodSoftLimit1 && position > Constants.TurretConstants.hoodSoftLimit2){
+      if (position * scale + off < Constants.TurretConstants.hoodSoftLimit1 && position * scale + off > Constants.TurretConstants.hoodSoftLimit2){
             encodedSetpoint = position * scale + off;
       } else {encodedSetpoint = hoodTarget;}
       hoodTarget = encodedSetpoint; // store encoder-domain target so isAtPosition works

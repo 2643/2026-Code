@@ -29,15 +29,15 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "S1-Mid1"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "S1-Mid1"
           }
         },
         {

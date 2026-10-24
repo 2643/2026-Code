@@ -183,7 +183,6 @@ public class RobotContainer {
             }
             // Create Shuffleboard tunables for the trapezoid limiter (Driver tab)
             var tab = Shuffleboard.getTab("Driver");
-            SmartDashboard.putNumber("Reverse", reverse);
 
             m_rateXEntry = tab.add("Limiter Rate X (m/s/s)", 2.0).withPosition(4, 2).withSize(2, 1).getEntry();
             m_rateYEntry = tab.add("Limiter Rate Y (m/s/s)", 2.0).withPosition(6, 2).withSize(2, 1).getEntry();
@@ -251,19 +250,14 @@ public class RobotContainer {
                 // raw desired velocities from joystick
 
                 
-                double desiredX = -applyDeadzone(driver.getRawAxis(Constants.AXIS_Y), 0.02) * MaxSpeed * reverse; // forward
-                double desiredY = -applyDeadzone(driver.getRawAxis(Constants.AXIS_X), 0.02) * MaxSpeed * reverse; // left
+                double desiredX = -applyDeadzone(driver.getRawAxis(Constants.AXIS_Y), 0.02) * MaxSpeed * Constants.ControllerConstants.reverse; // forward
+                double desiredY = -applyDeadzone(driver.getRawAxis(Constants.AXIS_X), 0.02) * MaxSpeed * Constants.ControllerConstants.reverse; // left
                 double desiredOmega = -applyDeadzone(driver.getRawAxis(Constants.AXIS_TWIST), 0.02) * MaxAngularRate; // rotate
 
-                double PROGdesiredX = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_Y), 0.02) * MaxSpeed * reverse; // forward
-                double PROGdesiredY = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_X), 0.02) * MaxSpeed * reverse; // left
+                double PROGdesiredX = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_Y), 0.02) * MaxSpeed * Constants.ControllerConstants.reverse; // forward
+                double PROGdesiredY = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_X), 0.02) * MaxSpeed * Constants.ControllerConstants.reverse; // left
                 double PROGdesiredOmega = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_TWIST), 0.02) * MaxAngularRate; // rotate
-                reverse = SmartDashboard.getNumber("Reverse", reverse);
-                if (SmartDashboard.getString("Alliance", "Red").equals("Blue")){
-                    reverse = -1;
-                } else {
-                    reverse = 1;
-                }
+               
                 SmartDashboard.putNumber("DesiredX", PROGdesiredX);
                 SmartDashboard.putNumber("DesiredY", PROGdesiredY);
                 SmartDashboard.putNumber("DesiredOmega", PROGdesiredOmega);
