@@ -29,10 +29,10 @@ import frc.robot.Robot;
 public class AllianceTags {
 
   /** AprilTag IDs on the red half of the field. */
-  public static final int[] RED_TAG_IDS = {9,10,11,15,16,13,14};
+  public static final int[] RED_TAG_IDS = {9,10,11,8,15,16,13,14};
 
   /** AprilTag IDs on the blue half of the field. */
-  public static final int[] BLUE_TAG_IDS = {25,26,31,32,29,30};
+  public static final int[] BLUE_TAG_IDS = {25,26,31,32,29,30,27,24};
 
   /** Every tag on the field, used when the filter is turned off. */
   public static final int[] ALL_TAG_IDS = IntStream.rangeClosed(1, 32).toArray();

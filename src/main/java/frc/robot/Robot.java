@@ -34,7 +34,7 @@ public class Robot extends TimedRobot {
   private static final String limeAllen = "limelight-allen";
   // turret limelight unused; kept here for reference
   private static final String limeBhavik = "limelight-bhavik";
-  public static boolean reverseCheck = false;
+  public static boolean reverseCheck = true;
 
   private static boolean kForceApplyVisionForTest = true; // disable force mode; use fused vision instead
   private boolean m_seededFromVision = false;

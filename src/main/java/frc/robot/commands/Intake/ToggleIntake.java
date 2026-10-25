@@ -39,7 +39,7 @@ public class ToggleIntake extends Command {
     if(sign)
       RobotContainer.m_Intake.moveIntake(Constants.IntakeConstants.intakeSpeed);
     else
-      RobotContainer.m_Intake.moveIntake(-Constants.IntakeConstants.intakeSpeed);
+      RobotContainer.m_Intake.moveIntake(-Constants.IntakeConstants.intakeSpeed-0.2);
 
     // CommandScheduler.getInstance().schedule(new AutoAim());
     System.out.println("intake command end");
