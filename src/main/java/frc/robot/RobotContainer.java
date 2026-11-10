@@ -77,10 +77,10 @@ public class RobotContainer {
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    private final static Joystick driver = new Joystick(Constants.driverPort);
-    private final static Joystick operator = new Joystick(Constants.operatorPort);
-    private final static Joystick progJoystick = new Joystick(Constants.progJoystickPort);
-    private final static Joystick progOpJoystick = new Joystick(Constants.progOpJoystickPort);
+    private final static CommandXboxController driver = new Joystick(Constants.driverPort);
+    private final static CommandXboxController operator = new Joystick(Constants.operatorPort);
+    private final static CommandXboxController progJoystick = new Joystick(Constants.progJoystickPort);
+    private final static CommandXboxController progOpJoystick = new Joystick(Constants.progOpJoystickPort);
 
 
     public final static JoystickButton  dynaforward =  new JoystickButton(driver, Constants.ControllerConstants.square);
@@ -224,21 +224,22 @@ public class RobotContainer {
             dynareverse.whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
             quasforward.whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
             quasreverse.whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-            PROGintake.onTrue(new ToggleIntake(true));
-            PROGwheel.onTrue(new ToggleWheel(m_Storage.getPhase()));
-            PROGindexer.onTrue(new ToggleIndexer(true));
-            PROGreverseindexer.onTrue(new ToggleIndexer(false));
-            PROGmanualTurret.onTrue(new ManualTurret());
+            PROGintake.a().onTrue(new ToggleIntake(true));
+            PROGwheel.b().onTrue(new ToggleWheel(m_Storage.getPhase()));
+            PROGindexer.x().onTrue(new ToggleIndexer(true));
+            PROGreverseindexer.y().onTrue(new ToggleIndexer(false));
+            // PROGmanualTurret.back().onTrue(new ManualTurret());
             // PROGmanualTurret.onTrue(new AutoAim());
-            PROGhootReinit.onTrue(new ResetHood());
-            PROGswivelUp.whileTrue(new ManualMoveSwivel(true));
-            PROGswivelDown.whileTrue(new ManualMoveSwivel(false));
+            
+            // PROGhootReinit.onTrue(new ResetHood());
+            // PROGswivelUp.whileTrue(new ManualMoveSwivel(true));
+            // PROGswivelDown.whileTrue(new ManualMoveSwivel(false));
 
             // PROGdriveToFuel.whileTrue(new DriveToFuel());
 
-            PROGreverseintake.onTrue(new ToggleIntake(false));
-            PROGreverseintake.onTrue(new ToggleIndexer(false));
-            PROGtoggle.onTrue(new Toggle());
+            PROGreverseintake.leftBumper().onTrue(new ToggleIntake(false));
+            PROGreverseintake.rightBumper().onTrue(new ToggleIndexer(false));
+            PROGtoggle.start().onTrue(new Toggle());
 
 
             
@@ -313,17 +314,17 @@ public class RobotContainer {
             //     MaxAngularRate = normalMaxAngularRate;
             // }));
 
-            PROGzeroGyro.onTrue(drivetrain.runOnce(() -> {
+            PROGzeroGyro.back().onTrue(drivetrain.runOnce(() -> {
                 drivetrain.seedFieldCentric();
                 Robot.requestVisionReseed();
             }));
 
             // slow mode (hold button 6 to reduce speeds)
-            PROGslowMode.onTrue(drivetrain.runOnce(() -> {
+            PROGslowMode.leftBumper().onTrue(drivetrain.runOnce(() -> {
                 MaxSpeed = normalMaxSpeed * (kSlowMultiplier*1.4);
                 MaxAngularRate = normalMaxAngularRate * (kSlowMultiplier+0.2);
             }));
-            PROGslowMode.onFalse(drivetrain.runOnce(() -> {
+            PROGslowMode.leftBumper().onFalse(drivetrain.runOnce(() -> {
                 MaxSpeed = normalMaxSpeed;
                 MaxAngularRate = normalMaxAngularRate;
             }));
