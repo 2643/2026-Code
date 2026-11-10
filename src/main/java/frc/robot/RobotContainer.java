@@ -16,6 +16,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -24,6 +25,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 // import frc.robot.commands.DriveToFuel;
 // import frc.robot.Constants.ControllerConstants; (unused)
@@ -57,6 +59,7 @@ public class RobotContainer {
     private double reverse = 1;
     
     private final double kSlowMultiplier = 0.15;
+    private static final double kProgDeadzone = 0.08; // Xbox sticks drift more than the old joystick
     private final double normalMaxSpeed = Constants.OperatorConstants.kSpeedAt12Volts.in(MetersPerSecond); // desired top speed
     private final double normalMaxAngularRate = RotationsPerSecond.of(2).in(RadiansPerSecond); // max angular velocity
     private double MaxSpeed = normalMaxSpeed;
@@ -79,7 +82,7 @@ public class RobotContainer {
 
     private final static Joystick driver = new Joystick(Constants.driverPort);
     private final static Joystick operator = new Joystick(Constants.operatorPort);
-    private final static Joystick progJoystick = new Joystick(Constants.progJoystickPort);
+    private final static XboxController progJoystick = new XboxController(Constants.progJoystickPort); // Xbox controller on port 0
     private final static Joystick progOpJoystick = new Joystick(Constants.progOpJoystickPort);
 
 
@@ -107,23 +110,23 @@ public class RobotContainer {
     // public final static JoystickButton swivelUp = new JoystickButton(operator, Constants.ControllerConstants.ZL);
     // public final static JoystickButton swivelDown = new JoystickButton(operator, Constants.ControllerConstants.ZR);
 
-    public static final JoystickButton PROGintake = new JoystickButton(progJoystick, Constants.ControllerConstants.x);
-    public static final JoystickButton PROGmanualTurret = new JoystickButton(progJoystick, Constants.ControllerConstants.triangle);
+    public static final JoystickButton PROGintake = new JoystickButton(progJoystick, XboxController.Button.kA.value); // intake
+    public static final JoystickButton PROGmanualTurret = new JoystickButton(progJoystick, XboxController.Button.kY.value);
     // public final static JoystickButton PROGtoggle = new JoystickButton(progJoystick, Constants.ControllerConstants.circle);
-    public final static JoystickButton PROGzeroGyro = new JoystickButton(progJoystick, Constants.ControllerConstants.rightNiche);
-    public final static JoystickButton PROGslowMode = new JoystickButton(progJoystick, Constants.ControllerConstants.RB);
+    public final static JoystickButton PROGzeroGyro = new JoystickButton(progJoystick, XboxController.Button.kStart.value);
+    public final static JoystickButton PROGslowMode = new JoystickButton(progJoystick, XboxController.Button.kRightBumper.value);
     // public final static JoystickButton PROGhoodDown = new JoystickButton(progJoystick, Constants.ControllerConstants.LB);
     // public final static JoystickButton PROGhoodUp = new JoystickButton(progJoystick, Constants.ControllerConstants.RB);
     // public final static JoystickButton PROGscram = new JoystickButton(progJoystick, Constants.ControllerConstants.leftNiche);
-    public final static JoystickButton PROGswivelUp = new JoystickButton(progJoystick, Constants.ControllerConstants.ZL);
-    public final static JoystickButton PROGswivelDown = new JoystickButton(progJoystick, Constants.ControllerConstants.ZR);
-    public final static JoystickButton PROGwheel = new JoystickButton(progJoystick, Constants.ControllerConstants.LB);
-    public final static JoystickButton PROGindexer = new JoystickButton(progJoystick, Constants.ControllerConstants.square);
+    public final static Trigger PROGswivelUp = new Trigger(() -> progJoystick.getLeftTriggerAxis() > 0.5);
+    public final static Trigger PROGswivelDown = new Trigger(() -> progJoystick.getRightTriggerAxis() > 0.5);
+    public final static JoystickButton PROGwheel = new JoystickButton(progJoystick, XboxController.Button.kLeftBumper.value);
+    public final static JoystickButton PROGindexer = new JoystickButton(progJoystick, XboxController.Button.kX.value);
     // public final static JoystickButton PROGreverseindexer = new JoystickButton(progJoystick, Constants.ControllerConstants.circle);   
-    public final static JoystickButton PROGhootReinit = new JoystickButton(progJoystick, Constants.ControllerConstants.leftNiche);
-    public final static JoystickButton PROGdriveToFuel = new JoystickButton(progJoystick, Constants.ControllerConstants.bigButton);
+    public final static JoystickButton PROGhootReinit = new JoystickButton(progJoystick, XboxController.Button.kBack.value);
+    public final static JoystickButton PROGdriveToFuel = new JoystickButton(progJoystick, XboxController.Button.kLeftStick.value);
 
-    public final static JoystickButton PROGreverseintake = new JoystickButton(progJoystick, Constants.ControllerConstants.circle);   
+    public final static JoystickButton PROGreverseintake = new JoystickButton(progJoystick, XboxController.Button.kB.value);   
     public final static JoystickButton PROGtoggle = new JoystickButton(operator, Constants.ControllerConstants.circle);
 
     
@@ -254,9 +257,9 @@ public class RobotContainer {
                 double desiredY = -applyDeadzone(driver.getRawAxis(Constants.AXIS_X), 0.02) * MaxSpeed * Constants.ControllerConstants.reverse; // left
                 double desiredOmega = -applyDeadzone(driver.getRawAxis(Constants.AXIS_TWIST), 0.02) * MaxAngularRate; // rotate
 
-                double PROGdesiredX = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_Y), 0.02) * MaxSpeed * Constants.ControllerConstants.reverse; // forward
-                double PROGdesiredY = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_X), 0.02) * MaxSpeed * Constants.ControllerConstants.reverse; // left
-                double PROGdesiredOmega = -applyDeadzone(progJoystick.getRawAxis(Constants.AXIS_TWIST), 0.02) * MaxAngularRate; // rotate
+                double PROGdesiredX = -applyDeadzone(progJoystick.getLeftY(), kProgDeadzone) * MaxSpeed * Constants.ControllerConstants.reverse; // forward
+                double PROGdesiredY = -applyDeadzone(progJoystick.getLeftX(), kProgDeadzone) * MaxSpeed * Constants.ControllerConstants.reverse; // left
+                double PROGdesiredOmega = -applyDeadzone(progJoystick.getRightX(), kProgDeadzone) * MaxAngularRate; // rotate
                
                 SmartDashboard.putNumber("DesiredX", PROGdesiredX);
                 SmartDashboard.putNumber("DesiredY", PROGdesiredY);

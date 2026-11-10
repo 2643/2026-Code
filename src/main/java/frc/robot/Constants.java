@@ -342,8 +342,8 @@ public class OperatorConstants {
         public static final int AXIS_TWIST = 2; // rotation
 
         public static final int operatorPort = 1;
-        public static final int driverPort = 0;
-        public static final int progJoystickPort = 2;
+        public static final int driverPort = 4; // moved off 0 so the prog Xbox controller on port 0 doesn't also trigger driver/SysId bindings
+        public static final int progJoystickPort = 0; // Xbox controller
         public static final int progOpJoystickPort = 3;
         
 
@@ -651,6 +651,3 @@ public class OperatorConstants {
     }
     }
 }
-
-
-
