@@ -457,14 +457,14 @@ public class OperatorConstants {
                 public final static int wheelID = 15;
                 public final static int indexMotorID = 17;
                 public final static int indexMotor2ID = 19;
-                public final static int rumbleMotorID = 20; // Change later
+                public final static int rumbleMotorID = 43; // Change later
                 public final static int indexLimitPort = 0;
 
                 public final static double attackSpeed = -80;
                 public final static double defenseSpeed = -80;
                 // Indexer velocity target (units match rotor velocity measurement). Set to 75 (1.5x) by default.
                 public final static double indexSpeed = 180; // bumped 1.5x from 75
-                public final static double rumbleSpeed = 25; // change it later
+                public final static double rumbleSpeed = 46.8; // set to correct speed
                 // Indexer PID/FF defaults for velocity control
                 public final static double indexerP = 0.18; // stronger P (1.5x)
                 public final static double indexerI = 0.0;
