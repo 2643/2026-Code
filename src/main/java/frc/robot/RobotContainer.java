@@ -15,6 +15,8 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
+import choreo.auto.AutoFactory;
+import choreo.trajectory.SwerveSample;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -137,6 +139,14 @@ public class RobotContainer {
     public static final Storage m_Storage = new Storage();
     public static final Swivel m_Swivel = new Swivel();
     public final HubTester m_HubTester = new HubTester();
+
+    private final AutoFactory autoFactory = new AutoFactory(
+        () -> drivetrain.getState().Pose,
+        (Pose2d pose) -> drivetrain.resetPose(pose),
+        (SwerveSample sample) -> drivetrain.followTrajectory(sample),
+        true,
+        drivetrain
+    );
     // public final static FuelTracker m_FuelTracker = new FuelTracker(() -> drivetrain.getState().Pose);
 
         private final SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -244,8 +254,6 @@ public class RobotContainer {
             PROGreverseintake.onTrue(new ToggleIntake(false));
             PROGreverseintake.onTrue(new ToggleIndexer(false));
             PROGtoggle.onTrue(new Toggle());
-
-
             
         drivetrain.setDefaultCommand(  
             // Drivetrain will execute this command periodically
