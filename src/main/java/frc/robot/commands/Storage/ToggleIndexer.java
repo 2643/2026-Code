@@ -46,10 +46,9 @@ public class ToggleIndexer extends Command {
     }
 
     if(sign)
-      RobotContainer.m_Storage.moveIndexer(Constants.StorageConstants.indexSpeed);
+      RobotContainer.m_Storage.moveIndexer(Constants.StorageConstants.indexSpeed, Constants.StorageConstants.rumbleSpeed);
     else
-      RobotContainer.m_Storage.moveIndexer(-Constants.StorageConstants.indexSpeed);
-    
+      RobotContainer.m_Storage.moveIndexer(-Constants.StorageConstants.indexSpeed, -Constants.StorageConstants.rumbleSpeed);
       System.out.println("indexer command end");
     // CommandScheduler.getInstance().schedule(new AutoAim());
   }

@@ -46,6 +46,7 @@ public class Storage extends SubsystemBase {
   TalonFX flyWheel = new TalonFX(Constants.StorageConstants.wheelID);
   TalonFX indexMotor1 = new TalonFX(Constants.StorageConstants.indexMotorID);
   TalonFX indexMotor2 = new TalonFX(Constants.StorageConstants.indexMotor2ID);
+  TalonFX rumbleMotor = new TalonFX(Constants.StorageConstants.rumbleMotorID);
 
   DigitalInput indexLimit = new DigitalInput(Constants.StorageConstants.indexLimitPort);
 
@@ -65,6 +66,7 @@ public class Storage extends SubsystemBase {
   public MotorAlignmentValue MotorAlignment = MotorAlignmentValue.Aligned; // Aligned or Opposed
   TalonFXConfiguration configs = new TalonFXConfiguration();
   TalonFXConfiguration indexerConfigs = new TalonFXConfiguration();
+  TalonFXConfiguration rumbleConfigs = new TalonFXConfiguration();
 
   public Storage() {
 
@@ -85,14 +87,22 @@ public class Storage extends SubsystemBase {
   indexerConfigs.Slot0.kP = Constants.StorageConstants.indexerP;
   indexerConfigs.Slot0.kI = Constants.StorageConstants.indexerI;
   indexerConfigs.Slot0.kD = Constants.StorageConstants.indexerD;
+
+
+  rumbleConfigs.Slot0.kP = Constants.StorageConstants.rumbleP;
+  rumbleConfigs.Slot0.kI = Constants.StorageConstants.rumbleI;
+  rumbleConfigs.Slot0.kD = Constants.StorageConstants.rumbleD;
+
+  
+
   // FF will be provided dynamically when commanding velocity
     
     indexMotor1.getConfigurator().apply(indexerConfigs);
     indexMotor2.getConfigurator().apply(indexerConfigs);
+    rumbleMotor.getConfigurator().apply(rumbleConfigs);
 
     flyWheel.getConfigurator().apply(configs);
     indexMotor2.setControl(new Follower(indexMotor1.getDeviceID(), MotorAlignment));
-
   // Dashboard tunables for pre-spin and pulsed feeding
   SmartDashboard.putNumber("Storage/PreSpinSeconds", 0.75);
   SmartDashboard.putNumber("Storage/MinInterShotSeconds", 0.65);
@@ -133,18 +143,19 @@ public void moveWheel(double speed) {
   }
 }
 
-public void moveIndexer(double speed) {
+public void moveIndexer(double speed, double rumbleSpeed) {
   targetIndexSpeed = speed;
    if (getIndexer() == Indexer.ON)
   { 
       // Set indexer to velocity control using the same controller type as the wheel
       indexMotor1.setControl(indexVel.withVelocity(speed));
-      
+      rumbleMotor.setControl(indexVel.withVelocity(rumbleSpeed));
   }
   else
   {
     // stop indexer
     indexMotor1.setControl(new DutyCycleOut(0));
+    rumbleMotor.setControl(new DutyCycleOut(0));
   }
 }
 
